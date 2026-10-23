@@ -1,0 +1,2777 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Production_Schedule_2026_V1.A1.38.xlsx</title>
+<style>
+  /* Spreadsheet-style shell: title bar, menu tabs, ribbon, formula bar, cell grid, sheet tabs, status bar. */
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: #ffffff;
+    color: #1f1f1f;
+    font-family: Calibri, "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    color-scheme: light;
+  }
+  .app { height: 100%; display: flex; flex-direction: column; min-width: 0; }
+
+  .titlebar { background: #217346; color: #fff; display: flex; align-items: center; gap: 12px; padding: 6px 12px; min-height: 32px; }
+  .titlebar .fname { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .titlebar .saved { opacity: .8; font-size: 12px; }
+
+  .menu { background: #217346; display: flex; overflow-x: auto; white-space: nowrap; padding: 0 8px; }
+  .menu span { color: #e8f3ec; padding: 6px 12px; font-size: 13px; cursor: default; }
+  .menu span.on { background: #f3f3f3; color: #217346; font-weight: 600; border-radius: 4px 4px 0 0; }
+
+  .ribbon { background: #f3f3f3; border-bottom: 1px solid #d4d4d4; padding: 6px 10px; display: flex; align-items: center; gap: 8px; overflow-x: auto; white-space: nowrap; min-height: 46px; }
+  .ribbon button {
+    font: inherit; color: #1f1f1f; background: #fff; border: 1px solid #c8c8c8; border-radius: 3px;
+    padding: 5px 10px; cursor: pointer; min-height: 32px;
+  }
+  .ribbon button:hover { background: #e9f3ed; border-color: #217346; }
+  .ribbon button:focus-visible { outline: 2px solid #217346; outline-offset: 1px; }
+  .ribbon .sep { width: 1px; align-self: stretch; background: #d4d4d4; margin: 2px 4px; }
+  .ribbon .lbl { color: #555; font-variant-numeric: tabular-nums; min-width: 8ch; text-align: center; }
+
+  .fbar { display: flex; align-items: stretch; border-bottom: 1px solid #d4d4d4; background: #fff; min-height: 26px; }
+  .namebox { width: 72px; flex: none; border-right: 1px solid #d4d4d4; padding: 4px 8px; text-align: center; font-variant-numeric: tabular-nums; }
+  .fx { width: 36px; flex: none; text-align: center; color: #777; font-style: italic; padding: 4px 0; border-right: 1px solid #d4d4d4; }
+  .fval { flex: 1; min-width: 0; padding: 4px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .gridwrap { flex: 1; min-height: 0; overflow: auto; background: #fff; }
+  table { border-collapse: separate; border-spacing: 0; font-variant-numeric: tabular-nums; }
+  th, td { height: 22px; padding: 0 6px; border-right: 1px solid #e1e1e1; border-bottom: 1px solid #e1e1e1; white-space: nowrap; font-weight: 400; }
+  thead th { position: sticky; top: 0; z-index: 3; background: #e6e6e6; color: #444; text-align: center; min-width: 60px; border-color: #c8c8c8; font-size: 12px; }
+  th.corner { left: 0; z-index: 4; min-width: 40px; width: 40px; }
+  th.rn { position: sticky; left: 0; z-index: 2; background: #e6e6e6; color: #444; text-align: center; min-width: 40px; width: 40px; font-size: 12px; border-color: #c8c8c8; }
+  td.r { text-align: right; }
+  td.num { text-align: right; min-width: 56px; }
+  td.team { min-width: 190px; }
+  td.stat { min-width: 140px; }
+  td.venue { min-width: 220px; }
+  td.play { min-width: 460px; }
+  td.name { min-width: 170px; }
+  td.filt { cursor: pointer; background: #fff4d6; color: #7a5200; font-weight: 700; white-space: nowrap; }
+  td.filt:hover { background: #ffe39a; }
+  td.vt { vertical-align: top; }
+  td.wcell, td.xcell, td.acell { text-align: center; cursor: pointer; user-select: none; }
+  td.wcell { color: #c58a00; }
+  td.xcell { color: #b3261e; }
+  td.acell { color: #217346; font-weight: 700; }
+  td.xcell:hover, td.acell:hover, td.wcell:hover { background: #fff4d6; }
+  #catPanel { position: fixed; top: 150px; left: 24px; z-index: 50; width: 330px; max-height: 70vh; overflow: auto; background: #fff; color: #222; border: 1px solid #9bbfa9; box-shadow: 0 6px 20px rgba(0,0,0,.25); font-size: 13px; }
+  #catPanel .ph { background: #217346; color: #fff; padding: 8px 12px; font-weight: 700; }
+  #catPanel .pb { padding: 8px 12px; }
+  #catPanel .grp { font-weight: 700; margin: 8px 0 4px; color: #217346; }
+  #catPanel label { display: inline-block; width: 31%; padding: 2px 0; cursor: pointer; }
+  #yhPanel { position: fixed; top: 120px; left: 50%; transform: translateX(-50%); z-index: 60; width: min(560px, 94vw); max-height: 78vh; overflow: auto; background: #fff; color: #222; border: 1px solid #9bbfa9; box-shadow: 0 8px 28px rgba(0,0,0,.3); font-size: 13px; }
+  #yhPanel .ph { background: #217346; color: #fff; padding: 8px 12px; font-weight: 700; }
+  #yhPanel .pb { padding: 10px 12px; }
+  #yhPanel textarea { width: 100%; height: 130px; box-sizing: border-box; font: 12px Consolas, monospace; }
+  #yhPanel .row { margin: 6px 0; }
+  #yhPanel label.pl { display: block; padding: 2px 0; cursor: pointer; }
+  #yhPanel .warn { color: #8a5a00; }
+  #catPanel .pbtn { margin: 4px 4px 0 0; }
+  .cap { max-height: 144px; overflow: hidden; }
+  td.wrapc { white-space: normal; word-break: break-word; line-height: 1.35; }
+  td.wh { min-width: 340px; max-width: 340px; }
+  td.wd { min-width: 560px; max-width: 560px; }
+  td.clip { max-width: 560px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  td.fresh { color: #b3261e; font-weight: 700; text-align: center; }
+  td.hdr { font-weight: 700; background: #f0f6f2; border-bottom: 1px solid #9bbfa9; }
+  td.sortable { cursor: pointer; user-select: none; -webkit-user-select: none; }
+  td.sortable:hover { background: #dcebe2; }
+  td.sec { font-weight: 700; background: #f7f7f7; color: #444; }
+  td.court { background: #d6f0dc; }
+  tr.clk:hover td.court { background: #d6f0dc; }
+  td.mine { color: #1a56a0; font-weight: 700; }
+  td.bold { font-weight: 700; }
+  td.dim { color: #8a8a8a; }
+  td.live { background: #fde7e9; color: #b00020; font-weight: 700; }
+  td.hl { background: #fff4c2; font-weight: 600; }
+  td.pm { background: #d6e6fa; font-weight: 700; }
+  td.pw { background: #eadcf7; font-weight: 700; }
+  td.watch { color: #7b3fa0; font-weight: 700; }
+  td.note { color: #666; font-size: 12px; white-space: normal; height: auto; padding: 6px; }
+  td.wrap { white-space: normal; min-width: 420px; height: auto; padding: 4px 6px; }
+  td[data-gid], td[data-gb] { cursor: pointer; }
+  td[data-gid]:hover, td[data-gb]:hover { text-decoration: underline; }
+  td.sel { outline: 2px solid #217346; outline-offset: -2px; }
+  tr.clk { cursor: pointer; }
+  tr.clk:hover td { background: #f1f8f4; }
+  tr.clk:hover td.live { background: #fde7e9; }
+
+  .tabsbar { display: flex; align-items: stretch; background: #f3f3f3; border-top: 1px solid #d4d4d4; overflow-x: auto; white-space: nowrap; min-height: 30px; }
+  .tabsbar button {
+    font: inherit; border: 0; border-right: 1px solid #d4d4d4; background: #f3f3f3; color: #333; padding: 0 16px; cursor: pointer; min-height: 30px;
+  }
+  .tabsbar button.on { background: #fff; color: #217346; font-weight: 700; box-shadow: inset 0 -2px 0 #217346; }
+  .tabsbar button:focus-visible { outline: 2px solid #217346; outline-offset: -2px; }
+  .tabsbar .plus { color: #777; padding: 0 12px; display: flex; align-items: center; }
+
+  .statusbar {
+    background: #f3f3f3; border-top: 1px solid #d4d4d4; color: #444; font-size: 12px;
+    display: flex; justify-content: space-between; gap: 12px; padding: 4px 12px;
+    padding-bottom: max(4px, env(safe-area-inset-bottom, 0px));
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+  }
+  .statusbar span { font-variant-numeric: tabular-nums; }
+
+  /* Player picker controls */
+  .ribbon select, .ribbon input[type="text"] { font: inherit; font-size: 14px; color: #1f1f1f; background: #fff; border: 1px solid #c8c8c8; border-radius: 3px; padding: 4px 8px; min-height: 32px; }
+  .ribbon input[type="text"] { width: 150px; }
+  .ribbon select { max-width: 220px; }
+  .ribbon select:focus-visible, .ribbon input[type="text"]:focus-visible { outline: 2px solid #217346; outline-offset: 1px; }
+  td.picked { background: #dde9fb; }
+  tr.clk:hover td.picked { background: #cfe0f7; }
+  td.tick { color: #1a56a0; font-weight: 700; text-align: center; min-width: 40px; }
+  tr.pk td.tick, tr.pk td.name { cursor: pointer; }
+  tr.pk td.tick:hover, tr.pk td.name:hover { background: #f1f8f4; }
+  tr.pk td.picked:hover { background: #cfe0f7; }
+
+  /* Phone layout (screens narrower than 700 px). Computers are not affected. */
+  * { -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  @media (max-width: 700px) {
+    .app { height: 100vh; height: 100dvh; }
+    .menu, .titlebar .saved, .fbar .fx { display: none; }
+    .titlebar { padding: 4px 10px; min-height: 28px; font-size: 12px; }
+    .ribbon { padding: 6px 8px; gap: 6px; min-height: 52px; -webkit-overflow-scrolling: touch; }
+    .ribbon button, .ribbon select, .ribbon input { min-height: 38px; font-size: 15px; touch-action: manipulation; }
+    .ribbon input[type="text"], .ribbon input[type="number"], .ribbon select { font-size: 16px; }
+    .namebox { width: 54px; padding: 4px 4px; }
+    th.corner, th.rn { min-width: 30px; width: 30px; }
+    th, td { height: 30px; padding: 0 8px; }
+    td, th { font-size: 14px; }
+    td.name { min-width: 130px; }
+    td.team { min-width: 150px; }
+    td.play { min-width: 260px; }
+    td.wh { min-width: 240px; max-width: 240px; }
+    td.wd { min-width: 300px; max-width: 300px; }
+    .tabsbar button { padding: 0 16px; min-height: 40px; touch-action: manipulation; }
+    .statusbar #statusRight { display: none; }
+    .gridwrap { -webkit-overflow-scrolling: touch; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="titlebar"><span class="fname" id="fname">Production_Schedule_2026_V1.A1.38.xlsx</span><span class="saved">Saved</span></div>
+  <div class="menu"><span>File</span><span class="on">Home</span><span>Insert</span><span>Page Layout</span><span>Formulas</span><span>Data</span><span>Review</span><span>View</span></div>
+
+  <div class="ribbon">
+    <span id="gListCtl" style="display:contents">
+      <button id="prev" type="button" aria-label="Previous day">&#9664; Prev</button>
+      <span class="lbl" id="dateLabel">—</span>
+      <button id="next" type="button" aria-label="Next day">Next &#9654;</button>
+      <button id="today" type="button">Today</button>
+    </span>
+    <span id="gDetailCtl" style="display:none">
+      <button id="back" type="button">&#9664; Back</button>
+      <select id="gameSel" aria-label="Game" style="max-width:300px"></select>
+      <button id="filterBtn" type="button" hidden>Filter: All</button>
+    </span>
+    <span id="gPickCtl" style="display:none">
+      <select id="pickSeason" aria-label="Season"></select>
+      <select id="pickView" aria-label="View"><option value="avg">Per game</option><option value="tot">Total</option></select>
+      <select id="teamSel" aria-label="Filter by team"><option value="all">All teams</option></select>
+      <input id="playerSearch" type="text" placeholder="Search player" autocomplete="off" aria-label="Search player">
+      <select id="fCol" aria-label="Filter column"></select>
+      <select id="fOp" aria-label="Operator"><option value="&gt;">&gt;</option><option value="&gt;=">&gt;=</option><option value="&lt;">&lt;</option><option value="&lt;=">&lt;=</option><option value="=">=</option></select>
+      <input id="fVal" type="number" step="any" placeholder="Value" aria-label="Filter value" style="width:70px">
+      <button id="fAdd" type="button">Add filter</button>
+      <button id="fClear" type="button">Clear filters</button>
+      <button id="selOnlyBtn" type="button">Selected only: Off</button>
+      <button id="watchOnlyBtn" type="button">Watching only: Off</button>
+      <button id="reloadBtn" type="button">Reload list</button>
+    </span>
+    <span id="gNewsCtl" style="display:none">
+      <select id="newsType" aria-label="News type"><option value="ns">Notes + stories</option><option value="n">Player notes only</option><option value="all">All incl. video</option></select>
+      <select id="newsScope" aria-label="Scope"><option value="mine">My players</option><option value="league">League-wide</option><option value="search">Search result</option></select>
+      <select id="newsPlayer" aria-label="Player"></select>
+      <input id="newsSearch" type="text" placeholder="Search any player, press Enter" autocomplete="off" aria-label="Search any player" style="width:210px">
+      <button id="newsWrapBtn" type="button">Wrap text: On</button>
+      <button id="newsTrBtn" type="button">Translate: Off</button>
+      <select id="newsTrEng" aria-label="Translation engine"><option value="g">Engine: Google web</option><option value="c">Engine: Chrome built-in</option></select>
+    </span>
+    <span id="gInjCtl" style="display:none">
+      <select id="injScope" aria-label="Scope"><option value="mw">My Players + Watchlist</option><option value="mine">My Players</option><option value="watch">Watchlist</option><option value="league">League-wide</option></select>
+      <select id="injStatus" aria-label="Status"><option value="all">All statuses</option><option value="out">Out only</option><option value="other">Day-to-day and others</option></select>
+    </span>
+    <span id="gStatCtl" style="display:none">
+      <select id="statMode" aria-label="Range"></select>
+      <select id="statView" aria-label="View"><option value="avg">Per game</option><option value="tot">Total</option></select>
+    </span>
+    <span id="gMineCtl" style="display:none">
+      <span class="sep"></span>
+      <button id="watchModeBtn" type="button">Watchlist: Season</button>
+      <button id="yhBtn" type="button">Paste from Yahoo</button>
+      <button id="catBtn" type="button">Categories</button>
+      <button id="pickBtn" type="button">Pick players</button>
+      <button id="exportBtn" type="button">Export</button>
+      <button id="importBtn" type="button">Import</button>
+    </span>
+    <span class="sep"></span>
+    <button id="refreshBtn" type="button">Refresh All</button>
+    <button id="toMineBtn" type="button" hidden>My Players</button>
+    <button id="toBoxBtn" type="button" hidden>Box Score</button>
+    <button id="toPbpBtn" type="button" hidden>Play-by-Play</button>
+    <span class="sep"></span>
+    <button id="zoomOut" type="button" title="Smaller">A−</button><span class="lbl" id="zoomLbl" style="min-width:5ch">100%</span><button id="zoomIn" type="button" title="Larger">A+</button>
+    <input id="importFile" type="file" accept=".json,.txt,application/json,text/plain" hidden>
+  </div>
+
+  <div class="fbar">
+    <div class="namebox" id="nameBox">A1</div>
+    <div class="fx">fx</div>
+    <div class="fval" id="fVal"></div>
+  </div>
+
+  <div class="gridwrap" id="gridwrap" aria-live="polite"></div>
+
+  <div class="tabsbar" id="tabsbar"></div>
+  <div class="statusbar"><span id="statusLeft">Ready</span><span id="statusRight">Loading…</span></div>
+</div>
+
+<script>
+(function () {
+  var VERSION = "V1.A1.38";
+  var CHANGELOG = [
+    { v: "V1.A1.38", d: "2026-10-24", n: "Zoom. New A− and A+ buttons at the end of the toolbar make the table smaller or larger (60%, 70%, 80%, 100%, 120%, 150%) on both phone and desktop. The size is remembered and is included in Export and Import." },
+    { v: "V1.A1.37", d: "2026-10-24", n: "Phone layout. On screens narrower than 700 px the fake menu bar is hidden, buttons, drop-downs and cells are bigger for fingers, input boxes no longer make the page zoom, only the player name column stays frozen (My and Player in Player List), and the page uses the real screen height. Because phones have no double-click, double-tap now does what double-click does (add or remove a player in Box Score, open an article in News or My Players). Rotating the phone redraws the sheet. On a computer nothing changes." },
+    { v: "V1.A1.36", d: "2026-10-22", n: "Player List now has an Injury column after Chg% (same text as My Players, for example Out · Foot – Fracture (Left) · return 2026-11-20). Click the column title to sort: most serious first (Out for season, Out, then day-to-day), then a second click for the reverse. Out players are shown in bold." },
+    { v: "V1.A1.35", d: "2026-10-22", n: "Injuries. New Injuries sheet (after News) from the ESPN injury list: status, injury and side, expected return date, last update and the full note. Scope: My Players + Watchlist, My Players, Watchlist or League-wide, plus a status filter. My Players and the Watchlist have a new Injury column after Chg% (for example Out · Foot – Fracture (Left) · return 2026-11-20). My Players are shown in blue and Watchlist players in purple. Data is loaded when you open My Players or Injuries or click Refresh All and kept for 10 minutes." },
+    { v: "V1.A1.34", d: "2026-10-22", n: "Removed the last visible mentions of the league abbreviation from the Changelog and from one error message. No other change." },
+    { v: "V1.A1.33", d: "2026-10-22", n: "The Box Score sheet now has a Play-by-Play button in the top bar (after My Players), so you can switch between the two without using the tabs at the bottom. The Play-by-Play sheet has the matching Box Score button." },
+    { v: "V1.A1.32", d: "2026-10-22", n: "Play-by-Play now has a Box Score button right after My Players (it only shows on the Play-by-Play sheet). In My Players and the Watchlist (Today view), click a Team cell to open that game's Box Score; clicking a Game cell still opens its Play-by-Play." },
+    { v: "V1.A1.31", d: "2026-10-22", n: "The Back button works as before (it returns to Sheet1). While a game is open there is a new My Players button right after Refresh All that takes you to the My Players sheet; the game tabs stay open so you can come back to it." },
+    { v: "V1.A1.30", d: "2026-10-21", n: "In My Players, click a Game cell (for example vs ATL 31.1 - 1st) to jump straight to that game's Play-by-Play. The same works for the Game cell in the Watchlist (Today view). The Back button then returns to My Players. Game cells are underlined when you point at them." },
+    { v: "V1.A1.29", d: "2026-10-21", n: "Automatic date change. Sheet1 and My Players now follow ESPN's current game day on every refresh, so a tab left open moves to the next day by itself. Once you press Prev or Next the date stays on the day you picked; press Today to follow ESPN's current day again." },
+    { v: "V1.A1.28", d: "2026-10-21", n: "Fixed the date label on Sheet1 and My Players: when ESPN returns no data for the day you picked with Next or Prev (for example a day without games), the label now shows the date you picked instead of staying on the old date." },
+    { v: "V1.A1.27", d: "2026-10-21", n: "My Players now shows the Team and Game columns for players who have no stat line yet (game not started, no game that day, or waiting for data), the same way the Watchlist does, for example Not started Oct 22, 8:00 AM or No game." },
+    { v: "V1.A1.26", d: "2026-10-21", n: "News archive. Every news item the program loads is now saved in this browser for 30 days (up to 3000 items), so older news no longer disappears when ESPN pushes it out of its latest 50. The News sheet shows the archive together with the newest items for the chosen scope (My players, League-wide or a searched player), and its title row shows how many items are archived. Export now includes the archive and Import merges it without duplicates. The archive only grows while the program is open, so open the News sheet at least once a day." },
+    { v: "V1.A1.25", d: "2026-10-21", n: "New Own% (roster percentage) and Chg% (change since the previous day, the add/drop trend) columns in Player List, My Players and the Watchlist. The numbers come from ESPN fantasy, so they describe ESPN leagues, not your Yahoo league. They are loaded when you open those sheets or click Refresh All, kept for 30 minutes, and every column can be sorted." },
+    { v: "V1.A1.24", d: "2026-10-21", n: "Box Score has a star column right after the player name. Click the star to add or remove that player in the Watchlist (a filled star means he is watched). Double-click on the name still adds or removes a player in My Players." },
+    { v: "V1.A1.23", d: "2026-10-21", n: "Play-by-Play now marks plays by your players. A new last column, Note, shows MY: name for a My Players player and WATCH: name for a Watchlist player, and shades the Play and Note cells blue (My Players) or purple (Watchlist). The Filter button now cycles All, Scoring, Mine and Watch (only plays that involve your players or watched players). Box Score shows watched players in purple." },
+    { v: "V1.A1.22", d: "2026-10-21", n: "Watchlist: new Season / Today button on My Players. Today shows each watched player's live or final stat line from today's games in the same category columns, with green shading while he is on the court (not counted in the Total row). The setting is remembered. My Players now also has GP, Next 7, Wk left and Latest news columns (the Total row adds up Next 7 and Wk left), and an x to remove a player. Latest news wraps instead of being cut off." },
+    { v: "V1.A1.21", d: "2026-10-21", n: "The Watchlist now sits at the bottom of the My Players sheet, two blank rows under the Total row, using the same category columns, so you compare your players and your targets on one page. The separate Watchlist tab is gone. Player List: the Sel column is renamed My, and the star column now follows the player name." },
+    { v: "V1.A1.20", d: "2026-10-21", n: "New Watchlist sheet for players you are watching (pickup candidates). In Player List click the star column to add or remove a player (Watching only button filters the list). The Watchlist shows each player's team, next game, games in the next 7 days and left this Mon-Sun week, season per-game stats in your chosen categories, and the latest news headline. Click the plus to add a player to My Players, or the cross to drop him from the Watchlist. The watchlist is saved with Export and Import." },
+    { v: "V1.A1.19", d: "2026-10-21", n: "My Players: new Paste from Yahoo button. Open your Yahoo roster page, select and copy the roster table, paste it into the box, and the sheet matches the players (names like C. Cunningham DET), shows a preview you can untick, then replaces or adds to your list. Takes a few seconds, so you do not have to rebuild the list by hand after pickups and drops." },
+    { v: "V1.A1.18", d: "2026-10-21", n: "Your whole working state is now remembered automatically and opens exactly as you left it: the sheet you were on, categories, sort orders, filters, season and view choices, news options and translation. Export now saves the player list together with all of these settings, and Import restores them (old my_players.json files still import fine). Fixed: categories were not part of the backup file." },
+    { v: "V1.A1.17", d: "2026-10-21", n: "My Players: new Categories button opens a list of scoring categories (FG%, FT%, 3PTM, 3PT%, PTS, REB, AST, ST, BLK, TO, A/T, DD and more). Tick the ones your league uses and the sheet shows exactly those columns, with a Total row calculated correctly (percentages from made / attempted, A/T from total AST / total TO, DD as a count). Your choice is saved in this browser." },
+    { v: "V1.A1.16", d: "2026-10-21", n: "Translation keeps people's names in English: every league player (full name, first name or last name) plus other First Last names such as coaches and reporters are protected before translating and put back afterwards. If a translator drops a protected name, that text is translated in pieces around the names instead." },
+    { v: "V1.A1.15", d: "2026-10-21", n: "News sheet: the Player and Time columns are frozen while you scroll sideways; long articles are capped at about 8 lines in the cell (select the cell to read the full text in the formula bar). Translation: new Engine dropdown (Google web translate is the default, Chrome built-in is the alternative) and a Taiwan terminology pass (for example Celtics = 塞爾提克, steal = 抄截, starter = 先發)." },
+    { v: "V1.A1.14", d: "2026-10-21", n: "Box Score and Play-by-Play now have a Game dropdown to jump straight to any game on the current date (use Sheet1 date arrows to change the date). News sheet has a Translate button that adds Traditional Chinese Headline and Details columns (Chrome built-in translator first, Google web translate as fallback)." },
+    { v: "V1.A1.13", d: "2026-10-21", n: "News sheet: text now wraps inside the Headline and Details cells (Wrap text button turns it on or off). Added a Scope dropdown: My players, League-wide (latest fantasy notes plus general stories for all players) and Search result. Type any player's name in the search box and press Enter to see that player's news, even if he is not in My Players." },
+    { v: "V1.A1.12", d: "2026-10-21", n: "New News sheet: the latest fantasy news (injury and lineup notes, stories, video) for every player in My Players, newest first, with a marker for items you have not seen yet. Select a row to read the full text in the formula bar; double-click a row to open the article. Filter by player or by type." },
+    { v: "V1.A1.11", d: "2026-10-21", n: "New Schedule sheet for My Players: today's opponent and tip-off time (UTC+8, or live score / Final), the next 7 days game by game, games in the next 7 days, and games left in the current Mon-Sun fantasy week. A bottom row counts how many of your players play each day." },
+    { v: "V1.A1.10", d: "2026-10-21", n: "Freeze Panes: the title and header rows plus the Sel / Player columns stay in view while you scroll (Player List, My Players, Player Stats, Sheet1). Player List now has column filters (for example PTS > 15) that can be combined; click a filter in row 2 to remove it. Fixed: a season ESPN has no data for yet (2026-27 at the start of the season) used to show last season's numbers under the new label; it now falls back to last season correctly." },
+    { v: "V1.A1.9", d: "2026-10-21", n: "Game tabs (Box Score, Play-by-Play) now stay open when you switch to Player List, My Players, Player Stats or Changelog. Added a View dropdown (Per game / Total) to Player List and Player Stats. Player Stats gained Last 7 / 14 / 30 days and Last 5 / 10 games ranges (built from each player's game log) for fantasy use." },
+    { v: "V1.A1.8", d: "2026-10-21", n: "Player List now shows per-game stats (GP, MIN, PTS, REB, AST, STL, BLK, TO, PF, FG%, 3P%, FT%) with a Season dropdown, so you can compare players before picking. Player Stats also has a Season dropdown with every season back to 2000-01, plus Career averages and All seasons." },
+    { v: "V1.A1.7", d: "2026-10-21", n: "Player List: a row is now added or removed only by clicking the Sel box or the player name (clicking empty cells no longer selects). New Player Stats sheet: per-game averages for your players for this season, last season, career, or every season." },
+    { v: "V1.A1.6", d: "2026-10-21", n: "Player List loading: plain requests without extra headers, falls back to fixed team numbers 1-30 when the team list request fails, and the error message now shows the address that failed." },
+    { v: "V1.A1.5", d: "2026-10-21", n: "New Player List sheet: browse every player, filter by team, search by name, click a row to add or remove a player from your list. My Players now follows that list. The typed-name editor was removed." },
+    { v: "V1.A1.4", d: "2026-10-21", n: "New My Players sheet: keep your own player list (saved in this browser, with Export and Import), see their live stats from every game of the day in one table, with a totals row. Double-click a name in Box Score to add or remove a player." },
+    { v: "V1.A1.3", d: "2026-10-21", n: "Box Score: players currently on the court get a green row shade while the game is live. If the data source does not report who is on court, a note appears instead." },
+    { v: "V1.A1.2", d: "2026-10-21", n: "Click a column title to sort (Sheet1, Box Score). Click Period in Play-by-Play to flip newest/oldest. Version number and Changelog sheet added." },
+    { v: "V1.A1.1", d: "2026-10-21", n: "Spreadsheet-style layout, English text, Box Score, Play-by-Play, Refresh All button." }
+  ];
+
+  var BASE = "https://site.api.espn.com/apis/site/v2/sports/basketball/" + ["n", "b", "a"].join("") + "/";
+  var STORE_KEY = "ps_myplayers_v1";
+  var wrap = document.getElementById("gridwrap");
+  var statusLeft = document.getElementById("statusLeft");
+  var statusRight = document.getElementById("statusRight");
+  var nameBox = document.getElementById("nameBox");
+  var fVal = document.getElementById("fVal");
+
+  var viewPinned = false;
+  var viewDate = null;      // "YYYY-MM-DD" (U.S. game date); null = default "today"
+  var eventId = null;       // set while a game is open
+  var heldGame = null;      // game kept open in the background while another sheet is shown
+  function holdGame() { if (eventId) heldGame = eventId; eventId = null; }
+  var sheet = "list";       // "list" | "box" | "pbp" | "mine" | "log"
+  var filter = "all";
+  var lastList = null;
+  var lastSummary = null;
+  var timer = null;
+  var selR = 1, selC = 0;
+  var sortList = { k: null, d: 1 };
+  var sortBox = { ti: -1, k: null, d: 1 };
+  var sortMine = { k: null, d: 1 };
+  var pbpOldest = false;
+  var mineCache = {};       // game id -> { data, final }
+  var roster = loadRoster();
+  var playersAll = null, teamsAll = null;   // full player list (cached in this browser for 7 days)
+  var pickTeam = "all", pickQuery = "", pickSelOnly = false;
+  var sortPick = { k: null, d: 1 };
+  var PLAYERS_KEY = "ps_players_v1";
+  var statCache = {};          // player id -> { t, rows, career, err }
+  var statMode = String(seasonNow());   // a season year, or "career", or "all"
+  var sortStat = { k: null, d: 1 };
+  var seasonData = {};         // season year -> { t, map: playerId -> [12 stat strings] }
+  var pickSeason = null, pickSeasonChosen = false, pickSeasonErr = "", pickLoading = false;
+  var statModeChosen = false;  // true once the user picks a season from the dropdown
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+  var tpeTime = new Intl.DateTimeFormat("en-US", { timeZone:"Asia/Taipei", month:"short", day:"numeric", hour:"numeric", minute:"2-digit", hour12:true });
+  var clock = new Intl.DateTimeFormat("en-US", { timeZone:"Asia/Taipei", hour:"2-digit", minute:"2-digit", second:"2-digit", hour12:false });
+
+  function shiftDate(iso, days) {
+    var p = iso.split("-").map(Number);
+    return new Date(Date.UTC(p[0], p[1] - 1, p[2] + days)).toISOString().slice(0, 10);
+  }
+  function teamName(t) { return (t && (t.displayName || t.shortDisplayName || t.abbreviation)) || ""; }
+  function colLetter(i) { var s = "", n = i + 1; while (n > 0) { var m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; }
+  function perLabel(n) { return n <= 4 ? "Q" + n : "OT" + (n - 4 > 1 ? n - 4 : ""); }
+  function numOf(v) { var m = String(v == null ? "" : v).match(/-?\d+(\.\d+)?/); return m ? parseFloat(m[0]) : NaN; }
+  function cmp(a, b, d, isNum) {
+    if (isNum) {
+      var an = isNaN(a), bn = isNaN(b);
+      if (an && bn) return 0;
+      if (an) return 1;
+      if (bn) return -1;
+      return (a - b) * d;
+    }
+    return String(a).localeCompare(String(b)) * d;
+  }
+  function hdrCell(text, cls, sk, active, dir) {
+    return { t: text + (active ? (dir > 0 ? " ▲" : " ▼") : ""), cls: cls + " sortable", sk: sk };
+  }
+
+  /* ---------- Saved player list ---------- */
+  function norm(s) {
+    var t = String(s || "").toLowerCase();
+    try { t = t.normalize("NFD").replace(/[̀-ͯ]/g, ""); } catch (e) {}
+    return t.replace(/[.'’,\-]/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b/g, "").replace(/\s+/g, " ").trim();
+  }
+  function loadRoster() {
+    try {
+      var v = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
+      if (!Array.isArray(v)) return [];
+      return v.filter(function (x) { return x && x.name; }).map(function (x) { return { name: String(x.name), id: x.id ? String(x.id) : "" }; });
+    } catch (e) { return []; }
+  }
+  function saveRoster() {
+    var ok = true;
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(roster)); } catch (e) { ok = false; }
+    if (!ok) statusLeft.textContent = "Could not save in this browser. Use Export to keep your list.";
+    return ok;
+  }
+  function rosterIndex(name, id) {
+    for (var i = 0; i < roster.length; i++) {
+      if (id && roster[i].id && String(roster[i].id) === String(id)) return i;
+      if (norm(roster[i].name) === norm(name)) return i;
+    }
+    return -1;
+  }
+  function athleteIndex(ath) { return ath ? rosterIndex(ath.displayName || ath.shortName || "", ath.id) : -1; }
+  function toggleMine(id, name) {
+    var i = rosterIndex(name, id);
+    if (i >= 0) { roster.splice(i, 1); statusLeft.textContent = "Removed from My Players: " + name; }
+    else { roster.push({ name: name, id: id ? String(id) : "" }); statusLeft.textContent = "Added to My Players: " + name; }
+    saveRoster();
+    if (sheet === "pick") paint(pickRows());
+    else if (sheet === "mine") paint(mineRows());
+    else if (eventId) renderDetail();
+  }
+
+  /* ---------- Grid renderer ---------- */
+  // rows: [{ c: [{ t, cls, span, html, sk, pid, pn }], id }]
+  function gridHtml(rows) {
+    var n = 12, i;
+    rows.forEach(function (r) { var w = 0; r.c.forEach(function (x) { w += x.span || 1; }); if (w > n) n = w; });
+    var out = '<table><thead><tr><th class="corner"></th>';
+    for (i = 0; i < n; i++) out += "<th>" + colLetter(i) + "</th>";
+    out += "</tr></thead><tbody>";
+    var total = Math.max(rows.length, 45);
+    for (var r = 0; r < total; r++) {
+      var row = rows[r] || { c: [] };
+      out += "<tr" + (row.id ? ' data-id="' + esc(row.id) + '" class="clk"' : (row.pk ? ' data-pk="' + esc(row.pk) + '" class="pk"' : "")) + '><th class="rn">' + (r + 1) + "</th>";
+      var w = 0;
+      row.c.forEach(function (x) {
+        var span = x.span || 1;
+        out += "<td" + (span > 1 ? ' colspan="' + span + '"' : "") + (x.cls ? ' class="' + x.cls + '"' : "") +
+               (x.sk ? ' data-sk="' + esc(x.sk) + '"' : "") + (x.fi != null ? ' data-fi="' + x.fi + '"' : "") + (x.lk ? ' data-lk="' + esc(x.lk) + '"' : "") + (x.gid ? ' data-gid="' + esc(x.gid) + '"' : "") + (x.gb ? ' data-gb="' + esc(x.gb) + '"' : "") +
+               (x.pn ? ' data-pid="' + esc(x.pid || "") + '" data-pn="' + esc(x.pn) + '"' : "") + ">" +
+               (x.html != null ? x.html : esc(x.t)) + "</td>";
+        w += span;
+      });
+      for (; w < n; w++) out += "<td></td>";
+      out += "</tr>";
+    }
+    return out + "</tbody></table>";
+  }
+
+  function tdAt(tr, col) {
+    var sum = 0, tds = tr.querySelectorAll("td");
+    for (var i = 0; i < tds.length; i++) { var s = tds[i].colSpan || 1; if (col < sum + s) return tds[i]; sum += s; }
+    return tds[tds.length - 1];
+  }
+  function applySel() {
+    var table = wrap.querySelector("table");
+    if (!table) return;
+    var tr = table.rows[selR] || table.rows[1];
+    if (!tr) return;
+    var td = tdAt(tr, selC);
+    if (!td) return;
+    var prev = wrap.querySelector("td.sel");
+    if (prev) prev.classList.remove("sel");
+    td.classList.add("sel");
+    nameBox.textContent = colLetter(selC) + selR;
+    fVal.textContent = td.textContent.trim();
+  }
+  function isNarrow() { return window.innerWidth < 700; }
+  function freezePanes(rows) {
+    var fc = { pick: 3, watch: 3, stats: 1, mine: 1, sched: 1, news: 2, inj: 1, list: 0 }[sheet];
+    if (fc === undefined || eventId) return;
+    if (isNarrow()) fc = Math.min(fc, sheet === "pick" ? 2 : 1);
+    var hi = -1, i, j;
+    for (i = 0; i < rows.length && hi < 0; i++) if (rows[i].c.some(function (c) { return c.cls && /(^| )hdr( |$)/.test(c.cls); })) hi = i;
+    var table = wrap.querySelector("table");
+    if (hi < 0 || !table || !table.tBodies[0]) return;
+    var trs = table.tBodies[0].rows;
+    function solid(el) {
+      var bg = getComputedStyle(el).backgroundColor;
+      el.style.background = (!bg || bg === "transparent" || /rgba\(0, 0, 0, 0\)/.test(bg)) ? "#fff" : bg;
+    }
+    var lefts = [], acc = 0, hcells = trs[hi].cells;
+    for (j = 0; j < hcells.length && j <= fc; j++) { lefts[j] = acc; acc += hcells[j].offsetWidth; }
+    var top = table.tHead.offsetHeight;
+    for (i = 0; i < trs.length; i++) {
+      var cells = trs[i].cells, frozenRow = i <= hi;
+      for (j = 0; j < cells.length; j++) {
+        var c = cells[j], leftSide = j <= fc && c.colSpan === 1;
+        if (!frozenRow && !leftSide) continue;
+        if (j > 0 && !frozenRow && !leftSide) continue;
+        c.style.position = "sticky";
+        if (frozenRow) c.style.top = top + "px";
+        if (leftSide) c.style.left = lefts[j] + "px";
+        c.style.zIndex = frozenRow ? (leftSide ? 4 : 2) : 1;
+        if (j > 0) solid(c);
+      }
+      if (frozenRow) top += trs[i].offsetHeight;
+    }
+  }
+  var ZOOMS = [60, 70, 80, 100, 120, 150], zoomPct = 100;
+  function applyZoom() {
+    var t = wrap.querySelector("table");
+    if (t) t.style.zoom = zoomPct === 100 ? "" : String(zoomPct / 100);
+    var l = document.getElementById("zoomLbl"); if (l) l.textContent = zoomPct + "%";
+  }
+  function paint(rows) {
+    var sx = wrap.scrollLeft, sy = wrap.scrollTop;
+    wrap.innerHTML = gridHtml(rows);
+    applyZoom();
+    freezePanes(rows);
+    wrap.scrollLeft = sx; wrap.scrollTop = sy;
+    applySel();
+    saveSettings();
+  }
+  function loadingRows() { return [{ c: [{ t: "Loading…", span: 4, cls: "dim" }] }]; }
+
+  /* ---------- Chrome (ribbon, tabs, status) ---------- */
+  function renderChrome() {
+    var detail = !!eventId;
+    document.getElementById("gListCtl").style.display = (detail || sheet === "pick" || sheet === "stats" || sheet === "sched" || sheet === "news" || sheet === "watch" || sheet === "inj") ? "none" : "contents";
+    document.getElementById("gStatCtl").style.display = (!detail && sheet === "stats") ? "contents" : "none";
+    document.getElementById("gPickCtl").style.display = (!detail && sheet === "pick") ? "contents" : "none";
+    document.getElementById("gDetailCtl").style.display = detail ? "contents" : "none";
+    document.getElementById("gNewsCtl").style.display = (!detail && sheet === "news") ? "contents" : "none";
+    document.getElementById("gInjCtl").style.display = (!detail && sheet === "inj") ? "contents" : "none";
+    document.getElementById("toMineBtn").hidden = !detail;
+    document.getElementById("toBoxBtn").hidden = !(detail && sheet === "pbp");
+    document.getElementById("toPbpBtn").hidden = !(detail && sheet === "box");
+    if (detail) fillGameSel();
+    document.getElementById("gMineCtl").style.display = (!detail && sheet === "mine") ? "contents" : "none";
+    document.getElementById("filterBtn").hidden = !(detail && sheet === "pbp");
+    document.getElementById("filterBtn").textContent = "Filter: " + ({ all: "All", scoring: "Scoring", mine: "Mine" })[filter];
+    function tab(key, label) { return '<button type="button" data-sheet="' + key + '"' + (sheet === key ? ' class="on"' : "") + ">" + label + "</button>"; }
+    var tabs = tab("list", "Sheet1");
+    if (detail || heldGame) tabs += tab("box", "Box Score") + tab("pbp", "Play-by-Play");
+    tabs += tab("pick", "Player List") + tab("mine", "My Players") + tab("sched", "Schedule") + tab("news", "News") + tab("inj", "Injuries") + tab("stats", "Player Stats") + tab("log", "Changelog") + '<span class="plus">+</span>';
+    document.getElementById("tabsbar").innerHTML = tabs;
+  }
+  function stamp() { statusLeft.textContent = "Ready"; statusRight.textContent = VERSION + "   |   Updated " + clock.format(new Date()) + " (UTC+8)   |   " + zoomPct + "%"; }
+
+  function schedule(anyLive) {
+    clearTimeout(timer);
+    timer = setTimeout(refresh, anyLive ? 15000 : 60000);
+  }
+  function refresh() {
+    statusLeft.textContent = "Calculating…";
+    if (eventId) loadDetail();
+    else if (sheet === "stats") reloadStats(true);
+    else if (sheet === "sched") loadSched(true);
+    else if (sheet === "news") loadNews(true);
+    else if (sheet === "inj") ensureInj(true);
+    else loadList();
+  }
+
+  /* ---------- Sheet1: games ---------- */
+  var LIST_COLS = [
+    { k: "status",  t: "Status",   cls: "stat",  num: true },
+    { k: "away",    t: "Away",     cls: "team",  num: false },
+    { k: "awayPts", t: "Away PTS", cls: "num",   num: true },
+    { k: "home",    t: "Home",     cls: "team",  num: false },
+    { k: "homePts", t: "Home PTS", cls: "num",   num: true },
+    { k: "venue",   t: "Venue",    cls: "venue", num: false }
+  ];
+
+  function listRows(events) {
+    var items = [];
+    events.forEach(function (ev) {
+      var comp = ev.competitions && ev.competitions[0];
+      if (!comp) return;
+      var away = comp.competitors.filter(function (c) { return c.homeAway === "away"; })[0];
+      var home = comp.competitors.filter(function (c) { return c.homeAway === "home"; })[0];
+      if (!away || !home) return;
+      items.push({
+        ev: ev, comp: comp, away: away, home: home,
+        keys: {
+          status: Date.parse(ev.date) || 0,
+          away: teamName(away.team), awayPts: parseInt(away.score, 10),
+          home: teamName(home.team), homePts: parseInt(home.score, 10),
+          venue: comp.venue && comp.venue.fullName ? comp.venue.fullName : ""
+        }
+      });
+    });
+    if (sortList.k) {
+      var col = LIST_COLS.filter(function (c) { return c.k === sortList.k; })[0];
+      items.sort(function (a, b) { return cmp(a.keys[sortList.k], b.keys[sortList.k], sortList.d, col.num); });
+    }
+    var rows = [{ c: LIST_COLS.map(function (c) { return hdrCell(c.t, "hdr " + c.cls, "list|" + c.k, sortList.k === c.k, sortList.d); }) }];
+    items.forEach(function (it) {
+      var ev = it.ev, st = (ev.status && ev.status.type) || {};
+      var state = st.state, post = state === "post";
+      var status = state === "in" ? { t: st.shortDetail || "Live", cls: "stat live" }
+                 : state === "post" ? { t: st.shortDetail || "Final", cls: "stat" }
+                 : { t: tpeTime.format(new Date(ev.date)), cls: "stat dim" };
+      function rec(c) { return c.records && c.records[0] && c.records[0].summary ? " (" + c.records[0].summary + ")" : ""; }
+      function sc(c) { return c.score != null && c.score !== "" ? c.score : ""; }
+      function tone(c) { return post && c.winner ? " bold" : (post ? " dim" : ""); }
+      rows.push({ id: ev.id, c: [
+        status,
+        { t: teamName(it.away.team) + rec(it.away), cls: "team" + tone(it.away) },
+        { t: sc(it.away), cls: "num" + tone(it.away) },
+        { t: teamName(it.home.team) + rec(it.home), cls: "team" + tone(it.home) },
+        { t: sc(it.home), cls: "num" + tone(it.home) },
+        { t: it.keys.venue, cls: "venue dim" }
+      ] });
+    });
+    if (rows.length === 1) rows.push({ c: [{ t: "No entries for this date.", span: 6, cls: "dim" }] });
+    return rows;
+  }
+
+  function loadList() {
+    var url = BASE + "scoreboard" + (viewDate && viewPinned ? "?dates=" + viewDate.replace(/-/g, "") : "");
+    fetch(url, { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (data) {
+        if (eventId) return;
+        var day = data.day && data.day.date;
+        if (day) viewDate = day;
+        if (viewDate) document.getElementById("dateLabel").textContent = viewDate.replace(/-/g, "/");
+        lastList = data.events || [];
+        var anyLive = lastList.some(function (e) { return e.status && e.status.type && e.status.type.state === "in"; });
+        function done() { stamp(); schedule(anyLive); }
+        if (sheet === "list") paint(listRows(lastList));
+        if (sheet === "mine") {
+          return fetchMine().then(function () {
+            if (!eventId && sheet === "mine") paint(mineRows());
+            done();
+          });
+        }
+        done();
+      })
+      .catch(function (err) {
+        if (eventId) return;
+        if (sheet === "list" || sheet === "mine") paint([{ c: [{ t: "#REF! Could not load data (" + err.message + "). Retrying shortly.", span: 8, cls: "bold" }] }]);
+        statusLeft.textContent = "Error";
+        schedule(false);
+      });
+  }
+
+  /* ---------- Scoring categories (My Players) ---------- */
+  var CAT_KEY = "ps_cats_v1";
+  var CAT_DEFAULT = ["FG%", "FT%", "3PTM", "3PT%", "PTS", "REB", "AST", "ST", "BLK", "TO", "A/T", "DD"];
+  function pctTxt(v) { return isNaN(v) ? "-" : (v >= 1 ? "1.000" : v.toFixed(3).replace(/^0/, "")); }
+  function ratio(a, b) { return b ? a / b : NaN; }
+  function plain1(k) { return function (c) { return c[k] == null || isNaN(c[k]) ? { v: NaN, s: "" } : { v: c[k], s: String(c[k]) }; }; }
+  function made(a, b) { return function (c) { return c[a] == null ? { v: NaN, s: "" } : { v: c[a], s: c[a] + "-" + c[b] }; }; }
+  function pct(a, b) { return function (c) { var v = ratio(c[a], c[b]); return { v: v, s: pctTxt(v) }; }; }
+  var CATS = [
+    { k: "FG%", g: 1, f: pct("FGM", "FGA") }, { k: "FT%", g: 1, f: pct("FTM", "FTA") }, { k: "3PTM", g: 1, f: plain1("TPM") }, { k: "3PT%", g: 1, f: pct("TPM", "TPA") },
+    { k: "PTS", g: 1, f: plain1("PTS") }, { k: "REB", g: 1, f: plain1("REB") }, { k: "AST", g: 1, f: plain1("AST") }, { k: "ST", g: 1, f: plain1("STL") },
+    { k: "BLK", g: 1, f: plain1("BLK") }, { k: "TO", g: 1, f: plain1("TO") },
+    { k: "A/T", g: 1, f: function (c) { return c.TO ? { v: c.AST / c.TO, s: (c.AST / c.TO).toFixed(2) } : (c.AST ? { v: Infinity, s: "INF" } : { v: NaN, s: "-" }); } },
+    { k: "DD", g: 1, f: plain1("DD") },
+    { k: "TD", g: 2, f: plain1("TD") }, { k: "MIN", g: 2, f: plain1("MIN") }, { k: "FG", g: 2, f: made("FGM", "FGA") }, { k: "FGM", g: 2, f: plain1("FGM") }, { k: "FGA", g: 2, f: plain1("FGA") },
+    { k: "FT", g: 2, f: made("FTM", "FTA") }, { k: "FTM", g: 2, f: plain1("FTM") }, { k: "FTA", g: 2, f: plain1("FTA") }, { k: "3PT", g: 2, f: made("TPM", "TPA") }, { k: "3PA", g: 2, f: plain1("TPA") },
+    { k: "OREB", g: 2, f: plain1("OREB") }, { k: "DREB", g: 2, f: plain1("DREB") }, { k: "PF", g: 2, f: plain1("PF") }, { k: "+/-", g: 2, f: plain1("PM") }
+  ];
+  var WATCH_KEY = "ps_watch_v1";
+  var watchMode = "season", watch = loadWatchList(), sortWatch = { k: null, d: 1 }, pickWatchOnly = false, watchSeason = null, watchErr = "", watchLoading = false;
+  function loadWatchList() {
+    try {
+      var v = JSON.parse(localStorage.getItem(WATCH_KEY) || "[]");
+      return Array.isArray(v) ? v.filter(function (x) { return x && x.name; }).map(function (x) { return { name: String(x.name), id: x.id ? String(x.id) : "" }; }) : [];
+    } catch (e) { return []; }
+  }
+  function saveWatch() { try { localStorage.setItem(WATCH_KEY, JSON.stringify(watch)); } catch (e) { statusLeft.textContent = "Could not save the watchlist in this browser. Use Export to keep it."; } }
+  function watchIndex(id) { for (var i = 0; i < watch.length; i++) if (String(watch[i].id) === String(id)) return i; return -1; }
+  function toggleWatch(id, nm) {
+    var p = (playersAll || []).filter(function (x) { return x.id === String(id); })[0];
+    if (!p && id && nm) p = { id: String(id), name: nm };
+    if (!p) return;
+    var i = watchIndex(p.id);
+    if (i >= 0) { watch.splice(i, 1); statusLeft.textContent = "Removed from Watchlist: " + p.name; }
+    else { watch.push({ name: p.name, id: p.id }); statusLeft.textContent = "Added to Watchlist: " + p.name; }
+    saveWatch();
+    repaintCurrent();
+  }
+  var catSel = CAT_DEFAULT.slice();
+  try { var cs = JSON.parse(localStorage.getItem(CAT_KEY) || "null"); if (Array.isArray(cs) && cs.length) catSel = cs; } catch (e) {}
+  function catList() { return CATS.filter(function (c) { return catSel.indexOf(c.k) !== -1; }); }
+  function catDef(k) { return CATS.filter(function (c) { return c.k === k; })[0]; }
+  function comps(st) {
+    function n(x) { var v = parseFloat(x); return isNaN(v) ? 0 : v; }
+    function pair(x) { var m = String(x || "").match(/(\d+)\s*-\s*(\d+)/); return m ? [+m[1], +m[2]] : [0, 0]; }
+    var fg = pair(st.FG), tp = pair(st["3PT"]), ft = pair(st.FT);
+    var c = { MIN: n(st.MIN), PTS: n(st.PTS), REB: n(st.REB), AST: n(st.AST), STL: n(st.STL), BLK: n(st.BLK), TO: n(st.TO), PF: n(st.PF), PM: n(st["+/-"]),
+      OREB: n(st.OREB), DREB: n(st.DREB), FGM: fg[0], FGA: fg[1], TPM: tp[0], TPA: tp[1], FTM: ft[0], FTA: ft[1] };
+    var big = [c.PTS, c.REB, c.AST, c.STL, c.BLK].filter(function (x) { return x >= 10; }).length;
+    c.DD = big >= 2 ? 1 : 0; c.TD = big >= 3 ? 1 : 0;
+    return c;
+  }
+  function sumComps(list) {
+    var t = {};
+    list.forEach(function (c) { Object.keys(c).forEach(function (k) { t[k] = (t[k] || 0) + c[k]; }); });
+    return t;
+  }
+  function catText(comp, k) { var d = catDef(k); return comp && d ? d.f(comp).s : ""; }
+  function catNum(f, k) { var d = catDef(k); return f.comp && d ? d.f(f.comp).v : NaN; }
+  function saveCats() { try { localStorage.setItem(CAT_KEY, JSON.stringify(catSel)); } catch (e) {} }
+  function renderCatPanel() {
+    var el = document.getElementById("catPanel");
+    function group(g, title) {
+      return '<div class="grp">' + title + "</div>" + CATS.filter(function (c) { return c.g === g; }).map(function (c) {
+        return '<label><input type="checkbox" data-cat="' + esc(c.k) + '"' + (catSel.indexOf(c.k) !== -1 ? " checked" : "") + "> " + esc(c.k) + "</label>";
+      }).join("");
+    }
+    el.innerHTML = '<div class="ph">Categories shown in My Players</div><div class="pb">' +
+      '<button type="button" class="pbtn" data-preset="12">My league (12)</button><button type="button" class="pbtn" data-preset="9">9-cat</button><button type="button" class="pbtn" data-preset="clear">Clear</button><button type="button" class="pbtn" data-preset="close">Close</button>' +
+      group(1, "League categories") + group(2, "Other stats") + "</div>";
+  }
+  function applyCats(list) {
+    catSel = list; saveCats();
+    renderCatPanel();
+    if (sheet === "mine") paint(mineRows());
+  }
+  (function () {
+    var panel = document.createElement("div");
+    panel.id = "catPanel"; panel.hidden = true;
+    document.body.appendChild(panel);
+    panel.addEventListener("change", function (e) {
+      var k = e.target.getAttribute && e.target.getAttribute("data-cat");
+      if (!k) return;
+      var next = catSel.filter(function (x) { return x !== k; });
+      if (e.target.checked) next.push(k);
+      catSel = next; saveCats();
+      if (sheet === "mine") paint(mineRows());
+    });
+    panel.addEventListener("click", function (e) {
+      var pr = e.target.getAttribute && e.target.getAttribute("data-preset");
+      if (!pr) return;
+      if (pr === "close") { panel.hidden = true; return; }
+      applyCats(pr === "12" ? CAT_DEFAULT.slice() : (pr === "9" ? ["FG%", "FT%", "3PTM", "PTS", "REB", "AST", "ST", "BLK", "TO"] : []));
+    });
+    document.getElementById("catBtn").addEventListener("click", function () { renderCatPanel(); panel.hidden = !panel.hidden; });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") panel.hidden = true; });
+  })();
+
+  /* ---------- My Players sheet ---------- */
+  var MINE_COLS = ["MIN","PTS","REB","AST","STL","BLK","FG","3PT","FT","TO","PF","+/-"];
+  var SUM_COLS = ["MIN","PTS","REB","AST","STL","BLK","TO","PF"];
+  var RATIO_COLS = ["FG","3PT","FT"];
+
+  // Live games are fetched on every cycle; finished games only until a final copy is stored.
+  function fetchMine() {
+    var jobs = (lastList || []).filter(function (e) {
+      var st = e.status && e.status.type && e.status.type.state;
+      if (st !== "in" && st !== "post") return false;
+      var c = mineCache[e.id];
+      return st === "in" || !c || !c.final;
+    }).map(function (e) {
+      var st = e.status.type.state;
+      return fetch(BASE + "summary?event=" + encodeURIComponent(e.id), { cache: "no-store" })
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (d) { mineCache[e.id] = { data: d, final: st === "post" }; })
+        .catch(function () {});
+    });
+    return Promise.all(jobs);
+  }
+
+  function mineCollect() {
+    var found = [];
+    (lastList || []).forEach(function (ev) {
+      var c = mineCache[ev.id];
+      if (!c) return;
+      var s = c.data;
+      var comp = s.header && s.header.competitions && s.header.competitions[0];
+      var st = (comp && comp.status && comp.status.type) || {};
+      var teams = (s.boxscore && s.boxscore.players) || [];
+      teams.forEach(function (tm, ti) {
+        var other = teams[1 - ti];
+        var opp = other && other.team ? other.team.abbreviation : "";
+        var grp = (tm.statistics || [])[0];
+        if (!grp) return;
+        var labels = grp.labels || [];
+        (grp.athletes || []).forEach(function (a) {
+          var ei = athleteIndex(a.athlete);
+          if (ei < 0) return;
+          var played = !(a.didNotPlay || !(a.stats && a.stats.length));
+          var stats = {};
+          if (played) labels.forEach(function (l, k) { stats[l] = a.stats[k]; });
+          found.push({
+            ei: ei, name: a.athlete.displayName || a.athlete.shortName || "",
+            team: (tm.team && tm.team.abbreviation) || "", game: "vs " + opp + "  " + (st.shortDetail || ""), gid: ev.id,
+            played: played, reason: a.reason, stats: stats, comp: played ? comps(stats) : null, live: st.state === "in", active: st.state === "in" && a.active === true
+          });
+        });
+      });
+    });
+    return found;
+  }
+
+  function mineRows() { return mineRowsCore().concat(watchBlock()); }
+  function mineRowsCore() {
+    var rows = [];
+    if (!roster.length) {
+      rows.push({ c: [{ t: "My Players", cls: "bold" }] });
+      rows.push({ c: [] });
+      rows.push({ c: [{ t: "Your list is empty. Click Pick players to choose from the full player list, or Import to load a saved file.", span: 10, cls: "dim" }] });
+      return rows;
+    }
+    var ex = exCtx();
+    var found = mineCollect();
+    var seen = {};
+    found.forEach(function (f) { seen[f.ei] = true; });
+    var missing = [];
+    roster.forEach(function (p, i) { if (!seen[i]) missing.push({ ei: i, name: p.name }); });
+
+    var isNum = sortMine.k && sortMine.k !== "NAME" && sortMine.k !== "TEAM" && sortMine.k !== "GAME";
+    if (sortMine.k) {
+      found.sort(function (a, b) {
+        if (sortMine.k === "NAME") return cmp(a.name, b.name, sortMine.d, false);
+        if (sortMine.k === "TEAM") return cmp(a.team, b.team, sortMine.d, false);
+        if (sortMine.k === "GAME") return cmp(a.game, b.game, sortMine.d, false);
+        if (sortMine.k === "GP" || sortMine.k === "N7" || sortMine.k === "WK" || sortMine.k === "OWN" || sortMine.k === "CHG") {
+          var ea = ex.get(roster[a.ei].id, a.name), eb = ex.get(roster[b.ei].id, b.name), fld = ({ GP: "gp", N7: "n7", WK: "wk", OWN: "own", CHG: "chg" })[sortMine.k];
+          return cmp(ea[fld], eb[fld], sortMine.d, true);
+        }
+        return cmp(catNum(a, sortMine.k), catNum(b, sortMine.k), sortMine.d, true);
+      });
+    } else {
+      found.sort(function (a, b) { return a.ei - b.ei; });
+    }
+    var items = found.map(function (f) { return { f: f }; });
+    var miss = missing.map(function (m) { return { m: m }; });
+    if (sortMine.k) items = items.concat(miss);
+    else { items = items.concat(miss); items.sort(function (a, b) { return (a.f ? a.f.ei : a.m.ei) - (b.f ? b.f.ei : b.m.ei); }); }
+
+    var playing = found.filter(function (f) { return f.played; }).length;
+    rows.push({ c: [{ t: "My Players   |   " + roster.length + " on list   |   " + playing + " with game data   |   Green rows = on the court now", span: 10, cls: "bold" }] });
+    rows.push({ c: [] });
+    var head = [
+      hdrCell("Player", "hdr name", "mine|NAME", sortMine.k === "NAME", sortMine.d),
+      hdrCell("Team", "hdr num", "mine|TEAM", sortMine.k === "TEAM", sortMine.d),
+      hdrCell("Game", "hdr stat", "mine|GAME", sortMine.k === "GAME", sortMine.d)
+    ];
+    catList().forEach(function (c) { head.push(hdrCell(c.k, "hdr num", "mine|" + c.k, sortMine.k === c.k, sortMine.d)); });
+    rows.push({ c: head.concat(extraHead("mine", "")) });
+    function exCols(id, name, ei) {
+      var x = ex.get(id, name);
+      return [{ t: isNaN(x.gp) ? "" : String(x.gp), cls: "num" }, { t: String(x.n7), cls: "num bold" }, { t: String(x.wk), cls: "num bold" }, { t: pctText(x.own), cls: "num" }, { t: pctText(x.chg, true), cls: "num" }, { t: x.inj ? x.inj.txt : "", cls: "stat" + (x.inj && (/^out$/i.test(x.inj.status) || x.inj.ofs) ? " bold" : "") }, { t: "", cls: "num" },
+        { t: "\u2715", cls: "xcell xmine", pid: id, pn: name }, newsCell(x)];
+    }
+
+    items.forEach(function (it) {
+      if (it.m) {
+        var mx = ex.get(roster[it.m.ei].id, it.m.name);
+        rows.push({ c: [{ t: it.m.name, cls: "name mine" }, { t: mx.team && mx.team !== "?" ? mx.team : "", cls: "num", gb: mx.teamId ? gidOfTeam(mx.teamId) : "" }, { t: mx.teamId ? todayGameText(mx.teamId) : "", cls: "stat", gid: mx.teamId ? gidOfTeam(mx.teamId) : "" },
+          { t: "No game data yet (not playing today, game not started, or name not matched).", span: Math.max(1, catList().length), cls: "dim" }].concat(exCols(roster[it.m.ei].id, it.m.name, it.m.ei)) });
+        return;
+      }
+      var f = it.f, court = f.active ? " court" : "";
+      var nm = { t: f.name, cls: "name mine" + court };
+      if (!f.played) {
+        rows.push({ c: [nm, { t: f.team, cls: "num" + court, gb: f.gid }, { t: f.game, cls: "stat" + court, gid: f.gid }, { t: f.reason || "Did not play", span: Math.max(1, catList().length), cls: "dim" }].concat(exCols(roster[f.ei].id, f.name, f.ei)) });
+        return;
+      }
+      var r = [nm, { t: f.team, cls: "num" + court, gb: f.gid }, { t: f.game, cls: "stat" + court, gid: f.gid }];
+      catList().forEach(function (c) { r.push({ t: catText(f.comp, c.k), cls: "num" + (c.k === "PTS" ? " bold" : "") + court }); });
+      rows.push({ c: r.concat(exCols(roster[f.ei].id, f.name, f.ei)) });
+    });
+
+    // Totals across the players who have game data
+    var played = found.filter(function (f) { return f.played; });
+    if (played.length) {
+      var tot = [{ t: "Total (" + played.length + " players)", cls: "name bold" }, { t: "", cls: "num" }, { t: "", cls: "stat" }];
+      var all = sumComps(played.map(function (f) { return f.comp; }));
+      catList().forEach(function (c) { tot.push({ t: catText(all, c.k), cls: "num bold" }); });
+      var s7 = 0, sw = 0;
+      roster.forEach(function (rp) { var xx = ex.get(rp.id, rp.name); s7 += xx.n7; sw += xx.wk; });
+      tot.push({ t: "", cls: "num" }, { t: String(s7), cls: "num bold" }, { t: String(sw), cls: "num bold" });
+      rows.push({ c: tot });
+    }
+    return rows;
+  }
+
+  /* ---------- Season data (all players, one season) ---------- */
+  /* ---------- Roster % (ESPN fantasy ownership) ---------- */
+  var OWN_KEY = "ps_own_v1", ownMap = {}, ownT = 0, ownErr = "", ownBusy = null;
+  try { var oc = JSON.parse(localStorage.getItem(OWN_KEY) || "null"); if (oc && oc.map && Date.now() - oc.t < 1800000) { ownMap = oc.map; ownT = oc.t; } } catch (e) {}
+  function ownOf(id) { var o = ownMap[String(id)]; return o || null; }
+  function pctText(v, signed) { if (v == null || isNaN(v)) return ""; var t = (Math.round(v * 10) / 10).toFixed(1); return signed && v > 0 ? "+" + t : t; }
+  function ensureOwn(force) {
+    if (!force && ownT && Date.now() - ownT < 1800000) return Promise.resolve();
+    if (ownBusy) return ownBusy;
+    var url = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/" + ["f", "b", "a"].join("") + "/seasons/" + seasonNow() + "/segments/0/leaguedefaults/3?view=kona_player_info";
+    var flt = JSON.stringify({ players: { limit: 1000, sortPercOwned: { sortPriority: 1, sortAsc: false } } });
+    function parse(d) {
+      var m = {}, n = 0;
+      ((d && d.players) || []).forEach(function (x) {
+        var pl = x.player || {}, ow = pl.ownership, id = x.id || pl.id;
+        if (!id || !ow) return;
+        m[String(id)] = { own: Number(ow.percentOwned), chg: Number(ow.percentChange), st: Number(ow.percentStarted) }; n++;
+      });
+      if (!n) throw new Error("no ownership data");
+      return m;
+    }
+    function get(withHeader) {
+      return fetch(url, withHeader ? { headers: { "X-Fantasy-Filter": flt } } : {}).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }).then(parse);
+    }
+    ownBusy = get(true).catch(function () { return get(false); }).then(function (m) {
+      ownMap = m; ownT = Date.now(); ownErr = "";
+      try { localStorage.setItem(OWN_KEY, JSON.stringify({ t: ownT, map: m })); } catch (e) {}
+    }).catch(function (err) { ownErr = err.message || "failed"; }).then(function () {
+      ownBusy = null;
+      if (!eventId) { if (sheet === "pick") paint(pickRows()); else if (sheet === "mine") paint(mineRows()); }
+    });
+    return ownBusy;
+  }
+  /* ---------- Injuries (ESPN injury list) ---------- */
+  var INJ_URL = BASE + "injuries";
+  var injMap = {}, injByName = {}, injList = [], injT = 0, injErr = "", injBusy = null, injScope = "mw", injStatus = "all", sortInj = { k: null, d: -1 };
+  function injPid(a) {
+    var h = ((a && a.links) || []).map(function (l) { return (l && l.href) || ""; }).join(" "), m = h.match(/\/id\/(\d+)/);
+    return m ? m[1] : (a && a.id ? String(a.id) : "");
+  }
+  function injText(x) {
+    var parts = [x.ofs ? "Out for season" : (x.status || "Injured")];
+    var what = x.type + (x.detail ? " – " + x.detail : "") + (x.side ? " (" + x.side + ")" : "");
+    if (what.trim()) parts.push(what.trim());
+    if (x.ret) parts.push("return " + x.ret);
+    return parts.join(" · ");
+  }
+  function injRank(x) { return !x ? 0 : (x.ofs ? 3 : (/^out$/i.test(x.status) ? 2 : 1)); }
+  function injOf(id, name) { return (id && injMap[String(id)]) || injByName[norm(name)] || null; }
+  function ensureInj(force) {
+    if (!force && injT && Date.now() - injT < 600000) return Promise.resolve();
+    if (injBusy) return injBusy;
+    injBusy = getJ(INJ_URL).then(function (d) {
+      var list = [], map = {}, byName = {};
+      ((d && d.injuries) || []).forEach(function (tm) {
+        (tm.injuries || []).forEach(function (e) {
+          var a = e.athlete || {}, dt = e.details || {}, pid = injPid(a);
+          var it = { pid: pid, name: a.displayName || "", team: (a.team && a.team.abbreviation) || tm.displayName || "", pos: (a.position && a.position.abbreviation) || "",
+            status: e.status || "", ofs: !!(dt.fantasyStatus && dt.fantasyStatus.abbreviation === "OFS"), type: dt.type || "", detail: dt.detail || "", side: dt.side || "", ret: dt.returnDate || "",
+            short: plain(e.shortComment || ""), long: plain(e.longComment || e.shortComment || ""), t: Date.parse(e.date || "") || 0 };
+          it.txt = injText(it);
+          list.push(it);
+          if (pid) map[pid] = it;
+          if (it.name) byName[norm(it.name)] = it;
+        });
+      });
+      injList = list; injMap = map; injByName = byName; injT = Date.now(); injErr = "";
+    }).catch(function (e) { injErr = (e && e.message) || "failed"; }).then(function () {
+      injBusy = null;
+      if (!eventId) { if (sheet === "inj") paint(injRows()); else if (sheet === "mine") paint(mineRows()); }
+    });
+    return injBusy;
+  }
+  function openInj() {
+    holdGame();
+    sheet = "inj";
+    selR = 1; selC = 0;
+    clearTimeout(timer);
+    renderChrome();
+    paint(injT ? injRows() : loadingRows());
+    ensureInj(false).then(function () { stamp(); });
+  }
+  function injRows() {
+    var rows = [], items = injList.filter(function (x) {
+      var mineHit = rosterIndex(x.name, x.pid) >= 0, wHit = (x.pid && watchIndex(x.pid) >= 0) || watch.some(function (w) { return norm(w.name) === norm(x.name); });
+      if (injScope === "mine" && !mineHit) return false;
+      if (injScope === "watch" && !wHit) return false;
+      if (injScope === "mw" && !mineHit && !wHit) return false;
+      var isOut = /^out$/i.test(x.status) || x.ofs;
+      if (injStatus === "out" && !isOut) return false;
+      if (injStatus === "other" && isOut) return false;
+      return true;
+    });
+    var k = sortInj.k, d = sortInj.d;
+    items.sort(function (a, b) {
+      if (k === "NAME") return cmp(a.name, b.name, d, false);
+      if (k === "TEAM") return cmp(a.team, b.team, d, false) || a.name.localeCompare(b.name);
+      if (k === "STATUS") return cmp(a.status, b.status, d, false) || a.name.localeCompare(b.name);
+      if (k === "RET") return cmp(a.ret || "9999", b.ret || "9999", d, false) || a.name.localeCompare(b.name);
+      return b.t - a.t;
+    });
+    var label = { mw: "My Players + Watchlist", mine: "My Players", watch: "Watchlist", league: "League-wide" }[injScope];
+    rows.push({ c: [{ t: "Injuries   |   " + label + "   |   " + items.length + " players   |   Select a row to read the full note in the formula bar   |   Times in UTC+8", span: 8, cls: "bold" }] });
+    if (!injT && !injErr) rows.push({ c: [{ t: "Loading injuries…", span: 6, cls: "dim" }] });
+    else if (injErr && !injT) rows.push({ c: [{ t: "Could not load the injury list (" + injErr + "). Click Refresh All to retry.", span: 8, cls: "dim" }] });
+    else if (!items.length) rows.push({ c: [{ t: injScope === "league" ? "No injuries listed." : "None of the players in this selection are on the injury list.", span: 6, cls: "dim" }] });
+    else rows.push({ c: [] });
+    rows.push({ c: [
+      hdrCell("Player", "hdr name", "inj|NAME", k === "NAME", d), hdrCell("Team", "hdr num", "inj|TEAM", k === "TEAM", d), hdrCell("Status", "hdr stat", "inj|STATUS", k === "STATUS", d),
+      { t: "Injury", cls: "hdr stat" }, hdrCell("Return", "hdr stat", "inj|RET", k === "RET", d), hdrCell("Updated (UTC+8)", "hdr stat", "inj|TIME", k === "TIME" || !k, d), { t: "Note", cls: "hdr stat" }
+    ] });
+    items.forEach(function (x) {
+      var mineHit = rosterIndex(x.name, x.pid) >= 0, wHit = !mineHit && ((x.pid && watchIndex(x.pid) >= 0) || watch.some(function (w) { return norm(w.name) === norm(x.name); }));
+      var isOut = /^out$/i.test(x.status) || x.ofs;
+      var what = (x.type + (x.detail ? " – " + x.detail : "") + (x.side ? " (" + x.side + ")" : "")).trim();
+      rows.push({ c: [
+        { t: x.name, cls: "name vt" + (mineHit ? " mine" : (wHit ? " watch" : "")) },
+        { t: x.team, cls: "num vt" },
+        { t: x.ofs ? "Out for season" : x.status, cls: "stat vt" + (isOut ? " bold" : "") },
+        { t: what, cls: "stat vt" },
+        { t: x.ret, cls: "stat vt" },
+        { t: x.t ? tpeTime.format(new Date(x.t)) : "", cls: "stat vt" },
+        capCell(x.long, "vt wrapc wd")
+      ] });
+    });
+    return rows;
+  }
+
+  var SEASON_KEY = "ps_season_v3_";
+  var EXT_FIELD = [["offensive", "avgFieldGoalsMade"], ["offensive", "avgFieldGoalsAttempted"], ["offensive", "avgThreePointFieldGoalsMade"], ["offensive", "avgThreePointFieldGoalsAttempted"], ["offensive", "avgFreeThrowsMade"], ["offensive", "avgFreeThrowsAttempted"], ["general", "doubleDouble"], ["general", "tripleDouble"]];
+  var BYATH = "https://site.web.api.espn.com/apis/common/v3/sports/basketball/" + ["n", "b", "a"].join("") + "/statistics/byathlete?region=us&lang=en&contentorigin=espn&isqualified=false&sort=offensive.avgPoints:desc&seasontype=2&limit=50&season=";
+  var PICK_STAT_COLS = ["GP","MIN","PTS","REB","AST","STL","BLK","TO","PF","FG%","3P%","FT%"];
+  var STAT_FIELD = {
+    "GP": ["general", "gamesPlayed"], "MIN": ["general", "avgMinutes"], "PTS": ["offensive", "avgPoints"], "REB": ["general", "avgRebounds"],
+    "AST": ["offensive", "avgAssists"], "STL": ["defensive", "avgSteals"], "BLK": ["defensive", "avgBlocks"], "TO": ["offensive", "avgTurnovers"],
+    "PF": ["general", "avgFouls"], "FG%": ["offensive", "fieldGoalPct"], "3P%": ["offensive", "threePointFieldGoalPct"], "FT%": ["offensive", "freeThrowPct"]
+  };
+  var TOT_FIELD = {
+    "GP": ["general", "gamesPlayed"], "MIN": ["general", "minutes"], "PTS": ["offensive", "points"], "REB": ["general", "rebounds"],
+    "AST": ["offensive", "assists"], "STL": ["defensive", "steals"], "BLK": ["defensive", "blocks"], "TO": ["offensive", "turnovers"],
+    "PF": ["general", "fouls"], "FG%": ["offensive", "fieldGoalPct"], "3P%": ["offensive", "threePointFieldGoalPct"], "FT%": ["offensive", "freeThrowPct"]
+  };
+  var pickView = "avg", statView = "avg", pickFilters = [];
+  function fillSeasonSelects() {
+    var opts = "";
+    for (var y = seasonNow(); y >= 2001; y--) opts += '<option value="' + y + '">' + seasonLabel(y) + "</option>";
+    var ps = document.getElementById("pickSeason");
+    if (!ps.options.length) { ps.innerHTML = opts; ps.value = String(pickSeason || seasonNow()); }
+    var ss = document.getElementById("statMode");
+    if (!ss.options.length) { ss.innerHTML = '<optgroup label="Recent (fantasy)"><option value="r7">Last 7 days</option><option value="r14">Last 14 days</option><option value="r30">Last 30 days</option><option value="g5">Last 5 games</option><option value="g10">Last 10 games</option></optgroup><optgroup label="History"><option value="career">Career averages</option><option value="all">All seasons</option>' + opts + '</optgroup>'; ss.value = statMode; }
+  }
+  function loadSeasonData(y, force) {
+    var ttl = y >= seasonNow() ? 30 * 60000 : 7 * 86400000;
+    var c = seasonData[y];
+    if (!force && c && Date.now() - c.t < ttl) return Promise.resolve();
+    if (!force) {
+      try {
+        var sv = JSON.parse(localStorage.getItem(SEASON_KEY + y) || "null");
+        if (sv && sv.map && Date.now() - sv.t < ttl) { seasonData[y] = sv; return Promise.resolve(); }
+      } catch (e) {}
+    }
+    var defs = null, map = {};
+    var wrongSeason = false;
+    function take(d) {
+      if (d.requestedSeason && d.requestedSeason.year && Number(d.requestedSeason.year) !== Number(y)) { wrongSeason = true; return; }
+      if (!defs) { defs = {}; (d.categories || []).forEach(function (c2) { defs[c2.name] = c2.names || []; }); }
+      (d.athletes || []).forEach(function (a) {
+        var id = a.athlete && a.athlete.id;
+        if (!id) return;
+        var cats = {};
+        (a.categories || []).forEach(function (c2) { cats[c2.name] = c2.totals || []; });
+        function pull(F) {
+          return PICK_STAT_COLS.map(function (l) {
+            var f = F[l], i = (defs[f[0]] || []).indexOf(f[1]), t = cats[f[0]];
+            return i >= 0 && t && t[i] != null ? String(t[i]) : "";
+          });
+        }
+        var ext = EXT_FIELD.map(function (f) {
+          var i = (defs[f[0]] || []).indexOf(f[1]), t = cats[f[0]];
+          return i >= 0 && t && t[i] != null ? String(t[i]) : "";
+        });
+        var row = pull(STAT_FIELD).concat(pull(TOT_FIELD)).concat(ext);
+        id = String(id);
+        if (!map[id] || numOf(row[0]) > numOf(map[id][0])) map[id] = row;   // keep the row with more games if a player appears twice
+      });
+    }
+    function page(n) {
+      return fetch(BYATH + y + "&page=" + n)
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+    }
+    return page(1).then(function (d) {
+      take(d);
+      var pages = wrongSeason ? 1 : Math.min((d.pagination && d.pagination.pages) || 1, 30), jobs = [];
+      for (var n = 2; n <= pages; n++) jobs.push(page(n));
+      return Promise.all(jobs).then(function (ds) { ds.forEach(take); });
+    }).then(function () {
+      if (!Object.keys(map).length && !wrongSeason) throw new Error("no data for " + seasonLabel(y));
+      seasonData[y] = { t: Date.now(), map: map };
+      try { localStorage.setItem(SEASON_KEY + y, JSON.stringify(seasonData[y])); } catch (e) {}
+    });
+  }
+
+  /* ---------- Player List sheet ---------- */
+  function loadPlayers(force) {
+    if (!force) {
+      try {
+        var c = JSON.parse(localStorage.getItem(PLAYERS_KEY) || "null");
+        if (c && c.list && c.list.length && c.teams && Date.now() - c.t < 7 * 86400000) { playersAll = c.list; teamsAll = c.teams; return Promise.resolve(); }
+      } catch (e) {}
+    }
+    var failTeams = null, failRoster = null;
+    function getJSON(url, isRoster) {
+      return fetch(url)
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .catch(function (e) {
+          var msg = url + " - " + e.message;
+          if (isRoster) { if (!failRoster) failRoster = msg; } else if (!failTeams) failTeams = msg;
+          throw e;
+        });
+    }
+    var fixedTeams = [];
+    for (var n = 1; n <= 30; n++) fixedTeams.push({ id: String(n), abbr: "", name: "" });
+    return getJSON(BASE + "teams", false)
+      .then(function (d) {
+        var tl = ((((d.sports || [])[0] || {}).leagues || [])[0] || {}).teams || [];
+        var t = tl.map(function (x) { x = x.team || x; return { id: String(x.id), abbr: x.abbreviation || "", name: x.displayName || x.name || "" }; });
+        return t.length ? t : fixedTeams;
+      })
+      .catch(function () { return fixedTeams; })
+      .then(function (teams) {
+        return Promise.all(teams.map(function (t) {
+          return getJSON(BASE + "teams/" + encodeURIComponent(t.id) + "/roster", true)
+            .then(function (rd) {
+              var tm = rd.team || {};
+              if (tm.abbreviation) t.abbr = tm.abbreviation;
+              if (tm.displayName) t.name = tm.displayName;
+              var flat = [];
+              (rd.athletes || []).forEach(function (a) { if (a && a.items) a.items.forEach(function (i) { flat.push(i); }); else flat.push(a); });
+              return flat.filter(Boolean).map(function (a) {
+                return { id: String(a.id), name: a.displayName || a.fullName || "", team: t.abbr, teamId: t.id, pos: (a.position && a.position.abbreviation) || "", num: a.jersey || "" };
+              });
+            })
+            .catch(function () { return []; });
+        })).then(function (lists) {
+          var all = [];
+          lists.forEach(function (l) { all = all.concat(l); });
+          if (!all.length) throw new Error("Failed to fetch " + (failRoster || failTeams || "the roster service"));
+          var used = teams.filter(function (t) { return t.abbr; });
+          used.sort(function (a, b) { return a.name.localeCompare(b.name); });
+          playersAll = all; teamsAll = used;
+          try { localStorage.setItem(PLAYERS_KEY, JSON.stringify({ t: Date.now(), list: all, teams: used })); } catch (e) {}
+        });
+      });
+  }
+  function fillTeamSel() {
+    var sel = document.getElementById("teamSel");
+    var cur = pickTeam;
+    var h = '<option value="all">All teams</option>';
+    (teamsAll || []).forEach(function (t) { h += '<option value="' + esc(t.id) + '">' + esc(t.abbr + " – " + t.name) + "</option>"; });
+    sel.innerHTML = h;
+    sel.value = cur;
+    if (sel.value !== cur) { pickTeam = "all"; sel.value = "all"; }
+  }
+  function pickError(err) {
+    statusLeft.textContent = "Error";
+    if (sheet === "pick") paint([{ c: [{ t: "#REF! Could not load the player list (" + err.message + "). Click Reload list to retry.", span: 8, cls: "bold" }] }]);
+  }
+  function pickRows() {
+    var all = playersAll || [];
+    var q = norm(pickQuery);
+    var sm = (seasonData[pickSeason] && seasonData[pickSeason].map) || {};
+    function sv(p, i) { var r = sm[p.id]; return r ? r[i + (pickView === "tot" ? 12 : 0)] : ""; }
+    function passF(p) {
+      return pickFilters.every(function (f) {
+        var x = parseFloat(sv(p, PICK_STAT_COLS.indexOf(f.l)));
+        if (isNaN(x)) return false;
+        return f.op === ">" ? x > f.v : f.op === ">=" ? x >= f.v : f.op === "<" ? x < f.v : f.op === "<=" ? x <= f.v : x === f.v;
+      });
+    }
+    var list = all.filter(function (p) {
+      if (pickFilters.length && !passF(p)) return false;
+      if (pickTeam !== "all" && p.teamId !== pickTeam) return false;
+      if (q && norm(p.name).indexOf(q) === -1) return false;
+      if (pickSelOnly && rosterIndex(p.name, p.id) < 0) return false;
+      if (pickWatchOnly && watchIndex(p.id) < 0) return false;
+      return true;
+    });
+    var k = sortPick.k, d = sortPick.d;
+    list.sort(function (a, b) {
+      if (k && k.indexOf("S:") === 0) {
+        var si = PICK_STAT_COLS.indexOf(k.slice(2));
+        return cmp(numOf(sv(a, si)), numOf(sv(b, si)), d, true) || a.name.localeCompare(b.name);
+      }
+      if (k === "NAME") return cmp(a.name, b.name, d, false);
+      if (k === "TEAM") return cmp(a.team, b.team, d, false) || a.name.localeCompare(b.name);
+      if (k === "POS") return cmp(a.pos, b.pos, d, false) || a.name.localeCompare(b.name);
+      if (k === "NUM") return cmp(numOf(a.num), numOf(b.num), d, true);
+      if (k === "INJ") { var ia = injOf(a.id, a.name), ib = injOf(b.id, b.name); return cmp(injRank(ia), injRank(ib), d, true) || a.name.localeCompare(b.name); }
+      if (k === "OWN" || k === "CHG") { var oa = ownOf(a.id), ob = ownOf(b.id), f2 = k === "OWN" ? "own" : "chg"; return cmp(oa ? oa[f2] : NaN, ob ? ob[f2] : NaN, d, true) || a.name.localeCompare(b.name); }
+      if (k === "WATCH") return cmp(watchIndex(a.id) >= 0 ? 1 : 0, watchIndex(b.id) >= 0 ? 1 : 0, d, true) || a.name.localeCompare(b.name);
+      if (k === "SEL") return cmp(rosterIndex(a.name, a.id) >= 0 ? 1 : 0, rosterIndex(b.name, b.id) >= 0 ? 1 : 0, d, true) || a.name.localeCompare(b.name);
+      return a.team.localeCompare(b.team) || a.name.localeCompare(b.name);
+    });
+    var rows = [{ c: [{ t: "Player List   |   " + list.length + " shown   |   " + roster.length + " selected   |   Season " + seasonLabel(pickSeason || seasonNow()) + (pickView === "tot" ? " totals" : " per game") + "   |   " + watch.length + " watching   |   My column or name = My Players, star = Watchlist", span: 10, cls: "bold" }] }];
+    var note = null;
+    if (pickSeasonErr) note = "Season stats could not be loaded (" + pickSeasonErr + "). Click Reload list to retry.";
+    else if (pickLoading) note = "Loading season stats…";
+    else if (!Object.keys(sm).length) note = "No stats for this season yet.";
+    else if (ownErr && !ownT) note = "Own% and Chg% could not be loaded (" + ownErr + "). Click Reload list to retry.";
+    var r2 = [];
+    if (note) r2.push({ t: note, span: 5, cls: "dim" });
+    if (pickFilters.length) r2.push({ t: "Filters (click to remove):", cls: "dim" });
+    pickFilters.forEach(function (f, fi) { r2.push({ t: f.l + " " + f.op + " " + f.v + "  \u2715", cls: "filt", fi: fi }); });
+    rows.push({ c: r2 });
+    var head = [
+      hdrCell("My", "hdr tick", "pick|SEL", k === "SEL", d),
+      hdrCell("Player", "hdr name", "pick|NAME", k === "NAME", d),
+      hdrCell("\u2605", "hdr tick", "pick|WATCH", k === "WATCH", d),
+      hdrCell("Team", "hdr num", "pick|TEAM", k === "TEAM", d),
+      hdrCell("Pos", "hdr num", "pick|POS", k === "POS", d),
+      hdrCell("#", "hdr num", "pick|NUM", k === "NUM", d),
+      hdrCell("Own%", "hdr num", "pick|OWN", k === "OWN", d),
+      hdrCell("Chg%", "hdr num", "pick|CHG", k === "CHG", d),
+      hdrCell("Injury", "hdr stat", "pick|INJ", k === "INJ", d)
+    ];
+    PICK_STAT_COLS.forEach(function (l) { head.push(hdrCell(l, "hdr num", "pick|S:" + l, k === "S:" + l, d)); });
+    rows.push({ c: head });
+    if (!list.length) {
+      rows.push({ c: [{ t: all.length ? "No players match this filter." : "No players loaded.", span: 5, cls: "dim" }] });
+      return rows;
+    }
+    list.forEach(function (p) {
+      var on = rosterIndex(p.name, p.id) >= 0 ? " picked" : "";
+      var r = [
+        { t: on ? "\u2714" : "", cls: "tick" + on },
+        { t: p.name, cls: "name" + on },
+        { t: watchIndex(p.id) >= 0 ? "\u2605" : "", cls: "wcell" + on },
+        { t: p.team, cls: "num" + on },
+        { t: p.pos, cls: "num" + on },
+        { t: p.num, cls: "num" + on },
+        { t: ownOf(p.id) ? pctText(ownOf(p.id).own) : "", cls: "num" + on },
+        { t: ownOf(p.id) ? pctText(ownOf(p.id).chg, true) : "", cls: "num" + on },
+        { t: (injOf(p.id, p.name) || {}).txt || "", cls: "stat" + on + (injRank(injOf(p.id, p.name)) >= 2 ? " bold" : "") }
+      ];
+      PICK_STAT_COLS.forEach(function (l, i) { r.push({ t: sv(p, i), cls: "num" + on + (l === "PTS" ? " bold" : "") }); });
+      rows.push({ pk: p.id, c: r });
+    });
+    return rows;
+  }
+  function togglePick(pk) {
+    var p = (playersAll || []).filter(function (x) { return x.id === pk; })[0];
+    if (p) toggleMine(p.id, p.name);
+  }
+  function pickLoadSeason(force) {
+    ensureOwn(force); ensureInj(force);
+    var y = pickSeason || seasonNow();
+    pickSeason = y;
+    pickSeasonErr = ""; pickLoading = true;
+    statusLeft.textContent = "Calculating…";
+    return loadSeasonData(y, force).then(function () {
+      // Early in the season almost nobody has played yet: fall back to last season until the user chooses
+      if (!pickSeasonChosen && pickSeason === seasonNow()) {
+        var m = seasonData[y] && seasonData[y].map, n = 0;
+        if (m) for (var id in m) if (numOf(m[id][0]) > 0) n++;
+        if (n < 150) {
+          pickSeason = y - 1;
+          document.getElementById("pickSeason").value = String(pickSeason);
+          return loadSeasonData(pickSeason, force);
+        }
+      }
+    }).catch(function (err) {
+      pickSeasonErr = err.message;
+    }).then(function () {
+      pickLoading = false;
+      stamp();
+      if (sheet === "pick") paint(pickRows());
+    });
+  }
+  function openPick() {
+    holdGame();
+    sheet = "pick";
+    selR = 1; selC = 0;
+    clearTimeout(timer);
+    if (!pickSeason) pickSeason = seasonNow();
+    renderChrome();
+    fillSeasonSelects();
+    var ready;
+    if (playersAll) { fillTeamSel(); paint(pickRows()); ready = Promise.resolve(true); }
+    else {
+      paint(loadingRows());
+      statusLeft.textContent = "Calculating…";
+      ready = loadPlayers(false)
+        .then(function () { fillTeamSel(); if (sheet === "pick") paint(pickRows()); return true; })
+        .catch(function (err) { pickError(err); return false; });
+    }
+    ready.then(function (ok) { if (ok) return pickLoadSeason(false); });
+  }
+
+  /* ---------- Player Stats sheet ---------- */
+  var STAT_BASE = "https://site.web.api.espn.com/apis/common/v3/sports/basketball/" + ["n", "b", "a"].join("") + "/athletes/";
+  var STAT_COLS = ["GP","MIN","PTS","REB","AST","STL","BLK","TO","PF","FG%","3P%","FT%"];
+  function seasonNow() { var d = new Date(); return d.getMonth() >= 9 ? d.getFullYear() + 1 : d.getFullYear(); }
+  function seasonLabel(y) { return (y - 1) + "-" + String(y).slice(2); }
+
+  function parseStats(d) {
+    var cats = d.categories || [];
+    var avg = cats.filter(function (c) { return c.name === "averages"; })[0] || cats[0] || {};
+    var labels = avg.labels || [];
+    var rows = (avg.statistics || []).map(function (st) {
+      var vals = {};
+      (st.stats || []).forEach(function (v, i) { vals[labels[i]] = v; });
+      var tm = (d.teams && st.teamSlug && d.teams[st.teamSlug]) || {};
+      return { y: st.season && st.season.year, season: (st.season && st.season.displayName) || "", team: tm.abbreviation || tm.shortDisplayName || st.teamSlug || "", vals: vals };
+    });
+    var career = {};
+    (avg.totals || []).forEach(function (v, i) { career[labels[i]] = v; });
+    return { t: Date.now(), rows: rows, career: career };
+  }
+  function fetchStats(force) {
+    var jobs = roster.filter(function (p) { return p.id; }).map(function (p) {
+      var c = statCache[p.id];
+      if (!force && c && !c.err && Date.now() - c.t < 600000) return Promise.resolve();
+      return fetch(STAT_BASE + encodeURIComponent(p.id) + "/stats")
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (d) { statCache[p.id] = parseStats(d); })
+        .catch(function (e) { statCache[p.id] = { t: Date.now(), err: e.message, rows: [], career: {} }; });
+    });
+    return Promise.all(jobs);
+  }
+
+  /* ---------- Game log (recent ranges and season totals) ---------- */
+  var glCache = {};
+  var RECENT = { r7: ["Last 7 days", 7], r14: ["Last 14 days", 14], r30: ["Last 30 days", 30], g5: ["Last 5 games", 5], g10: ["Last 10 games", 10] };
+  function isRecent(m) { return !!RECENT[m]; }
+  function isYearMode(m) { return /^\d{4}$/.test(m); }
+  function useLog() { return isRecent(statMode) || (statView === "tot" && isYearMode(statMode)); }
+  function logYear() { return isRecent(statMode) ? seasonNow() : Number(statMode); }
+  function parseLog(d) {
+    var labels = d.labels || [], ev = d.events || {}, st = d.seasonTypes;
+    if (!st) { if (Object.keys(ev).length) throw new Error("unexpected game log format"); return []; }
+    var seen = {}, games = [];
+    st.forEach(function (t) {
+      if (!/regular/i.test(t.displayName || "")) return;
+      (t.categories || []).forEach(function (c) {
+        (c.events || []).forEach(function (e) {
+          if (seen[e.eventId]) return;
+          seen[e.eventId] = 1;
+          var v = {};
+          (e.stats || []).forEach(function (x, i) { v[labels[i]] = x; });
+          var meta = ev[e.eventId] || {};
+          games.push({ id: e.eventId, t: Date.parse(meta.gameDate) || 0, v: v });
+        });
+      });
+    });
+    games.sort(function (a, b) { return b.t - a.t; });
+    return games;
+  }
+  function fetchLogs(force) {
+    var y = logYear();
+    return Promise.all(roster.filter(function (p) { return p.id; }).map(function (p) {
+      var key = p.id + "|" + y, c = glCache[key];
+      if (!force && c && !c.err && Date.now() - c.t < 300000) return Promise.resolve();
+      return fetch(STAT_BASE + encodeURIComponent(p.id) + "/gamelog?season=" + y)
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (d) { glCache[key] = { t: Date.now(), games: parseLog(d) }; })
+        .catch(function (e) { glCache[key] = { t: Date.now(), err: e.message, games: [] }; });
+    }));
+  }
+  function pickGames(games) {
+    var r = RECENT[statMode];
+    if (!r) return games;
+    if (statMode.charAt(0) === "g") return games.slice(0, r[1]);
+    var cut = Date.now() - r[1] * 86400000;
+    return games.filter(function (g) { return g.t >= cut; });
+  }
+  function aggGames(games, mode) {
+    var n = 0, S = { MIN: 0, PTS: 0, REB: 0, AST: 0, STL: 0, BLK: 0, TO: 0, PF: 0 }, fg = [0, 0], tp = [0, 0], ft = [0, 0];
+    function pair(x) { var a = String(x || "").split("-"); return [parseInt(a[0], 10) || 0, parseInt(a[1], 10) || 0]; }
+    games.forEach(function (g) {
+      var m = parseFloat(g.v.MIN);
+      if (!(m > 0)) return;
+      n++;
+      Object.keys(S).forEach(function (k) { S[k] += parseFloat(g.v[k]) || 0; });
+      var a = pair(g.v.FG), b = pair(g.v["3PT"]), c = pair(g.v.FT);
+      fg[0] += a[0]; fg[1] += a[1]; tp[0] += b[0]; tp[1] += b[1]; ft[0] += c[0]; ft[1] += c[1];
+    });
+    if (!n) return null;
+    var o = { GP: String(n) };
+    Object.keys(S).forEach(function (k) { o[k] = mode === "tot" ? String(Math.round(S[k])) : (S[k] / n).toFixed(1); });
+    function pct(x) { return x[1] ? (x[0] / x[1] * 100).toFixed(1) : ""; }
+    o["FG%"] = pct(fg); o["3P%"] = pct(tp); o["FT%"] = pct(ft);
+    return o;
+  }
+  function reloadStats(force) {
+    statusLeft.textContent = "Calculating…";
+    return fetchStats(force).then(function () { return useLog() ? fetchLogs(force) : null; }).then(function () {
+      // Early in the season nobody has current-season rows yet: show last season until the user chooses otherwise
+      if (!statModeChosen && statMode === String(seasonNow())) {
+        var Y = seasonNow(), any = false;
+        roster.forEach(function (p) { var c = statCache[p.id]; if (c && c.rows.some(function (r) { return r.y === Y; })) any = true; });
+        if (!any && Object.keys(statCache).length) { statMode = String(Y - 1); document.getElementById("statMode").value = statMode; }
+      }
+      if (sheet === "stats" && !eventId) paint(statRows());
+      stamp();
+    });
+  }
+  function openStats() {
+    holdGame();
+    sheet = "stats";
+    selR = 1; selC = 0;
+    clearTimeout(timer);
+    renderChrome();
+    paint(roster.length ? loadingRows() : statRows());
+    if (roster.length) reloadStats(false); else stamp();
+  }
+  function statRows() {
+    var label = isRecent(statMode) ? RECENT[statMode][0] + " (" + seasonLabel(seasonNow()) + ")" : (statMode === "career" ? "Career averages" : (statMode === "all" ? "All seasons" : "Season " + seasonLabel(Number(statMode))));
+    var logMode = useLog();
+    var how = logMode ? (statView === "tot" ? "totals" : "per game") : (statView === "tot" ? "per game (totals are available for single seasons and Recent ranges)" : "per game");
+    var rows = [{ c: [{ t: "Player Stats   |   " + label + "   |   " + roster.length + " on list   |   Regular season, " + how, span: 10, cls: "bold" }] }, { c: [] }];
+    if (!roster.length) {
+      rows.push({ c: [{ t: "Your list is empty. Open the Player List sheet and pick your players first.", span: 10, cls: "dim" }] });
+      return rows;
+    }
+    var want = (statMode === "career" || statMode === "all" || isRecent(statMode)) ? null : Number(statMode);
+    var flat = [], other = [];
+    roster.forEach(function (p, ei) {
+      var c = statCache[p.id];
+      if (!p.id) { other.push({ ei: ei, name: p.name, msg: "No player id. Remove this player and pick again from the Player List sheet." }); return; }
+      if (!c) { other.push({ ei: ei, name: p.name, msg: "Loading…" }); return; }
+      if (c.err) { other.push({ ei: ei, name: p.name, msg: "Could not load stats (" + c.err + ")." }); return; }
+      function add(r) { flat.push({ ei: ei, name: p.name, season: r.season, y: r.y || 0, team: r.team, vals: r.vals }); }
+      var hasCareer = Object.keys(c.career).length > 0;
+      if (logMode) {
+        var gl = glCache[p.id + "|" + logYear()];
+        if (!gl) { other.push({ ei: ei, name: p.name, msg: "Loading…" }); return; }
+        if (gl.err) { other.push({ ei: ei, name: p.name, msg: "Could not load game log (" + gl.err + ")." }); return; }
+        var ag = aggGames(pickGames(gl.games), statView);
+        if (!ag) { other.push({ ei: ei, name: p.name, msg: "No games in this range." }); return; }
+        var tm = (c.rows.filter(function (r) { return r.y === logYear(); })[0] || {}).team || "";
+        flat.push({ ei: ei, name: p.name, season: isRecent(statMode) ? RECENT[statMode][0] : seasonLabel(logYear()), y: logYear(), team: tm, vals: ag });
+      } else if (statMode === "career") {
+        if (hasCareer) flat.push({ ei: ei, name: p.name, season: "Career", y: -1, team: "", vals: c.career, career: true });
+        else other.push({ ei: ei, name: p.name, msg: "No career data." });
+      } else if (want) {
+        var m = c.rows.filter(function (r) { return r.y === want; });
+        if (m.length) m.forEach(add);
+        else other.push({ ei: ei, name: p.name, msg: "No games in " + seasonLabel(want) + " yet." });
+      } else {
+        c.rows.slice().sort(function (a, b) { return (b.y || 0) - (a.y || 0); }).forEach(add);
+        if (hasCareer) flat.push({ ei: ei, name: p.name, season: "Career", y: -1, team: "", vals: c.career, career: true });
+        if (!c.rows.length && !hasCareer) other.push({ ei: ei, name: p.name, msg: "No stats found." });
+      }
+    });
+    var k = sortStat.k, d = sortStat.d;
+    if (k) {
+      flat.sort(function (a, b) {
+        if (k === "NAME") return cmp(a.name, b.name, d, false);
+        if (k === "SEASON") return cmp(a.y, b.y, d, true);
+        if (k === "TEAM") return cmp(a.team, b.team, d, false);
+        return cmp(numOf(a.vals[k]), numOf(b.vals[k]), d, true);
+      });
+    } else {
+      flat.sort(function (a, b) { return a.ei - b.ei || b.y - a.y; });
+    }
+    var items = flat.map(function (f) { return { f: f }; });
+    var miss = other.map(function (o) { return { o: o }; });
+    items = items.concat(miss);
+    if (!k) items.sort(function (a, b) { return (a.f ? a.f.ei : a.o.ei) - (b.f ? b.f.ei : b.o.ei); });
+
+    var head = [
+      hdrCell("Player", "hdr name", "stat|NAME", k === "NAME", d),
+      hdrCell("Season", "hdr stat", "stat|SEASON", k === "SEASON", d),
+      hdrCell("Team", "hdr num", "stat|TEAM", k === "TEAM", d)
+    ];
+    STAT_COLS.forEach(function (l) { head.push(hdrCell(l, "hdr num", "stat|" + l, k === l, d)); });
+    rows.push({ c: head });
+    items.forEach(function (it) {
+      if (it.o) { rows.push({ c: [{ t: it.o.name, cls: "name mine" }, { t: it.o.msg, span: STAT_COLS.length + 2, cls: "dim" }] }); return; }
+      var f = it.f, b = f.career ? " bold" : "";
+      var r = [{ t: f.name, cls: "name mine" }, { t: f.season, cls: "stat" + b }, { t: f.team, cls: "num" + b }];
+      STAT_COLS.forEach(function (l) { r.push({ t: f.vals[l] != null ? f.vals[l] : "", cls: "num" + (l === "PTS" ? " bold" : "") + b }); });
+      rows.push({ c: r });
+    });
+    rows.push({ c: [] });
+    rows.push({ c: [{ t: "GP games played · MIN minutes per game · PTS points · REB rebounds · AST assists · STL steals · BLK blocks · TO turnovers · PF personal fouls · FG% field goal percentage · 3P% three-point percentage · FT% free throw percentage. Click a column title to sort.", span: 14, cls: "note" }] });
+    return rows;
+  }
+
+  /* ---------- Game sheets ---------- */
+  function summaryText(s) {
+    var comp = s.header && s.header.competitions && s.header.competitions[0];
+    if (!comp) return "";
+    var st = (comp.status && comp.status.type) || {};
+    var away = comp.competitors.filter(function (c) { return c.homeAway === "away"; })[0];
+    var home = comp.competitors.filter(function (c) { return c.homeAway === "home"; })[0];
+    if (!away || !home) return "";
+    return teamName(away.team) + " " + (away.score != null ? away.score : "–") + "  –  " + teamName(home.team) + " " + (home.score != null ? home.score : "–") + "    |    " + (st.shortDetail || st.description || "");
+  }
+
+  var BOX_ORDER = ["MIN","PTS","REB","AST","STL","BLK","FG","3PT","FT","TO","PF","+/-","OREB","DREB"];
+
+  function boxRows(s) {
+    var rows = [{ c: [{ t: summaryText(s), span: 8, cls: "bold" }] }];
+    var comp = s.header && s.header.competitions && s.header.competitions[0];
+    // On-court marking: only while the game is live, and only if the source reports an "active" flag
+    var live = !!(comp && comp.status && comp.status.type && comp.status.type.state === "in");
+    var anyActive = false;
+    ((s.boxscore && s.boxscore.players) || []).forEach(function (tm) {
+      var g = (tm.statistics || [])[0];
+      ((g && g.athletes) || []).forEach(function (a) { if (a.active === true) anyActive = true; });
+    });
+    if (live) {
+      rows.push({ c: [{ t: anyActive ? "Green rows = players on the court right now." : "On-court players are not reported by the data source for this game right now.", span: 8, cls: "note" }] });
+    }
+    // Quarter-by-quarter line score
+    if (comp) {
+      var away = comp.competitors.filter(function (c) { return c.homeAway === "away"; })[0];
+      var home = comp.competitors.filter(function (c) { return c.homeAway === "home"; })[0];
+      var maxP = Math.max(((away && away.linescores) || []).length, ((home && home.linescores) || []).length);
+      if (away && home && maxP) {
+        var h = [{ t: "Line score", cls: "hdr name" }];
+        for (var i = 0; i < maxP; i++) h.push({ t: perLabel(i + 1), cls: "hdr num" });
+        h.push({ t: "T", cls: "hdr num" });
+        rows.push({ c: [] });
+        rows.push({ c: h });
+        [away, home].forEach(function (c) {
+          var r = [{ t: (c.team && c.team.abbreviation) || "", cls: "name bold" }];
+          for (var j = 0; j < maxP; j++) { var q = (c.linescores || [])[j]; r.push({ t: q ? q.displayValue : "", cls: "num" }); }
+          r.push({ t: c.score != null ? c.score : "", cls: "num bold" });
+          rows.push({ c: r });
+        });
+      }
+    }
+    var teams = (s.boxscore && s.boxscore.players) || [];
+    if (!teams.length) {
+      rows.push({ c: [] });
+      rows.push({ c: [{ t: "Player data is not available yet. It appears once the game starts.", span: 8, cls: "dim" }] });
+      return rows;
+    }
+    teams.forEach(function (tm, ti) {
+      var grp = (tm.statistics || [])[0];
+      rows.push({ c: [] });
+      if (!grp) { rows.push({ c: [{ t: teamName(tm.team), cls: "hdr name" }, { t: "No player data yet.", span: 4, cls: "dim" }] }); return; }
+      var labels = grp.labels || [];
+      var cols = BOX_ORDER.filter(function (l) { return labels.indexOf(l) !== -1; });
+      var idx = cols.map(function (l) { return labels.indexOf(l); });
+      var ptsCol = cols.indexOf("PTS");
+      var activeTeam = sortBox.ti === ti && sortBox.k;
+      var head = [hdrCell(teamName(tm.team), "hdr name", "box|" + ti + "|NAME", activeTeam && sortBox.k === "NAME", sortBox.d), { t: "\u2605", cls: "hdr num" }];
+      cols.forEach(function (l) { head.push(hdrCell(l, "hdr num", "box|" + ti + "|" + l, activeTeam && sortBox.k === l, sortBox.d)); });
+      rows.push({ c: head });
+
+      function played(a) { return !(a.didNotPlay || !(a.stats && a.stats.length)); }
+      function prow(a) {
+        var ath = a.athlete || {};
+        var pos = ath.position && ath.position.abbreviation ? " (" + ath.position.abbreviation + ")" : "";
+        var court = live && a.active === true ? " court" : "";
+        var mine = athleteIndex(ath) >= 0 ? " mine" : (watchIndex(ath.id) >= 0 ? " watch" : "");
+        var nm = { t: (ath.shortName || ath.displayName || "") + pos, cls: "name" + court + mine, pid: ath.id, pn: ath.displayName || ath.shortName || "" };
+        var star = { t: watchIndex(ath.id) >= 0 ? "\u2605" : "\u2606", cls: "wcell" + court, pid: ath.id, pn: ath.displayName || ath.shortName || "" };
+        if (!played(a)) return { c: [nm, star, { t: a.reason || "Did not play", span: Math.max(cols.length, 1), cls: "dim" }] };
+        var r = [nm, star];
+        idx.forEach(function (k, n) { r.push({ t: a.stats[k], cls: "num" + (n === ptsCol ? " bold" : "") + court }); });
+        return { c: r };
+      }
+      var athletes = grp.athletes || [];
+      if (activeTeam) {
+        var pl = athletes.filter(played), dnp = athletes.filter(function (a) { return !played(a); });
+        var isName = sortBox.k === "NAME";
+        var ki = labels.indexOf(sortBox.k);
+        pl.sort(function (a, b) {
+          if (isName) return cmp((a.athlete && a.athlete.shortName) || "", (b.athlete && b.athlete.shortName) || "", sortBox.d, false);
+          return cmp(numOf(a.stats[ki]), numOf(b.stats[ki]), sortBox.d, true);
+        });
+        pl.forEach(function (a) { rows.push(prow(a)); });
+        dnp.forEach(function (a) { rows.push(prow(a)); });
+      } else {
+        var starters = athletes.filter(function (a) { return a.starter; });
+        var bench = athletes.filter(function (a) { return !a.starter; });
+        rows.push({ c: [{ t: "Starters", cls: "sec name" }] });
+        starters.forEach(function (a) { rows.push(prow(a)); });
+        rows.push({ c: [{ t: "Bench", cls: "sec name" }] });
+        bench.forEach(function (a) { rows.push(prow(a)); });
+      }
+      if (grp.totals && grp.totals.length) {
+        var tot = [{ t: "Team totals", cls: "name bold" }, { t: "" }];
+        idx.forEach(function (k) { tot.push({ t: grp.totals[k], cls: "num bold" }); });
+        rows.push({ c: tot });
+      }
+    });
+    rows.push({ c: [] });
+    rows.push({ c: [{ t: "MIN minutes · PTS points · REB rebounds · AST assists · STL steals · BLK blocks · FG field goals made-attempted · 3PT three-pointers made-attempted · FT free throws made-attempted · TO turnovers · PF personal fouls · +/- point margin while the player was on court · OREB offensive rebounds · DREB defensive rebounds. Click a column title to sort that team. Double-click a player name to add or remove that player in My Players (blue names are on your list). Click the star to add or remove a player in the Watchlist (purple names are watched).", span: 14, cls: "note" }] });
+    return rows;
+  }
+
+  function pbpRows(s) {
+    var rows = [{ c: [{ t: summaryText(s), span: 8, cls: "bold" }] }, { c: [] }];
+    rows.push({ c: [
+      { t: "Period " + (pbpOldest ? "▲" : "▼"), cls: "hdr num sortable", sk: "pbp|order" },
+      { t: "Clock", cls: "hdr num" }, { t: "Team", cls: "hdr num" }, { t: "Play", cls: "hdr play" }, { t: "Score (away–home)", cls: "hdr stat" }, { t: "Note", cls: "hdr play" }
+    ] });
+    var plays = s.plays || [];
+    if (!plays.length) { rows.push({ c: [{ t: "Play-by-play is not available yet. It appears once the game starts.", span: 5, cls: "dim" }] }); return rows; }
+    var ids = {};
+    var comp = s.header && s.header.competitions && s.header.competitions[0];
+    ((comp && comp.competitors) || []).forEach(function (c) { if (c.team) ids[c.team.id] = c.team.abbreviation; });
+    var list = plays.slice();
+    if (!pbpOldest) list.reverse(); // newest first by default
+    function tagOf(p) {
+      var out = { my: [], wt: [] };
+      var pids = {}, txt = " " + (p.text || "") + " ";
+      (p.participants || []).forEach(function (q) { if (q && q.athlete && q.athlete.id) pids[String(q.athlete.id)] = 1; });
+      function hit(e) { return (e.id && pids[String(e.id)]) || (e.name && txt.indexOf(e.name) >= 0); }
+      roster.forEach(function (e) { if (hit(e)) out.my.push(e.name); });
+      watch.forEach(function (e) { if (hit(e) && out.my.indexOf(e.name) < 0) out.wt.push(e.name); });
+      return out;
+    }
+    if (filter === "scoring") list = list.filter(function (p) { return p.scoringPlay; });
+    if (filter === "mine") list = list.filter(function (p) { var g = tagOf(p); return g.my.length || g.wt.length; });
+    if (!list.length) { rows.push({ c: [{ t: filter === "mine" ? "No plays involving your players or watched players yet." : "No scoring plays yet.", span: 6, cls: "dim" }] }); return rows; }
+    list.forEach(function (p) {
+      var per = p.period && p.period.number ? perLabel(p.period.number) : "";
+      var hl = p.scoringPlay ? " hl" : "";
+      var tg = tagOf(p), note = tg.my.length ? "MY: " + tg.my.join(", ") : (tg.wt.length ? "WATCH: " + tg.wt.join(", ") : "");
+      var pc = tg.my.length ? " pm" : (tg.wt.length ? " pw" : "");
+      rows.push({ c: [
+        { t: per, cls: "num" + hl },
+        { t: (p.clock && p.clock.displayValue) || "", cls: "num" + hl },
+        { t: p.team && ids[p.team.id] ? ids[p.team.id] : "", cls: "num" + hl },
+        { t: p.text || (p.type && p.type.text) || "", cls: "play" + hl + pc },
+        { t: p.awayScore != null && p.homeScore != null ? p.awayScore + " – " + p.homeScore : "", cls: "stat" + hl },
+        { t: note, cls: "play" + pc }
+      ] });
+    });
+    return rows;
+  }
+
+  /* ---------- Changelog sheet ---------- */
+  function logRows() {
+    var rows = [{ c: [{ t: "Version", cls: "hdr stat" }, { t: "Date", cls: "hdr stat" }, { t: "Changes", cls: "hdr wrap" }] }];
+    CHANGELOG.forEach(function (e, i) {
+      var hl = i === 0 ? " hl" : "";
+      rows.push({ c: [{ t: e.v + (i === 0 ? " ⭐ Latest" : ""), cls: "stat bold" + hl }, { t: e.d, cls: "stat" + hl }, { t: e.n, cls: "wrap" + hl }] });
+    });
+    return rows;
+  }
+
+  function evLabel(e) {
+    var comp = (e.competitions || [])[0] || {}, cs = comp.competitors || [];
+    var away = cs.filter(function (c) { return c.homeAway === "away"; })[0] || cs[1] || {};
+    var home = cs.filter(function (c) { return c.homeAway === "home"; })[0] || cs[0] || {};
+    var st = (e.status && e.status.type) || {};
+    var ab = function (c) { return (c.team && (c.team.abbreviation || c.team.displayName)) || "?"; };
+    var tail = st.state === "pre" ? tpeTime.format(new Date(e.date)) : (st.state === "in" ? "LIVE " + (away.score || 0) + "-" + (home.score || 0) : "Final " + (away.score || 0) + "-" + (home.score || 0));
+    return ab(away) + " @ " + ab(home) + "   " + tail;
+  }
+  function fillGameSel() {
+    var sel = document.getElementById("gameSel");
+    if (!eventId) return;
+    var evs = (lastList || []).slice(), hasCur = evs.some(function (e) { return String(e.id) === String(eventId); });
+    var html = evs.map(function (e) { return '<option value="' + esc(e.id) + '">' + esc(evLabel(e)) + "</option>"; }).join("");
+    if (!hasCur) html = '<option value="' + esc(eventId) + '">Current game</option>' + html;
+    if (sel.getAttribute("data-sig") !== html) { sel.innerHTML = html; sel.setAttribute("data-sig", html); }
+    sel.value = String(eventId);
+  }
+  function switchGame(id) {
+    if (!id || String(id) === String(eventId)) return;
+    eventId = id; heldGame = null; lastSummary = null;
+    sortBox = { ti: -1, k: null, d: 1 };
+    pbpOldest = false;
+    selR = 1; selC = 0;
+    clearTimeout(timer);
+    renderChrome();
+    paint(loadingRows());
+    loadDetail();
+  }
+  function renderDetail() {
+    renderChrome();
+    if (sheet === "log") { paint(logRows()); return; }
+    if (!lastSummary) return;
+    paint(sheet === "pbp" ? pbpRows(lastSummary) : boxRows(lastSummary));
+  }
+
+  function loadDetail() {
+    var id = eventId;
+    fetch(BASE + "summary?event=" + encodeURIComponent(id), { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (data) {
+        if (eventId !== id) return;
+        lastSummary = data;
+        renderDetail();
+        var comp = data.header && data.header.competitions && data.header.competitions[0];
+        var live = comp && comp.status && comp.status.type && comp.status.type.state === "in";
+        stamp();
+        schedule(!!live);
+      })
+      .catch(function (err) {
+        if (eventId !== id) return;
+        if (sheet !== "log") paint([{ c: [{ t: "#REF! Could not load data (" + err.message + "). Retrying shortly.", span: 8, cls: "bold" }] }]);
+        statusLeft.textContent = "Error";
+        schedule(false);
+      });
+  }
+
+  function openGame(id) {
+    heldGame = null;
+    eventId = id;
+    lastSummary = null;
+    sheet = "box";
+    sortBox = { ti: -1, k: null, d: 1 };
+    pbpOldest = false;
+    selR = 1; selC = 0;
+    renderChrome();
+    paint(loadingRows());
+    clearTimeout(timer);
+    loadDetail();
+  }
+  function openGamePbp(id) {
+    openGame(id);
+    sheet = "pbp";
+    renderChrome();
+  }
+  function closeGame() {
+    eventId = null; heldGame = null;
+
+    lastSummary = null;
+    sheet = "list";
+    selR = 1; selC = 0;
+    clearTimeout(timer);
+    renderChrome();
+    if (lastList) paint(listRows(lastList));
+    loadList();
+  }
+  function openMine() {
+    holdGame();
+    sheet = "mine";
+    selR = 1; selC = 0;
+    clearTimeout(timer);
+    renderChrome();
+    paint(lastList ? mineRows() : loadingRows());
+    statusLeft.textContent = "Calculating…";
+    loadList();
+    loadWatch(false);
+  }
+
+  /* ---------- Schedule sheet (my players' games) ---------- */
+  var sortSch = { k: null, d: 1 };
+  var schedCache = null;
+  var wdName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  function dowOf(iso) { var p = iso.split("-").map(Number); return new Date(Date.UTC(p[0], p[1] - 1, p[2])).getUTCDay(); }
+  function etToday() {
+    try { return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); }
+    catch (e) { return new Date().toISOString().slice(0, 10); }
+  }
+  function indexDay(events) {
+    var by = {};
+    (events || []).forEach(function (e) {
+      var comp = (e.competitions || [])[0] || {}, cs = comp.competitors || [];
+      cs.forEach(function (c, i) {
+        var o = cs[1 - i] || {};
+        if (c.team && c.team.id) by[String(c.team.id)] = { home: c.homeAway === "home", opp: (o.team && (o.team.abbreviation || o.team.displayName)) || "?", ev: e };
+      });
+    });
+    return by;
+  }
+  function fetchSched() {
+    return fetch(BASE + "scoreboard", { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (d0) {
+        var base = (d0.day && d0.day.date) || etToday();
+        var days = [{ date: base, by: indexDay(d0.events), bad: false }], jobs = [];
+        for (var i = 1; i < 7; i++) (function (i) {
+          var dt = shiftDate(base, i);
+          jobs.push(fetch(BASE + "scoreboard?dates=" + dt.replace(/-/g, ""), { cache: "no-store" })
+            .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+            .then(function (d) { days[i] = { date: dt, by: indexDay(d.events), bad: false }; })
+            .catch(function () { days[i] = { date: dt, by: {}, bad: true }; }));
+        })(i);
+        return Promise.all(jobs).then(function () { schedCache = { t: Date.now(), days: days }; });
+      })
+      .catch(function (e) { schedCache = { t: Date.now(), days: [], err: e.message }; });
+  }
+  function loadSched(force) {
+    if (!roster.length) { if (sheet === "sched") paint(schedRows()); stamp(); return Promise.resolve(); }
+    statusLeft.textContent = "Calculating…";
+    var pl = playersAll ? Promise.resolve() : loadPlayers(false).catch(function () {});
+    var sc = (!force && schedCache && !schedCache.err && Date.now() - schedCache.t < 300000) ? Promise.resolve() : fetchSched();
+    return Promise.all([pl, sc]).then(function () { if (sheet === "sched" && !eventId) paint(schedRows()); stamp(); });
+  }
+  function openSched() {
+    holdGame();
+    sheet = "sched";
+    selR = 1; selC = 0;
+    clearTimeout(timer);
+    renderChrome();
+    paint(roster.length ? loadingRows() : schedRows());
+    loadSched(false);
+  }
+  function schedRows() {
+    var rows = [];
+    if (!roster.length) {
+      rows.push({ c: [{ t: "Schedule", cls: "bold" }] });
+      rows.push({ c: [] });
+      rows.push({ c: [{ t: "Your list is empty. Open the Player List sheet and pick your players first.", span: 10, cls: "dim" }] });
+      return rows;
+    }
+    var sc = schedCache, days = (sc && sc.days) || [];
+    var teamOf = {};
+    (playersAll || []).forEach(function (p) { teamOf[p.id] = { id: p.teamId, abbr: p.team }; });
+    var base = days[0] ? days[0].date : "";
+    rows.push({ c: [{ t: "Schedule   |   " + roster.length + " players   |   Next 7 days from " + (base ? base.replace(/-/g, "/") : "…") + "   |   Wk left = games left in the Mon-Sun week   |   Times in UTC+8", span: 10, cls: "bold" }] });
+    if (sc && sc.err) rows.push({ c: [{ t: "Could not load the schedule (" + sc.err + "). Click Refresh All to retry.", span: 8, cls: "dim" }] });
+    else if (!sc) rows.push({ c: [{ t: "Loading schedule…", span: 6, cls: "dim" }] });
+    else if (days.some(function (d) { return d.bad; })) rows.push({ c: [{ t: "Some days could not be loaded. Click Refresh All to retry.", span: 8, cls: "dim" }] });
+    else rows.push({ c: [] });
+    var toSun = base ? (7 - dowOf(base)) % 7 : 6;
+    var data = roster.map(function (r, ei) {
+      var tm = teamOf[r.id] || null, cells = [], n7 = 0, wk = 0;
+      for (var i = 0; i < 7; i++) {
+        var g = tm && days[i] && days[i].by[tm.id];
+        cells.push(g || null);
+        if (g) { n7++; if (i <= toSun) wk++; }
+      }
+      return { ei: ei, name: r.name, tm: tm, cells: cells, n7: n7, wk: wk };
+    });
+    var k = sortSch.k, d = sortSch.d;
+    if (k) data.sort(function (a, b) {
+      if (k === "NAME") return cmp(a.name, b.name, d, false);
+      if (k === "TEAM") return cmp(a.tm ? a.tm.abbr : "", b.tm ? b.tm.abbr : "", d, false) || a.name.localeCompare(b.name);
+      if (k === "N7") return cmp(a.n7, b.n7, d, true) || a.name.localeCompare(b.name);
+      return cmp(a.wk, b.wk, d, true) || a.name.localeCompare(b.name);
+    });
+    var head = [
+      hdrCell("Player", "hdr name", "sch|NAME", k === "NAME", d),
+      hdrCell("Team", "hdr num", "sch|TEAM", k === "TEAM", d),
+      hdrCell("Next 7", "hdr num", "sch|N7", k === "N7", d),
+      hdrCell("Wk left", "hdr num", "sch|WK", k === "WK", d),
+      { t: "Today (UTC+8)", cls: "hdr stat" }
+    ];
+    days.forEach(function (dy) { head.push({ t: wdName[dowOf(dy.date)] + " " + dy.date.slice(5).replace("-", "/"), cls: "hdr num" }); });
+    rows.push({ c: head });
+    function label(g) { return g ? (g.home ? "vs " : "@ ") + g.opp : ""; }
+    var tot = [0, 0, 0, 0, 0, 0, 0];
+    data.forEach(function (x) {
+      var t0 = x.cells[0], today = "";
+      if (!x.tm) today = "Team unknown";
+      else if (t0) {
+        var st = (t0.ev.status && t0.ev.status.type) || {};
+        today = label(t0) + "  " + (st.state === "pre" ? tpeTime.format(new Date(t0.ev.date)) : (st.state === "in" ? "LIVE " + (st.shortDetail || "") : "Final"));
+      } else today = "No game";
+      var r = [
+        { t: x.name, cls: "name mine" },
+        { t: x.tm ? x.tm.abbr : "?", cls: "num" },
+        { t: String(x.n7), cls: "num bold" },
+        { t: String(x.wk), cls: "num bold" },
+        { t: today, cls: "stat" + (t0 ? " court" : "") }
+      ];
+      x.cells.forEach(function (g, i) { if (g) tot[i]++; r.push({ t: label(g), cls: "num" + (g ? " court" : "") }); });
+      rows.push({ c: r });
+    });
+    var foot = [{ t: "Players playing", cls: "name bold" }, { t: "", cls: "num" }, { t: "", cls: "num" }, { t: "", cls: "num" }, { t: "", cls: "stat" }];
+    tot.forEach(function (n, i) { if (days[i]) foot.push({ t: String(n), cls: "num bold" }); });
+    rows.push({ c: foot });
+    return rows;
+  }
+
+  /* ---------- Translation (news -> Traditional Chinese) ---------- */
+  var TR_KEY = "ps_tr_v3";
+  var trEng = "g", trOn = false, trEngine = null, trNote = "", trRun = 0, newsShown = [], trMap = {};
+  try { trMap = JSON.parse(localStorage.getItem(TR_KEY) || "{}") || {}; } catch (e) { trMap = {}; }
+  function trSave() {
+    var ks = Object.keys(trMap);
+    if (ks.length > 400) ks.slice(0, ks.length - 400).forEach(function (k) { delete trMap[k]; });
+    try { localStorage.setItem(TR_KEY, JSON.stringify(trMap)); } catch (e) {}
+  }
+  function getTranslator() {
+    if (trEngine) return Promise.resolve(trEngine);
+    var T = window.Translator;
+    if (!T || !T.create) return Promise.resolve(null);
+    function mk(tgt) {
+      return T.availability({ sourceLanguage: "en", targetLanguage: tgt }).then(function (a) {
+        return a === "unavailable" ? null : T.create({ sourceLanguage: "en", targetLanguage: tgt });
+      });
+    }
+    return mk("zh-Hant").then(function (t) { return t || mk("zh"); }).then(function (t) { if (t) trEngine = t; return t; }).catch(function () { return null; });
+  }
+  function gtx(text) {
+    return fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=zh-TW&dt=t&q=" + encodeURIComponent(text))
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (d) { return (d[0] || []).map(function (x) { return x[0]; }).join(""); });
+  }
+  /* ---- keep people's names in English ---- */
+  var STOP_WORDS = ("The A An This That These Those His Her He She They We You In On At For With After Before When While If But And As By From Of To Is It Its Their There Here Also However Still Last Next First Second Third Fourth Despite Following " +
+    "Boston Celtics Brooklyn Nets New York Knicks Philadelphia Sixers Toronto Raptors Chicago Bulls Cleveland Cavaliers Detroit Pistons Indiana Pacers Milwaukee Bucks Atlanta Hawks Charlotte Hornets Miami Heat Orlando Magic Washington Wizards " +
+    "Denver Nuggets Minnesota Timberwolves Oklahoma City Thunder Portland Trail Blazers Utah Jazz Golden State Warriors Los Angeles Clippers Lakers Phoenix Suns Sacramento Kings Dallas Mavericks Houston Rockets Memphis Grizzlies New Orleans Pelicans San Antonio Spurs Salt Lake " +
+    "January February March April May June July August September October November December Monday Tuesday Wednesday Thursday Friday Saturday Sunday " + ["N", "B", "A"].join("") + " ESPN Opening Night Player Rater Draft Sports Fantasy Preseason Regular Season Finals Eastern Western Conference Association League Cup Game Games Head Coach General Manager " +
+    "Day Week Year Team Teams Free Agent Agency Injury Report Starting Lineup Bench Starter Rookie Veteran All Star Team Most Valuable MVP Rookie Year Points Rebounds Assists Steals Blocks Turnovers United States America American Canada Canadian Europe France French Spain Spanish Germany German").split(" ");
+  var STOP_SET = {}; STOP_WORDS.forEach(function (w) { STOP_SET[w] = 1; });
+  var STOP_FIRST = { Will: 1, Mark: 1, Grant: 1, Jordan: 1, Dean: 1, Chance: 1, Rob: 1, Nick: 1, Max: 1, Ben: 1, Cam: 1, Jay: 1, Gary: 1, Larry: 1, Tony: 1 };
+  var nameRe = null, nameSig = "";
+  function noAccent(t) { try { return t.normalize("NFD").replace(/[̀-ͯ]/g, ""); } catch (e) { return t; } }
+  function reEsc(t) { return t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+  function buildNameRe() {
+    var list = (playersAll || []).map(function (p) { return p.name; }).concat(roster.map(function (p) { return p.name; }));
+    var sig = list.length + "|" + roster.length;
+    if (nameRe && sig === nameSig) return nameRe;
+    var set = {};
+    function add(n) { if (n && n.length >= 4) { set[n] = 1; var a = noAccent(n); if (a !== n) set[a] = 1; } }
+    list.forEach(function (full) {
+      if (!full) return;
+      add(full);
+      var parts = full.replace(/\b(Jr|Sr|II|III|IV)\.?$/i, "").trim().split(/\s+/);
+      if (parts.length > 1) {
+        var last = parts.slice(1).join(" ");
+        if (!STOP_SET[last]) add(last);
+        if (parts.length > 2) add(parts[parts.length - 1]);
+        if (!STOP_FIRST[parts[0]] && !STOP_SET[parts[0]]) add(parts[0]);
+      }
+    });
+    var names = Object.keys(set).sort(function (a, b) { return b.length - a.length; });
+    nameRe = names.length ? new RegExp("(?<![A-Za-zÀ-ɏ])(?:" + names.map(reEsc).join("|") + ")(?![A-Za-zÀ-ɏ])", "g") : null;
+    nameSig = sig;
+    return nameRe;
+  }
+  var PAIR_RE = /\b[A-Z][a-z]+(?:[-'’][A-Z]?[a-z]+)? [A-Z][a-zA-Z'’-]+\b/g;
+  function tokOf(i) { return "zq" + String.fromCharCode(97 + Math.floor(i / 26) % 26) + String.fromCharCode(97 + i % 26) + "x"; }
+  function protectNames(text) {
+    var toks = [];
+    function tok(m) { toks.push(m); return tokOf(toks.length - 1); }
+    var t = text, re = buildNameRe();
+    if (re) t = t.replace(re, tok);
+    t = t.replace(PAIR_RE, function (m) {
+      var w = m.split(" ");
+      return (STOP_SET[w[0]] || STOP_SET[w[1]] || STOP_FIRST[w[0]]) ? m : tok(m);
+    });
+    return { t: t, toks: toks };
+  }
+  function restoreNames(z, toks) {
+    return z.replace(/zq([a-z])([a-z])x/gi, function (m, a, b) {
+      var i = (a.toLowerCase().charCodeAt(0) - 97) * 26 + (b.toLowerCase().charCodeAt(0) - 97);
+      return toks[i] != null ? toks[i] : m;
+    });
+  }
+  var TW_TERMS = [
+    ["凱爾特人", "塞爾提克"], ["塞爾蒂克", "塞爾提克"], ["塞爾特人", "塞爾提克"], ["猛龍", "暴龍"], ["步行者", "溜馬"], ["快船", "快艇"], ["掘金", "金塊"],
+    ["森林狼", "灰狼"], ["開拓者", "拓荒者"], ["獨行俠", "小牛"], ["華盛頓奇才", "華盛頓巫師"], ["雄鹿", "公鹿"], ["尼克斯", "尼克"], ["魔術隊", "魔術"],
+    ["搶斷", "抄截"], ["蓋帽", "阻攻"], ["首發", "先發"], ["籃板球", "籃板"], ["替補席", "板凳"], ["替補", "板凳"], ["常規賽", "例行賽"], ["賽季", "球季"],
+    ["視頻", "影片"], ["傷病報告", "傷兵報告"], ["傷病名單", "傷兵名單"], ["缺陣", "缺陣"], ["待定", "出戰成疑"], ["每日觀察", "每日觀察"]
+  ];
+  function twFix(z) {
+    TW_TERMS.forEach(function (t) { z = z.split(t[0]).join(t[1]); });
+    return z;
+  }
+  function trGet(t) { return trMap[trEng + "|" + t]; }
+  function trOne(text) {
+    var key = trEng + "|" + text;
+    if (trMap[key]) return Promise.resolve(trMap[key]);
+    function viaChrome() {
+      return getTranslator().then(function (e) { if (!e) throw new Error("Chrome translator not available"); return e.translate(text); });
+    }
+    function engine(t) { return trEng === "g" ? gtx(t).catch(viaChrome_(t)) : viaChrome_(t)().catch(function () { return gtx(t); }); }
+    function viaChrome_(t) { return function () { return getTranslator().then(function (e) { if (!e) throw new Error("Chrome translator not available"); return e.translate(t); }); }; }
+    var pr = protectNames(text);
+    return engine(pr.t).then(function (z) {
+      if (!z) throw new Error("empty result");
+      var lost = pr.toks.some(function (_, i) { return z.toLowerCase().indexOf(tokOf(i)) === -1; });
+      if (!lost) return restoreNames(z, pr.toks);
+      // the translator changed or dropped a protected name: translate the pieces between the names instead
+      var parts = pr.t.split(/zq[a-z][a-z]x/i), names = pr.toks;
+      return parts.reduce(function (chain, seg, i) {
+        return chain.then(function (acc) {
+          var need = /[A-Za-z]/.test(seg);
+          return (need ? engine(seg.trim()) : Promise.resolve(seg)).then(function (zz) {
+            return acc + (i > 0 ? " " + names[i - 1] + " " : "") + zz;
+          });
+        });
+      }, Promise.resolve(""));
+    }).then(function (z) { z = twFix(z.replace(/\s+/g, " ").trim()); trMap[key] = z; return z; });
+  }
+  function startTranslate() {
+    if (!trOn) return;
+    var seen = {}, todo = [];
+    newsShown.slice(0, 60).forEach(function (x) {
+      [x.head, x.det].forEach(function (t) { if (t && !trGet(t) && !seen[t]) { seen[t] = 1; todo.push(t); } });
+    });
+    if (!todo.length) return;
+    var run = ++trRun, n = 0;
+    (function next() {
+      if (run !== trRun || !trOn) return;
+      if (!todo.length) { trSave(); if (sheet === "news") paint(newsRows()); return; }
+      trOne(todo.shift()).then(function () {
+        n++;
+        if (n % 3 === 0 && sheet === "news" && run === trRun) paint(newsRows());
+        next();
+      }).catch(function (e) {
+        trNote = "Translation failed (" + e.message + "). Turn Translate off and on to retry.";
+        trSave();
+        if (sheet === "news") paint(newsRows());
+      });
+    })();
+  }
+
+  /* ---------- News sheet (fantasy news) ---------- */
+  var NEWS_URL = "https://site.api.espn.com/apis/fantasy/v2/games/fba/news/players?limit=15&playerId=";
+  var NEWS_LEAGUE_URL = "https://site.api.espn.com/apis/fantasy/v2/games/fba/news/players?limit=60";
+  var NEWS_SITE_URL = BASE + "news?limit=50";
+  var NEWS_SEEN_KEY = "ps_newsseen_v1";
+  var ARCH_KEY = "ps_newsarch_v1", ARCH_DAYS = 30, ARCH_MAX = 3000, newsArch = loadArch();
+  function loadArch() { try { var a = JSON.parse(localStorage.getItem(ARCH_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+  function saveArch() {
+    var cut = Date.now() - ARCH_DAYS * 86400000;
+    newsArch = newsArch.filter(function (x) { return x && x.id != null && x.t >= cut; }).sort(function (a, b) { return b.t - a.t; }).slice(0, ARCH_MAX);
+    try { localStorage.setItem(ARCH_KEY, JSON.stringify(newsArch)); }
+    catch (e) {
+      try { newsArch = newsArch.slice(0, Math.floor(newsArch.length / 2)); localStorage.setItem(ARCH_KEY, JSON.stringify(newsArch)); }
+      catch (e2) { statusLeft.textContent = "Could not save the news archive in this browser. Use Export to keep it."; }
+    }
+  }
+  function archAdd(list) {
+    if (!list || !list.length) return 0;
+    var have = {}, n = 0;
+    newsArch.forEach(function (x) { have[String(x.id) + "|" + x.pid] = 1; });
+    list.forEach(function (x) {
+      if (!x || x.id == null || !x.t) return;
+      var key = String(x.id) + "|" + (x.pid || "");
+      if (have[key]) return;
+      have[key] = 1; n++;
+      newsArch.push({ id: x.id, pid: x.pid ? String(x.pid) : "", pname: x.pname || "", type: x.type || "Story", head: x.head || "", det: x.det || "", t: x.t, lk: x.lk || "" });
+    });
+    if (n) saveArch();
+    return n;
+  }
+  function archMerge(fresh, keep) {
+    var map = {};
+    newsArch.forEach(function (x) { if (keep(x)) map[String(x.id) + "|" + x.pid] = x; });
+    fresh.forEach(function (x) { map[String(x.id) + "|" + (x.pid || "")] = x; });
+    return Object.keys(map).map(function (k) {
+      var x = map[k];
+      if (x.pid && /^Player \d+$/.test(x.pname || "")) { var nm = nameOfId(x.pid); if (nm) x = Object.assign({}, x, { pname: nm }); }
+      return x;
+    });
+  }
+  var newsByPid = {}, newsLeague = null, newsMark = 0, sortNews = { k: null, d: -1 };
+  var newsScope = "mine", newsWrap = true, newsSearchPlayers = [], newsSearchText = "", newsLoading = false;
+  function plain(h) {
+    var t = String(h == null ? "" : h);
+    try { t = new DOMParser().parseFromString(t, "text/html").body.textContent || ""; } catch (e) { t = t.replace(/<[^>]*>/g, " "); }
+    return t.replace(/\s+/g, " ").trim();
+  }
+  function capCell(text, cls, lk) {
+    var c = { t: text, html: newsWrap ? '<div class="cap">' + esc(text) + "</div>" : null, cls: cls };
+    if (lk) c.lk = lk;
+    return c;
+  }
+  function nameOfId(id) {
+    var f = (playersAll || []).filter(function (p) { return p.id === String(id); })[0];
+    return f ? f.name : "";
+  }
+  function feedItem(f, pid, pname) {
+    var web = f.links && f.links.web && (f.links.web.href || (typeof f.links.web === "string" ? f.links.web : ""));
+    var head = plain(f.headline || f.title), det = plain(f.story || f.description);
+    return { id: f.id, pid: String(pid), pname: pname, type: f.type === "Rotowire" ? "Note" : (f.type === "Media" ? "Video" : (f.type || "Story")),
+      head: head, det: det && det !== head ? det : plain(f.description), t: Date.parse(f.published || f.lastModified || "") || 0, lk: web || "" };
+  }
+  function getJ(url) {
+    return fetch(url, { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+  }
+  function fetchPlayerNews(p, force) {
+    var c = newsByPid[p.id];
+    if (!force && c && Date.now() - c.t < 600000) return Promise.resolve();
+    return getJ(NEWS_URL + encodeURIComponent(p.id)).then(function (d) {
+      var items = [], seen = {};
+      (d.feed || []).forEach(function (f) {
+        if (String(f.playerId || p.id) !== String(p.id) || seen[f.id]) return;
+        seen[f.id] = 1;
+        items.push(feedItem(f, p.id, p.name));
+      });
+      newsByPid[p.id] = { t: Date.now(), items: items };
+      archAdd(items);
+    }).catch(function (e) { newsByPid[p.id] = { t: Date.now(), items: [], err: p.name + ": " + e.message }; });
+  }
+  function fetchLeagueNews(force) {
+    if (!force && newsLeague && Date.now() - newsLeague.t < 600000) return Promise.resolve();
+    var errs = [], items = [];
+    var a = getJ(NEWS_LEAGUE_URL).then(function (d) {
+      (d.feed || []).forEach(function (f) { if (f.playerId) items.push(feedItem(f, f.playerId, nameOfId(f.playerId) || "Player " + f.playerId)); });
+    }).catch(function (e) { errs.push("fantasy feed: " + e.message); });
+    var b = getJ(NEWS_SITE_URL).then(function (d) {
+      (d.articles || []).forEach(function (x) {
+        var names = (x.categories || []).filter(function (c) { return c.type === "athlete"; }).map(function (c) { return c.description || (c.athlete && c.athlete.displayName) || ""; }).filter(Boolean);
+        var web = x.links && x.links.web && x.links.web.href;
+        items.push({ id: "s" + (x.id || x.dataSourceIdentifier || x.headline), pid: "", pname: names.slice(0, 2).join(", ") || "League", type: "Story",
+          head: plain(x.headline), det: plain(x.description), t: Date.parse(x.published || x.lastModified || "") || 0, lk: web || "" });
+      });
+    }).catch(function (e) { errs.push("League news: " + e.message); });
+    return Promise.all([a, b]).then(function () { archAdd(items); newsLeague = { t: Date.now(), items: items, errs: items.length ? [] : errs }; });
+  }
+  function currentNewsPlayers() {
+    return newsScope === "search" ? newsSearchPlayers : roster.filter(function (p) { return p.id; });
+  }
+  function loadNews(force) {
+    if (newsScope === "mine" && !roster.length) { if (sheet === "news") paint(newsRows()); stamp(); return Promise.resolve(); }
+    statusLeft.textContent = "Calculating…";
+    newsLoading = true;
+    var pl = (newsScope !== "mine" && !playersAll) ? loadPlayers(false).catch(function () {}) : Promise.resolve();
+    var go = pl.then(function () {
+      if (newsScope === "league") return fetchLeagueNews(force);
+      return Promise.all(currentNewsPlayers().map(function (p) { return fetchPlayerNews(p, force); }));
+    });
+    return go.then(function () {
+      newsLoading = false;
+      if (sheet === "news" && !eventId) { paint(newsRows()); startTranslate(); }
+      try { localStorage.setItem(NEWS_SEEN_KEY, String(Date.now())); } catch (e) {}
+      stamp();
+    });
+  }
+  function fillNewsPlayers() {
+    var sel = document.getElementById("newsPlayer"), cur = sel.value || "all";
+    sel.innerHTML = '<option value="all">All my players</option>' + roster.map(function (p) { return '<option value="' + esc(p.id || p.name) + '">' + esc(p.name) + "</option>"; }).join("");
+    sel.value = Array.prototype.some.call(sel.options, function (o) { return o.value === cur; }) ? cur : "all";
+    sel.disabled = newsScope !== "mine";
+  }
+  function openNews() {
+    holdGame();
+    sheet = "news";
+    selR = 1; selC = 0;
+    clearTimeout(timer);
+    try { newsMark = Number(localStorage.getItem(NEWS_SEEN_KEY) || 0); } catch (e) { newsMark = 0; }
+    renderChrome();
+    fillNewsPlayers();
+    paint(newsScope === "mine" && !roster.length ? newsRows() : loadingRows());
+    loadNews(false);
+  }
+  function setNewsScope(v) {
+    newsScope = v;
+    document.getElementById("newsScope").value = v;
+    document.getElementById("newsPlayer").disabled = v !== "mine";
+    if (sheet === "news") { paint(loadingRows()); loadNews(false); }
+  }
+  function runNewsSearch() {
+    var q = norm(document.getElementById("newsSearch").value);
+    if (!q) return;
+    var go = playersAll ? Promise.resolve() : loadPlayers(false).catch(function () {});
+    go.then(function () {
+      newsSearchText = document.getElementById("newsSearch").value.trim();
+      newsSearchPlayers = (playersAll || []).filter(function (p) { return norm(p.name).indexOf(q) !== -1; }).slice(0, 8);
+      setNewsScope("search");
+    });
+  }
+  function newsRows() {
+    var rows = [];
+    if (newsScope === "mine" && !roster.length) {
+      rows.push({ c: [{ t: "News", cls: "bold" }] });
+      rows.push({ c: [] });
+      rows.push({ c: [{ t: "Your list is empty. Open the Player List sheet and pick your players first, or switch Scope to League-wide or search for a player.", span: 10, cls: "dim" }] });
+      return rows;
+    }
+    var nt = document.getElementById("newsType").value, np = document.getElementById("newsPlayer").value || "all";
+    var src = [], errs = [], ready = true;
+    if (newsScope === "league") { ready = !!newsLeague; if (newsLeague) { src = archMerge(newsLeague.items, function () { return true; }); errs = newsLeague.errs; } }
+    else {
+      var fresh = [], idset = {};
+      currentNewsPlayers().forEach(function (p) { idset[String(p.id)] = 1; var c = newsByPid[p.id]; if (!c) ready = false; else { fresh = fresh.concat(c.items); if (c.err) errs.push(c.err); } });
+      src = archMerge(fresh, function (x) { return x.pid && idset[x.pid]; });
+    }
+    var items = src.filter(function (x) {
+      if (newsScope === "mine" && np !== "all" && x.pid !== np && x.pname !== np) return false;
+      if (nt === "n") return x.type === "Note";
+      if (nt === "ns") return x.type !== "Video";
+      return true;
+    });
+    var k = sortNews.k, d = sortNews.d;
+    items.sort(function (a, b) {
+      if (k === "PLAYER") return cmp(a.pname, b.pname, d, false) || b.t - a.t;
+      if (k === "TYPE") return cmp(a.type, b.type, d, false) || b.t - a.t;
+      if (k === "TIME" && d > 0) return a.t - b.t;
+      return b.t - a.t;
+    });
+    var fresh = items.filter(function (x) { return x.t > newsMark && newsMark > 0; }).length;
+    var minT = 0; items.forEach(function (x) { if (x.t && (!minT || x.t < minT)) minT = x.t; });
+    var oldest = minT ? tpeTime.format(new Date(minT)) : "";
+    newsShown = items;
+    var scopeLabel = newsScope === "league" ? "League-wide" : (newsScope === "search" ? "Search: " + newsSearchText + " (" + newsSearchPlayers.length + " players)" : "My players");
+    rows.push({ c: [{ t: "News   |   " + scopeLabel + "   |   " + items.length + " items" + (oldest ? " (oldest " + oldest + ")" : "") + "   |   archive " + newsArch.length + " saved   |   " + (newsMark ? fresh + " new since your last visit   |   " : "") + "Select a row to read it in the formula bar; double-click to open the article   |   Times in UTC+8" + (trNote ? "   |   " + trNote : ""), span: 10, cls: "bold" }] });
+    if (!ready || newsLoading) rows.push({ c: [{ t: "Loading news…", span: 6, cls: "dim" }] });
+    else if (errs.length) rows.push({ c: [{ t: "Could not load some news (" + errs.length + "). First error: " + errs[0], span: 9, cls: "dim" }] });
+    else if (newsScope === "search" && !newsSearchPlayers.length) rows.push({ c: [{ t: "No player matches that name.", span: 6, cls: "dim" }] });
+    else rows.push({ c: [] });
+    rows.push({ c: [
+      hdrCell("Player", "hdr name", "news|PLAYER", k === "PLAYER", d),
+      hdrCell("Time (UTC+8)", "hdr stat", "news|TIME", k === "TIME", d),
+      { t: "New", cls: "hdr num" },
+      hdrCell("Type", "hdr num", "news|TYPE", k === "TYPE", d),
+      { t: "Headline", cls: "hdr stat" },
+      { t: "Details", cls: "hdr stat" }
+    ].concat(trOn ? [{ t: "Headline (zh-TW)", cls: "hdr stat" }, { t: "Details (zh-TW)", cls: "hdr stat" }] : []) });
+    if (ready && !items.length) rows.push({ c: [{ t: "No recent news for this selection.", span: 6, cls: "dim" }] });
+    var hc = newsWrap ? " wrapc wh" : " clip", dc = newsWrap ? " wrapc wd" : " clip";
+    items.forEach(function (x) {
+      var isNew = newsMark > 0 && x.t > newsMark;
+      rows.push({ c: [
+        { t: x.pname, cls: "name mine vt" },
+        { t: x.t ? tpeTime.format(new Date(x.t)) : "", cls: "stat vt" },
+        { t: isNew ? "NEW" : "", cls: "fresh vt" },
+        { t: x.type, cls: "num vt" },
+        capCell(x.head, "vt" + hc + (isNew ? " bold" : ""), x.lk),
+        capCell(x.det, "vt" + dc)
+      ].concat(trOn ? [capCell(trGet(x.head) || "…", "vt" + hc), capCell(x.det ? (trGet(x.det) || "…") : "", "vt" + dc)] : []) });
+    });
+    return rows;
+  }
+
+  /* ---------- Sorting ---------- */
+  function handleSort(sk) {
+    var p = sk.split("|");
+    if (p[0] === "list") {
+      if (sortList.k === p[1]) sortList.d = -sortList.d;
+      else { sortList.k = p[1]; sortList.d = (LIST_COLS.filter(function (c) { return c.k === p[1]; })[0] || {}).num ? -1 : 1; }
+      paint(listRows(lastList || []));
+    } else if (p[0] === "box") {
+      var ti = Number(p[1]), k = p[2];
+      if (sortBox.ti === ti && sortBox.k === k) sortBox.d = -sortBox.d;
+      else { sortBox.ti = ti; sortBox.k = k; sortBox.d = k === "NAME" ? 1 : -1; }
+      renderDetail();
+    } else if (p[0] === "stat") {
+      var sk2 = p[1];
+      if (sortStat.k === sk2) sortStat.d = -sortStat.d;
+      else { sortStat.k = sk2; sortStat.d = (sk2 === "NAME" || sk2 === "TEAM") ? 1 : -1; }
+      paint(statRows());
+    } else if (p[0] === "pick") {
+      var pk = p[1];
+      if (sortPick.k === pk) sortPick.d = -sortPick.d;
+      else { sortPick.k = pk; sortPick.d = (pk === "SEL" || pk === "WATCH" || pk === "OWN" || pk === "CHG" || pk === "INJ" || pk.indexOf("S:") === 0) ? -1 : 1; }
+      paint(pickRows());
+    } else if (p[0] === "news") {
+      var nk = p[1];
+      if (sortNews.k === nk) sortNews.d = -sortNews.d;
+      else { sortNews.k = nk; sortNews.d = nk === "PLAYER" || nk === "TYPE" ? 1 : -1; }
+      paint(newsRows());
+    } else if (p[0] === "inj") {
+      var ik = p[1];
+      if (sortInj.k === ik) sortInj.d = -sortInj.d; else { sortInj.k = ik; sortInj.d = (ik === "TIME") ? -1 : 1; }
+      paint(injRows());
+    } else if (p[0] === "watch") {
+      var wk = p[1];
+      if (sortWatch.k === wk) sortWatch.d = -sortWatch.d;
+      else { sortWatch.k = wk; sortWatch.d = (wk === "NAME" || wk === "TEAM") ? 1 : -1; }
+      if (sheet === "mine") paint(mineRows());
+    } else if (p[0] === "sch") {
+      var ck = p[1];
+      if (sortSch.k === ck) sortSch.d = -sortSch.d;
+      else { sortSch.k = ck; sortSch.d = (ck === "NAME" || ck === "TEAM") ? 1 : -1; }
+      paint(schedRows());
+    } else if (p[0] === "mine") {
+      var mk = p[1];
+      if (sortMine.k === mk) sortMine.d = -sortMine.d;
+      else { sortMine.k = mk; sortMine.d = (mk === "NAME" || mk === "TEAM" || mk === "GAME") ? 1 : -1; }
+      paint(mineRows());
+    } else if (p[0] === "pbp") {
+      pbpOldest = !pbpOldest;
+      renderDetail();
+    }
+  }
+
+  /* ---------- Saved state (settings) ---------- */
+  var SET_KEY = "ps_settings_v1";
+  var settingsReady = false, lastSetStr = "", lastMainSheet = "list";
+  var MAIN_SHEETS = { list: 1, pick: 1, mine: 1, watch: 1, sched: 1, news: 1, inj: 1, stats: 1, log: 1 };
+  function getSettings() {
+    if (!eventId && MAIN_SHEETS[sheet]) lastMainSheet = sheet;
+    return {
+      sheet: lastMainSheet,
+      cats: catSel.slice(),
+      pickView: pickView, pickSeason: pickSeasonChosen ? pickSeason : null, pickFilters: pickFilters.slice(), pickSelOnly: pickSelOnly, pickWatchOnly: pickWatchOnly, sortWatch: sortWatch, watchMode: watchMode,
+      sortList: sortList, sortPick: sortPick, sortMine: sortMine, sortStat: sortStat, sortSch: sortSch, sortNews: sortNews,
+      statMode: statModeChosen ? statMode : null, statView: statView,
+      injScope: injScope, injStatus: injStatus, newsType: document.getElementById("newsType").value, newsScope: newsScope === "league" ? "league" : "mine", newsWrap: newsWrap, trEng: trEng, trOn: trOn, zoom: zoomPct
+    };
+  }
+  function saveSettings() {
+    if (!settingsReady) return;
+    var str;
+    try { str = JSON.stringify(getSettings()); localStorage.setItem(SET_KEY, str); lastSetStr = str; } catch (e) {}
+  }
+  function copySort(dst, src) {
+    if (src && typeof src === "object" && (src.k === null || typeof src.k === "string")) { dst.k = src.k; dst.d = src.d === -1 ? -1 : 1; }
+  }
+  function applySettings(o) {
+    if (!o || typeof o !== "object") return;
+    if (Array.isArray(o.cats)) { var c = o.cats.filter(function (k) { return !!catDef(k); }); catSel = c; saveCats(); }
+    if (o.pickView === "avg" || o.pickView === "tot") pickView = o.pickView;
+    if (Number(o.pickSeason) > 2000) { pickSeason = Number(o.pickSeason); pickSeasonChosen = true; }
+    if (Array.isArray(o.pickFilters)) pickFilters = o.pickFilters.filter(function (f) { return f && PICK_STAT_COLS.indexOf(f.l) !== -1 && !isNaN(Number(f.v)); }).map(function (f) { return { l: f.l, op: f.op, v: Number(f.v) }; });
+    if (typeof o.pickSelOnly === "boolean") pickSelOnly = o.pickSelOnly;
+    if (typeof o.pickWatchOnly === "boolean") pickWatchOnly = o.pickWatchOnly;
+    copySort(sortWatch, o.sortWatch);
+    if (o.watchMode === "today" || o.watchMode === "season") watchMode = o.watchMode;
+    copySort(sortList, o.sortList); copySort(sortPick, o.sortPick); copySort(sortMine, o.sortMine); copySort(sortStat, o.sortStat); copySort(sortSch, o.sortSch); copySort(sortNews, o.sortNews);
+    if (typeof o.statMode === "string" && (o.statMode === "career" || o.statMode === "all" || isRecent(o.statMode) || isYearMode(o.statMode))) { statMode = o.statMode; statModeChosen = true; }
+    if (o.statView === "avg" || o.statView === "tot") statView = o.statView;
+    if (["mw", "mine", "watch", "league"].indexOf(o.injScope) >= 0) injScope = o.injScope;
+    if (["all", "out", "other"].indexOf(o.injStatus) >= 0) injStatus = o.injStatus;
+    if (o.newsType === "ns" || o.newsType === "n" || o.newsType === "all") document.getElementById("newsType").value = o.newsType;
+    if (o.newsScope === "league" || o.newsScope === "mine") newsScope = o.newsScope;
+    if (typeof o.newsWrap === "boolean") newsWrap = o.newsWrap;
+    if (o.trEng === "g" || o.trEng === "c") trEng = o.trEng;
+    if (typeof o.trOn === "boolean") trOn = o.trOn;
+    if (ZOOMS.indexOf(Number(o.zoom)) >= 0) zoomPct = Number(o.zoom);
+    if (MAIN_SHEETS[o.sheet]) lastMainSheet = o.sheet === "watch" ? "mine" : o.sheet;
+  }
+  function syncControls() {
+    function setVal(id, v) { var el = document.getElementById(id); if (el) el.value = v; }
+    fillSeasonSelects();
+    setVal("pickView", pickView); setVal("pickSeason", String(pickSeason || seasonNow())); setVal("statMode", statMode); setVal("statView", statView);
+    setVal("newsScope", newsScope); setVal("injScope", injScope); setVal("injStatus", injStatus); setVal("newsTrEng", trEng);
+    document.getElementById("selOnlyBtn").textContent = "Selected only: " + (pickSelOnly ? "On" : "Off");
+    document.getElementById("watchOnlyBtn").textContent = "Watching only: " + (pickWatchOnly ? "On" : "Off");
+    document.getElementById("watchModeBtn").textContent = "Watchlist: " + (watchMode === "today" ? "Today" : "Season");
+    document.getElementById("newsWrapBtn").textContent = "Wrap text: " + (newsWrap ? "On" : "Off");
+    document.getElementById("newsTrBtn").textContent = "Translate: " + (trOn ? "On" : "Off");
+    document.getElementById("newsPlayer").disabled = newsScope !== "mine";
+    if (trOn) trNote = trEng === "g" ? "Engine: Google web translate (unofficial)" : "Engine: Chrome built-in translator";
+  }
+  function repaintCurrent() {
+    if (eventId) { renderDetail(); return; }
+    if (sheet === "mine") paint(mineRows());
+    else if (sheet === "pick") paint(pickRows());
+    else if (sheet === "stats") paint(statRows());
+    else if (sheet === "sched") paint(schedRows());
+    else if (sheet === "news") { paint(newsRows()); startTranslate(); }
+    else if (sheet === "log") paint(logRows());
+    else if (lastList) paint(listRows(lastList));
+  }
+
+  /* ---------- Watchlist sheet ---------- */
+  function seasonComp(row) {
+    if (!row) return null;
+    function n(x) { var v = parseFloat(x); return isNaN(v) ? undefined : v; }
+    return { GP: n(row[0]), MIN: n(row[1]), PTS: n(row[2]), REB: n(row[3]), AST: n(row[4]), STL: n(row[5]), BLK: n(row[6]), TO: n(row[7]), PF: n(row[8]),
+      FGM: n(row[24]), FGA: n(row[25]), TPM: n(row[26]), TPA: n(row[27]), FTM: n(row[28]), FTA: n(row[29]), DD: n(row[30]), TD: n(row[31]) };
+  }
+  function ensureWatchSeason(force) {
+    var y = pickSeasonChosen && pickSeason ? pickSeason : seasonNow();
+    return loadSeasonData(y, force).then(function () {
+      if (!pickSeasonChosen && y === seasonNow()) {
+        var m = seasonData[y] && seasonData[y].map, n = 0;
+        if (m) for (var id in m) if (numOf(m[id][0]) > 0) n++;
+        if (n < 150) return loadSeasonData(y - 1, force).then(function () { return y - 1; });
+      }
+      return y;
+    }).then(function (yy) { watchSeason = yy; watchErr = ""; }).catch(function (e) { watchErr = e.message; });
+  }
+  function loadWatch(force) {
+    if (!watch.length && !roster.length) { stamp(); return Promise.resolve(); }
+    statusLeft.textContent = "Calculating…";
+    watchLoading = true;
+    var pl = playersAll ? Promise.resolve() : loadPlayers(false).catch(function () {});
+    var sc = (!force && schedCache && !schedCache.err && Date.now() - schedCache.t < 300000) ? Promise.resolve() : fetchSched();
+    var seenId = {}, ppl = watch.concat(roster).filter(function (p) { if (!p.id || seenId[p.id]) return false; seenId[p.id] = 1; return true; });
+    var jobs = [pl, ensureWatchSeason(force), sc, ensureOwn(force), ensureInj(force)].concat(ppl.map(function (p) { return fetchPlayerNews(p, force); }));
+    return Promise.all(jobs).then(function () {
+      watchLoading = false;
+      if (sheet === "mine" && !eventId) paint(mineRows());
+      stamp();
+    });
+  }
+  function exCtx() {
+    var info = {}, byName = {}, archBy = {};
+    newsArch.forEach(function (x) { if (x.pid && x.type !== "Video" && (!archBy[x.pid] || x.t > archBy[x.pid].t)) archBy[x.pid] = x; });
+    (playersAll || []).forEach(function (p) { info[p.id] = p; byName[norm(p.name)] = p; });
+    var sm = (watchSeason && seasonData[watchSeason] && seasonData[watchSeason].map) || {};
+    var days = (schedCache && schedCache.days) || [], base = days[0] ? days[0].date : "";
+    var toSun = base ? (7 - dowOf(base)) % 7 : 6;
+    return { get: function (id, name) {
+      var p = (id && info[id]) || byName[norm(name)] || {}, pid = p.id || id || "";
+      var n7 = 0, wk = 0, next = "";
+      for (var i = 0; i < days.length; i++) {
+        var g = p.teamId && days[i] && days[i].by[p.teamId];
+        if (g) { n7++; if (i <= toSun) wk++; if (!next) next = wdName[dowOf(days[i].date)] + " " + (g.home ? "vs " : "@ ") + g.opp; }
+      }
+      var nc = newsByPid[pid], item = null;
+      if (nc) nc.items.filter(function (x) { return x.type !== "Video"; }).forEach(function (x) { if (!item || x.t > item.t) item = x; });
+      if (archBy[pid] && (!item || archBy[pid].t > item.t)) item = archBy[pid];
+      var comp = seasonComp(sm[pid]);
+      return { id: pid, team: p.team || "?", teamId: p.teamId || "", n7: n7, wk: wk, next: next, comp: comp, gp: comp && comp.GP != null ? comp.GP : NaN, news: item, own: ownOf(pid) ? ownOf(pid).own : NaN, chg: ownOf(pid) ? ownOf(pid).chg : NaN, inj: injOf(pid, name) };
+    } };
+  }
+  function newsCell(x) {
+    var nt = x.news ? tpeTime.format(new Date(x.news.t)) + "   " + x.news.head : "";
+    return capCell(nt, "vt wrapc wh", x.news && x.news.lk);
+  }
+  function extraHead(prefix, firstAction) {
+    var k = prefix === "mine" ? sortMine : sortWatch;
+    return [hdrCell("GP", "hdr num", prefix + "|GP", k.k === "GP", k.d), hdrCell("Next 7", "hdr num", prefix + "|N7", k.k === "N7", k.d), hdrCell("Wk left", "hdr num", prefix + "|WK", k.k === "WK", k.d),
+      hdrCell("Own%", "hdr num", prefix + "|OWN", k.k === "OWN", k.d), hdrCell("Chg%", "hdr num", prefix + "|CHG", k.k === "CHG", k.d), { t: "Injury", cls: "hdr stat" },
+      { t: firstAction, cls: "hdr tick" }, { t: "x", cls: "hdr tick" }, { t: "Latest news (UTC+8)", cls: "hdr stat" }];
+  }
+  function watchToday() {
+    var out = {};
+    (lastList || []).forEach(function (ev) {
+      var c = mineCache[ev.id];
+      if (!c) return;
+      var sm = c.data, comp = sm.header && sm.header.competitions && sm.header.competitions[0];
+      var st = (comp && comp.status && comp.status.type) || {};
+      var teams = (sm.boxscore && sm.boxscore.players) || [];
+      teams.forEach(function (tm, ti) {
+        var other = teams[1 - ti], opp = other && other.team ? other.team.abbreviation : "";
+        var grp = (tm.statistics || [])[0];
+        if (!grp) return;
+        var labels = grp.labels || [];
+        (grp.athletes || []).forEach(function (a) {
+          var id = a.athlete && String(a.athlete.id);
+          if (!id || watchIndex(id) < 0) return;
+          var played = !(a.didNotPlay || !(a.stats && a.stats.length)), stats = {};
+          if (played) labels.forEach(function (l, k) { stats[l] = a.stats[k]; });
+          out[id] = { played: played, reason: a.reason, comp: played ? comps(stats) : null, game: "vs " + opp + "  " + (st.shortDetail || ""), gid: ev.id, active: st.state === "in" && a.active === true };
+        });
+      });
+    });
+    return out;
+  }
+  function gidOfTeam(teamId) {
+    var ev = (lastList || []).filter(function (e) {
+      return (((e.competitions || [])[0] || {}).competitors || []).some(function (c) { return c.team && String(c.team.id) === String(teamId); });
+    })[0];
+    return ev ? ev.id : "";
+  }
+  function todayGameText(teamId) {
+    var ev = (lastList || []).filter(function (e) {
+      return (((e.competitions || [])[0] || {}).competitors || []).some(function (c) { return c.team && String(c.team.id) === String(teamId); });
+    })[0];
+    if (!ev) return "No game";
+    var stt = (ev.status && ev.status.type) || {};
+    return stt.state === "pre" ? "Not started  " + tpeTime.format(new Date(ev.date)) : "Waiting for data";
+  }
+  function watchBlock() {
+    var rows = [{ c: [] }, { c: [] }];
+    var label = watchSeason ? seasonLabel(watchSeason) : "…";
+    var today = watchMode === "today";
+    rows.push({ c: [{ t: "Watchlist   |   " + watch.length + " players   |   " + (today ? "Today: live and final stat lines (not in the Total row)" : "Season " + label + " per game (DD = season total)") + "   |   + adds a player to My Players, x removes him from the Watchlist", span: 12, cls: "bold" }] });
+    if (!watch.length) {
+      rows.push({ c: [{ t: "Your watchlist is empty. In the Player List sheet, click the star right of a player's name to watch him.", span: 10, cls: "dim" }] });
+      return rows;
+    }
+    var ex = exCtx(), tmap = today ? watchToday() : {};
+    var data = watch.map(function (w) {
+      var x = ex.get(w.id, w.name); x.name = w.name; x.id = w.id;
+      x.t = today ? (tmap[w.id] || null) : null;
+      if (today) x.comp = x.t ? x.t.comp : null;
+      return x;
+    });
+    var k = sortWatch.k, d = sortWatch.d;
+    if (k) data.sort(function (a, b) {
+      if (k === "NAME") return cmp(a.name, b.name, d, false);
+      if (k === "TEAM") return cmp(a.team, b.team, d, false) || a.name.localeCompare(b.name);
+      if (k === "N7") return cmp(a.n7, b.n7, d, true) || a.name.localeCompare(b.name);
+      if (k === "WK") return cmp(a.wk, b.wk, d, true) || a.name.localeCompare(b.name);
+      if (k === "GP") return cmp(a.gp, b.gp, d, true);
+      if (k === "OWN") return cmp(a.own, b.own, d, true) || a.name.localeCompare(b.name);
+      if (k === "CHG") return cmp(a.chg, b.chg, d, true) || a.name.localeCompare(b.name);
+      return cmp(catNum(a, k), catNum(b, k), d, true) || a.name.localeCompare(b.name);
+    });
+    if (watchErr) rows.push({ c: [{ t: "Season stats could not be loaded (" + watchErr + "). Click Refresh All to retry.", span: 9, cls: "dim" }] });
+    var head = [
+      hdrCell("Player", "hdr name", "watch|NAME", k === "NAME", d),
+      hdrCell("Team", "hdr num", "watch|TEAM", k === "TEAM", d),
+      { t: today ? "Game" : "Next game", cls: "hdr stat" }
+    ];
+    catList().forEach(function (c) { head.push(hdrCell(c.k, "hdr num", "watch|" + c.k, k === c.k, d)); });
+    rows.push({ c: head.concat(extraHead("watch", "+")) });
+    data.forEach(function (x) {
+      var inMine = rosterIndex(x.name, x.id) >= 0;
+      var court = today && x.t && x.t.active ? " court" : "";
+      var gameTxt = today ? (x.t ? x.t.game : todayGameText(x.teamId)) : x.next;
+      var r = [{ t: x.name, cls: "name" + court }, { t: x.team, cls: "num" + court, gb: today ? (x.t ? x.t.gid : gidOfTeam(x.teamId)) : "" }, { t: gameTxt, cls: "stat" + court, gid: today ? (x.t ? x.t.gid : gidOfTeam(x.teamId)) : "" }];
+      if (today && x.t && !x.t.played) r.push({ t: x.t.reason || "Did not play", span: Math.max(1, catList().length), cls: "dim" + court });
+      else catList().forEach(function (c) { r.push({ t: x.comp ? catText(x.comp, c.k) : "", cls: "num" + (c.k === "PTS" ? " bold" : "") + court }); });
+      r.push({ t: isNaN(x.gp) ? "" : String(x.gp), cls: "num" }, { t: String(x.n7), cls: "num bold" }, { t: String(x.wk), cls: "num bold" }, { t: pctText(x.own), cls: "num" }, { t: pctText(x.chg, true), cls: "num" }, { t: x.inj ? x.inj.txt : "", cls: "stat" + (x.inj && (/^out$/i.test(x.inj.status) || x.inj.ofs) ? " bold" : "") },
+        { t: inMine ? "✔" : "+", cls: "acell" }, { t: "✕", cls: "xcell" }, newsCell(x));
+      rows.push({ pk: x.id, c: r });
+    });
+    return rows;
+  }
+
+  /* ---------- Paste from Yahoo ---------- */
+  var YH_ALT = { SA: ["SA", "SAS"], NY: ["NY", "NYK"], GS: ["GS", "GSW"], NO: ["NO", "NOP", "NOR"], UTAH: ["UTAH", "UTA"], WSH: ["WSH", "WAS"], PHX: ["PHX", "PHO"], BKN: ["BKN", "BRK"], CHA: ["CHA", "CHO"] };
+  function teamOk(espnAbbr, yh) {
+    if (!yh) return true;
+    var alts = YH_ALT[espnAbbr] || [espnAbbr];
+    return alts.indexOf(yh) !== -1;
+  }
+  function initKey(first) { return noAccent(first).charAt(0).toLowerCase(); }
+  function parseYahoo(text, players) {
+    var byKey = {}, byFull = {};
+    players.forEach(function (p) {
+      var parts = p.name.trim().split(/\s+/);
+      var sur = norm(parts.slice(1).join(" "));
+      var k = initKey(parts[0]) + "|" + sur;
+      (byKey[k] = byKey[k] || []).push(p);
+      var f = norm(p.name);
+      (byFull[f] = byFull[f] || []).push(p);
+    });
+    var matched = [], seen = {}, unmatched = [], usedSpans = [];
+    function take(p, amb) { if (!seen[p.id]) { seen[p.id] = 1; matched.push({ p: p, amb: !!amb }); } }
+    var re = /(?<![\p{L}])((?:\p{Lu}\.){1,3})\s+(\p{Lu}[\p{L}'’-]*(?:\s(?:Jr\.|Sr\.|II|III|IV))?)(?:[ \t]+([A-Z]{2,4}))?(?![\p{L}])/gu, m;
+    while ((m = re.exec(text))) {
+      var key = initKey(m[1]) + "|" + norm(m[2]);
+      var cands = byKey[key] || [];
+      if (!cands.length) { unmatched.push((m[1] + " " + m[2] + (m[3] ? " " + m[3] : "")).trim()); continue; }
+      var pick = cands;
+      if (cands.length > 1) { var byT = cands.filter(function (c) { return teamOk(c.team, m[3]); }); if (byT.length) pick = byT; }
+      take(pick[0], pick.length > 1);
+      usedSpans.push([m.index, m.index + m[0].length]);
+    }
+    text.split(/\r?\n/).forEach(function (line) {
+      var t = line.trim();
+      if (!t || /\p{Lu}\./u.test(t)) return;
+      var c = byFull[norm(t)];
+      if (c && c.length) take(c[0], c.length > 1);
+    });
+    return { matched: matched, unmatched: unmatched };
+  }
+  (function () {
+    var panel = document.createElement("div");
+    panel.id = "yhPanel"; panel.hidden = true;
+    document.body.appendChild(panel);
+    var last = null;
+    function shell(inner) {
+      panel.innerHTML = '<div class="ph">Paste your Yahoo roster</div><div class="pb">' +
+        '<div class="row">On your Yahoo team page, select the roster table, copy it (Ctrl+C) and paste it here (Ctrl+V). Players are matched by initial, last name and team.</div>' +
+        '<textarea id="yhText" placeholder="C. Cunningham DET&#10;D. Vassell SAS&#10;..."></textarea>' +
+        '<div class="row"><button type="button" id="yhPrev">Preview</button> <button type="button" id="yhClose">Close</button></div>' + inner + "</div>";
+    }
+    function open() { shell(""); panel.hidden = false; setTimeout(function () { var t = document.getElementById("yhText"); if (t) t.focus(); }, 0); }
+    document.getElementById("yhBtn").addEventListener("click", function () { if (panel.hidden) open(); else panel.hidden = true; });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") panel.hidden = true; });
+    panel.addEventListener("click", function (e) {
+      var id = e.target.id;
+      if (id === "yhClose") { panel.hidden = true; return; }
+      if (id === "yhPrev") {
+        var txt = document.getElementById("yhText").value;
+        var go = playersAll ? Promise.resolve() : loadPlayers(false).catch(function () {});
+        go.then(function () {
+          if (!playersAll || !playersAll.length) { shell('<div class="row warn">The player list could not be loaded. Open the Player List sheet once and try again.</div>'); document.getElementById("yhText").value = txt; return; }
+          last = parseYahoo(txt, playersAll);
+          var inner = '<div class="row"><b>' + last.matched.length + " matched</b> (untick any you do not want, for example the opponent's players)</div>" +
+            last.matched.map(function (x) { return '<label class="pl"><input type="checkbox" data-yh="' + esc(x.p.id) + '" checked> ' + esc(x.p.name) + " (" + esc(x.p.team) + " " + esc(x.p.pos) + ")" + (x.amb ? ' <span class="warn">- several players share this name, check it</span>' : "") + "</label>"; }).join("") +
+            (last.unmatched.length ? '<div class="row warn">Not found: ' + esc(last.unmatched.join(", ")) + "</div>" : "") +
+            '<div class="row"><label><input type="radio" name="yhMode" value="replace" checked> Replace my list</label> &nbsp; <label><input type="radio" name="yhMode" value="add"> Add to my list</label></div>' +
+            '<div class="row"><button type="button" id="yhApply">Apply to My Players</button></div>';
+          shell(inner);
+          document.getElementById("yhText").value = txt;
+        });
+        return;
+      }
+      if (id === "yhApply" && last) {
+        var ids = {};
+        Array.prototype.forEach.call(panel.querySelectorAll("input[data-yh]"), function (cb) { if (cb.checked) ids[cb.getAttribute("data-yh")] = 1; });
+        var picked = last.matched.filter(function (x) { return ids[x.p.id]; }).map(function (x) { return { name: x.p.name, id: String(x.p.id) }; });
+        var mode = panel.querySelector('input[name="yhMode"]:checked').value;
+        var before = roster.length;
+        if (mode === "replace") roster = picked;
+        else picked.forEach(function (it) { if (rosterIndex(it.name, it.id) < 0) roster.push(it); });
+        saveRoster();
+        statusLeft.textContent = (mode === "replace" ? "List replaced: " : "Added: ") + picked.length + " player(s) from Yahoo";
+        panel.hidden = true;
+        mineCache = mineCache;
+        fillNewsPlayers();
+        repaintCurrent();
+        saveSettings();
+      }
+    });
+  })();
+
+  /* ---------- Export and import ---------- */
+  function exportList() {
+    var blob = new Blob([JSON.stringify({ app: "Production_Schedule", version: 3, players: roster, watch: watch, newsArchive: newsArch, settings: getSettings() }, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "my_players.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+  }
+  function importText(text) {
+    var items = [], restored = false, restoredNews = 0;
+    try {
+      var v = JSON.parse(text);
+      if (v && !Array.isArray(v) && typeof v === "object") {
+        if (v.settings) { applySettings(v.settings); syncControls(); restored = true; }
+        if (Array.isArray(v.watch)) v.watch.forEach(function (w) { if (w && w.name && watchIndex(w.id) < 0 && (w.id || true)) { watch.push({ name: String(w.name), id: w.id ? String(w.id) : "" }); } });
+        saveWatch();
+        if (Array.isArray(v.newsArchive)) { var an = archAdd(v.newsArchive.filter(function (x) { return x && x.id != null && x.t; })); restoredNews = an; }
+        v = Array.isArray(v.players) ? v.players : [];
+      }
+      if (Array.isArray(v)) v.forEach(function (x) {
+        if (typeof x === "string") items.push({ name: x, id: "" });
+        else if (x && x.name) items.push({ name: String(x.name), id: x.id ? String(x.id) : "" });
+      });
+    } catch (e) {
+      text.split(/\r?\n/).forEach(function (l) { if (l.trim()) items.push({ name: l.trim(), id: "" }); });
+    }
+    var added = 0;
+    items.forEach(function (it) { if (rosterIndex(it.name, it.id) < 0) { roster.push(it); added++; } });
+    saveRoster();
+    statusLeft.textContent = "Imported " + added + " player(s)" + (restored ? " and your settings" : "") + (restoredNews ? " and " + restoredNews + " news item(s)" : "");
+    if (document.getElementById("catPanel") && !document.getElementById("catPanel").hidden) renderCatPanel();
+    repaintCurrent();
+    saveSettings();
+  }
+
+  /* ---------- Events ---------- */
+  wrap.addEventListener("click", function (e) {
+    var td = e.target.closest ? e.target.closest("td") : null;
+    if (!td) return;
+    var tr = td.parentNode;
+    var sum = 0, kids = tr.querySelectorAll("td");
+    for (var i = 0; i < kids.length && kids[i] !== td; i++) sum += kids[i].colSpan || 1;
+    selC = sum;
+    selR = tr.rowIndex;
+    applySel();
+    var fi = td.getAttribute("data-fi");
+    if (fi != null && sheet === "pick") { pickFilters.splice(Number(fi), 1); paint(pickRows()); return; }
+    var sk = td.getAttribute("data-sk");
+    if (sk) { handleSort(sk); return; }
+    var gb = td.getAttribute("data-gb");
+    if (gb && !eventId && sheet === "mine") { openGame(gb); return; }
+    var gid = td.getAttribute("data-gid");
+    if (gid && !eventId && sheet === "mine") { openGamePbp(gid); return; }
+    if (sheet === "pick" && tr.getAttribute("data-pk")) {
+      if (td.classList.contains("wcell")) toggleWatch(tr.getAttribute("data-pk"));
+      else if (td.classList.contains("tick") || td.classList.contains("name")) togglePick(tr.getAttribute("data-pk"));
+      return;
+    }
+    if (eventId && sheet === "box" && td.classList.contains("wcell") && td.getAttribute("data-pn")) { toggleWatch(td.getAttribute("data-pid"), td.getAttribute("data-pn")); return; }
+    if (sheet === "mine" && td.classList.contains("xmine")) { toggleMine(td.getAttribute("data-pid"), td.getAttribute("data-pn")); return; }
+    if (sheet === "mine" && tr.getAttribute("data-pk")) {
+      var wid = tr.getAttribute("data-pk");
+      if (td.classList.contains("xcell")) toggleWatch(wid);
+      else if (td.classList.contains("acell")) { var wp = (playersAll || []).filter(function (x) { return x.id === wid; })[0]; if (wp) toggleMine(wp.id, wp.name); }
+      return;
+    }
+    if (!eventId && sheet === "list" && tr.getAttribute("data-id")) openGame(tr.getAttribute("data-id"));
+  });
+  var coarse = false;
+  try { coarse = !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches); } catch (e) {}
+  var lastTap = { td: null, t: 0 };
+  wrap.addEventListener("click", function (e) {
+    if (!coarse) return;
+    var td = e.target.closest ? e.target.closest("td") : null;
+    if (!td) return;
+    var now = Date.now();
+    if (lastTap.td === td && now - lastTap.t < 500) { lastTap = { td: null, t: 0 }; onDouble(td); }
+    else lastTap = { td: td, t: now };
+  });
+  wrap.addEventListener("dblclick", function (e) {
+    if (coarse) return;
+    onDouble(e.target.closest ? e.target.closest("td") : null);
+  });
+  function onDouble(td) {
+    var lk = td && td.parentNode.querySelector("td[data-lk]");
+    if (lk && (sheet === "news" || sheet === "mine")) { window.open(lk.getAttribute("data-lk"), "_blank", "noopener"); return; }
+    if (!td || !eventId || sheet !== "box") return;
+    var pn = td.getAttribute("data-pn");
+    if (pn && !td.classList.contains("wcell")) toggleMine(td.getAttribute("data-pid"), pn);
+  }
+  document.getElementById("tabsbar").addEventListener("click", function (e) {
+    var s = e.target.getAttribute && e.target.getAttribute("data-sheet");
+    if (!s) return;
+    selR = 1; selC = 0;
+    if (s === "stats") { openStats(); return; }
+    if (s === "pick") { openPick(); return; }
+    if (s === "mine") { openMine(); return; }
+    if (s === "sched") { openSched(); return; }
+    if (s === "news") { openNews(); return; }
+    if (s === "inj") { openInj(); return; }
+    if (s === "list") {
+      holdGame();
+      sheet = "list"; renderChrome(); paint(listRows(lastList || [])); loadList(); return;
+    }
+    if (s === "log") { holdGame(); sheet = "log"; renderChrome(); paint(logRows()); return; }
+    if (!eventId && heldGame) {
+      eventId = heldGame; sheet = s; selR = 1; selC = 0;
+      renderChrome();
+      if (lastSummary) renderDetail(); else paint(loadingRows());
+      clearTimeout(timer);
+      loadDetail();
+      return;
+    }
+    sheet = s;
+    if (eventId) { renderDetail(); }
+    else { renderChrome(); paint(logRows()); }
+  });
+  function dateNav(change) {
+    if (change === "today") { viewDate = null; viewPinned = false; }
+    else if (viewDate) { viewDate = shiftDate(viewDate, change); viewPinned = true; }
+    else return;
+    if (sheet !== "mine") sheet = "list";
+    statusLeft.textContent = "Calculating…";
+    renderChrome();
+    loadList();
+  }
+  document.getElementById("prev").addEventListener("click", function () { dateNav(-1); });
+  document.getElementById("next").addEventListener("click", function () { dateNav(1); });
+  document.getElementById("today").addEventListener("click", function () { dateNav("today"); });
+  document.getElementById("gameSel").addEventListener("change", function (e) { switchGame(e.target.value); });
+  document.getElementById("back").addEventListener("click", closeGame);
+  document.getElementById("toMineBtn").addEventListener("click", function () { openMine(); });
+  document.getElementById("toPbpBtn").addEventListener("click", function () { if (!eventId) return; sheet = "pbp"; selR = 1; selC = 0; renderChrome(); renderDetail(); });
+  document.getElementById("toBoxBtn").addEventListener("click", function () { if (!eventId) return; sheet = "box"; selR = 1; selC = 0; renderChrome(); renderDetail(); });
+  document.getElementById("filterBtn").addEventListener("click", function () { filter = filter === "all" ? "scoring" : (filter === "scoring" ? "mine" : "all"); renderDetail(); });
+  document.getElementById("refreshBtn").addEventListener("click", function () { clearTimeout(timer); refresh(); if (sheet === "mine" && !eventId) loadWatch(true); });
+  document.getElementById("pickBtn").addEventListener("click", openPick);
+  function statChanged() { if (sheet !== "stats") return; if (useLog() && roster.length) { paint(loadingRows()); reloadStats(false); } else paint(statRows()); }
+  document.getElementById("statMode").addEventListener("change", function (e) { statMode = e.target.value; statModeChosen = true; statChanged(); });
+  document.getElementById("statView").addEventListener("change", function (e) { statView = e.target.value; statChanged(); });
+  (function () {
+    var fc = document.getElementById("fCol");
+    fc.innerHTML = PICK_STAT_COLS.map(function (l) { return '<option value="' + l + '">' + l + "</option>"; }).join("");
+    fc.value = "PTS";
+    function addF() {
+      var v = parseFloat(document.getElementById("fVal").value);
+      if (isNaN(v)) return;
+      pickFilters.push({ l: fc.value, op: document.getElementById("fOp").value, v: v });
+      document.getElementById("fVal").value = "";
+      if (sheet === "pick") paint(pickRows());
+    }
+    document.getElementById("fAdd").addEventListener("click", addF);
+    document.getElementById("fVal").addEventListener("keydown", function (e) { if (e.key === "Enter") addF(); });
+    document.getElementById("fClear").addEventListener("click", function () { pickFilters = []; if (sheet === "pick") paint(pickRows()); });
+  })();
+  ["newsType", "newsPlayer"].forEach(function (id) { document.getElementById(id).addEventListener("change", function () { if (sheet === "news") { paint(newsRows()); startTranslate(); } }); });
+  document.getElementById("newsTrBtn").addEventListener("click", function () {
+    var btn = this;
+    trOn = !trOn; trNote = "";
+    btn.textContent = "Translate: " + (trOn ? "On" : "Off");
+    if (!trOn) { trRun++; if (sheet === "news") paint(newsRows()); return; }
+    var go = trEng === "c" ? getTranslator() : Promise.resolve();
+    go.then(function () {
+      trNote = trEng === "g" ? "Engine: Google web translate (unofficial)" : (trEngine ? "Engine: Chrome built-in translator" : "Chrome built-in translator is not available, using Google web translate");
+      if (sheet === "news") { paint(newsRows()); startTranslate(); }
+    });
+  });
+  document.getElementById("newsTrEng").addEventListener("change", function (e) {
+    trEng = e.target.value; trNote = ""; trRun++;
+    if (trOn) {
+      var go = trEng === "c" ? getTranslator() : Promise.resolve();
+      go.then(function () {
+        trNote = trEng === "g" ? "Engine: Google web translate (unofficial)" : (trEngine ? "Engine: Chrome built-in translator" : "Chrome built-in translator is not available, using Google web translate");
+        if (sheet === "news") { paint(newsRows()); startTranslate(); }
+      });
+    }
+  });
+  document.getElementById("injScope").addEventListener("change", function (e) { injScope = e.target.value; if (sheet === "inj") paint(injRows()); });
+  document.getElementById("injStatus").addEventListener("change", function (e) { injStatus = e.target.value; if (sheet === "inj") paint(injRows()); });
+  document.getElementById("newsScope").addEventListener("change", function (e) { setNewsScope(e.target.value); });
+  document.getElementById("newsSearch").addEventListener("keydown", function (e) { if (e.key === "Enter") runNewsSearch(); });
+  document.getElementById("newsWrapBtn").addEventListener("click", function () {
+    newsWrap = !newsWrap;
+    this.textContent = "Wrap text: " + (newsWrap ? "On" : "Off");
+    if (sheet === "news") paint(newsRows());
+  });
+  document.getElementById("pickView").addEventListener("change", function (e) { pickView = e.target.value; if (sheet === "pick") paint(pickRows()); });
+  document.getElementById("pickSeason").addEventListener("change", function (e) { pickSeason = Number(e.target.value); pickSeasonChosen = true; pickLoadSeason(false); });
+  document.getElementById("teamSel").addEventListener("change", function (e) { pickTeam = e.target.value; if (sheet === "pick") paint(pickRows()); });
+  document.getElementById("playerSearch").addEventListener("input", function (e) { pickQuery = e.target.value; if (sheet === "pick") paint(pickRows()); });
+  document.getElementById("selOnlyBtn").addEventListener("click", function () {
+    pickSelOnly = !pickSelOnly;
+    this.textContent = "Selected only: " + (pickSelOnly ? "On" : "Off");
+    if (sheet === "pick") paint(pickRows());
+  });
+  document.getElementById("watchModeBtn").addEventListener("click", function () {
+    watchMode = watchMode === "today" ? "season" : "today";
+    this.textContent = "Watchlist: " + (watchMode === "today" ? "Today" : "Season");
+    if (sheet === "mine") paint(mineRows());
+  });
+  document.getElementById("watchOnlyBtn").addEventListener("click", function () {
+    pickWatchOnly = !pickWatchOnly;
+    this.textContent = "Watching only: " + (pickWatchOnly ? "On" : "Off");
+    if (sheet === "pick") paint(pickRows());
+  });
+  document.getElementById("reloadBtn").addEventListener("click", function () {
+    statusLeft.textContent = "Calculating…";
+    paint(loadingRows());
+    loadPlayers(true).then(function () { fillTeamSel(); if (sheet === "pick") paint(pickRows()); return pickLoadSeason(true); }).catch(pickError);
+  });
+  document.getElementById("exportBtn").addEventListener("click", exportList);
+  document.getElementById("importBtn").addEventListener("click", function () { document.getElementById("importFile").click(); });
+  document.getElementById("importFile").addEventListener("change", function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () { importText(String(rd.result || "")); };
+    rd.readAsText(f);
+    e.target.value = "";
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (eventId) closeGame();
+  });
+  function stepZoom(d) {
+    var i = ZOOMS.indexOf(zoomPct) + d;
+    if (i < 0 || i >= ZOOMS.length) return;
+    zoomPct = ZOOMS[i];
+    repaintCurrent();
+    stamp();
+  }
+  document.getElementById("zoomOut").addEventListener("click", function () { stepZoom(-1); });
+  document.getElementById("zoomIn").addEventListener("click", function () { stepZoom(1); });
+  var wasNarrow = isNarrow(), resizeTimer = null;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { if (isNarrow() !== wasNarrow) { wasNarrow = isNarrow(); repaintCurrent(); } }, 300);
+  });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && sheet !== "stats") refresh(); });
+
+  try { applySettings(JSON.parse(localStorage.getItem(SET_KEY) || "null")); } catch (e) {}
+  var startSheet = lastMainSheet;
+  settingsReady = true;
+  syncControls();
+  renderChrome();
+  paint(loadingRows());
+  loadList();
+  (function () {
+    var m = startSheet;
+    if (m === "pick") openPick();
+    else if (m === "mine") openMine();
+    else if (m === "sched") openSched();
+    else if (m === "news") openNews();
+    else if (m === "inj") openInj();
+    else if (m === "stats") openStats();
+    else if (m === "log") { sheet = "log"; renderChrome(); paint(logRows()); }
+  })();
+})();
+</script>
+</body>
+</html>
