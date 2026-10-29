@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Production_Schedule_2026_V1.A1.38.xlsx</title>
+<title>Production_Schedule_2026_V1.A1.46.xlsx</title>
 <style>
   /* Spreadsheet-style shell: title bar, menu tabs, ribbon, formula bar, cell grid, sheet tabs, status bar. */
   * { box-sizing: border-box; }
@@ -96,6 +96,7 @@
   td.pw { background: #eadcf7; font-weight: 700; }
   td.watch { color: #7b3fa0; font-weight: 700; }
   td.note { color: #666; font-size: 12px; white-space: normal; height: auto; padding: 6px; }
+  td.manc { white-space: normal; word-break: break-word; line-height: 1.45; height: auto; padding: 4px 8px; min-width: min(680px, calc(100vw - 70px)); max-width: min(680px, calc(100vw - 70px)); }
   td.wrap { white-space: normal; min-width: 420px; height: auto; padding: 4px 6px; }
   td[data-gid], td[data-gb] { cursor: pointer; }
   td[data-gid]:hover, td[data-gb]:hover { text-decoration: underline; }
@@ -136,7 +137,37 @@
   /* Phone layout (screens narrower than 700 px). Computers are not affected. */
   * { -webkit-tap-highlight-color: transparent; }
   html { -webkit-text-size-adjust: 100%; }
+  td.tsmax { background: #d6f0dc; font-weight: 700; }
+  td.tsmin { background: #f8d7da; font-weight: 700; }
+  td.b2b { background: #ffe8b3; }
+  td.past { color: #999; }
+  td.wtot { background: #eef2f7; font-weight: 700; }
+  th.wtot, td.hdr.wtot { background: #dfe6ef; }
+  td.wlw { color: #217346; font-weight: 700; }
+  td.wll { color: #b3261e; font-weight: 700; }
+  td.lgcell { text-align: center; cursor: pointer; color: #1a5fb4; user-select: none; }
+  td.lgcell:hover { background: #e8f0fe; }
+  #glSearch { width: 170px; }
+  #lgPanel { position: fixed; top: 60px; left: 50%; transform: translateX(-50%); z-index: 70; width: min(680px, 94vw); max-height: 86vh; overflow: auto; background: #fff; color: #222; border: 1px solid #9bbfa9; box-shadow: 0 6px 24px rgba(0,0,0,.35); font-size: 13px; }
+  #lgPanel .ph { background: #217346; color: #fff; padding: 8px 12px; font-weight: 700; position: sticky; top: 0; }
+  #lgPanel .pb { padding: 8px 12px; }
+  #lgPanel .grp { font-weight: 700; margin: 10px 0 4px; color: #217346; }
+  #lgPanel .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 4px 0; }
+  #lgPanel .row > span.k { min-width: 120px; color: #555; }
+  #lgPanel input[type=text], #lgPanel input[type=number], #lgPanel select, #lgPanel textarea { font: inherit; border: 1px solid #bbb; padding: 3px 6px; }
+  #lgPanel input[type=text] { flex: 1; min-width: 180px; }
+  #lgPanel textarea { width: 100%; box-sizing: border-box; }
+  #lgPanel label { display: inline-flex; align-items: center; gap: 4px; }
+  #lgPanel .cats label { display: inline-flex; width: 24%; min-width: 90px; padding: 2px 0; }
+  #lgPanel .cats label.w { width: auto; margin-right: 10px; }
+  #lgPanel .cats input[type=number] { width: 56px; }
+  #lgPanel button { font: inherit; padding: 4px 12px; margin-right: 6px; cursor: pointer; }
+  #lgPanel button.go { background: #217346; color: #fff; border: 1px solid #1b5e3a; }
   @media (max-width: 700px) {
+    #lgPanel { top: 8px; }
+    #lgPanel button, #lgPanel select, #lgPanel input[type=text], #lgPanel input[type=number] { min-height: 38px; }
+    #lgPanel input[type=checkbox] { width: 20px; height: 20px; min-height: 0; }
+    #lgPanel input[type=text], #lgPanel textarea, #lgPanel input[type=number] { font-size: 16px; }
     .app { height: 100vh; height: 100dvh; }
     .menu, .titlebar .saved, .fbar .fx { display: none; }
     .titlebar { padding: 4px 10px; min-height: 28px; font-size: 12px; }
@@ -160,7 +191,7 @@
 </head>
 <body>
 <div class="app">
-  <div class="titlebar"><span class="fname" id="fname">Production_Schedule_2026_V1.A1.38.xlsx</span><span class="saved">Saved</span></div>
+  <div class="titlebar"><span class="fname" id="fname">Production_Schedule_2026_V1.A1.46.xlsx</span><span class="saved">Saved</span></div>
   <div class="menu"><span>File</span><span class="on">Home</span><span>Insert</span><span>Page Layout</span><span>Formulas</span><span>Data</span><span>Review</span><span>View</span></div>
 
   <div class="ribbon">
@@ -198,6 +229,18 @@
       <button id="newsTrBtn" type="button">Translate: Off</button>
       <select id="newsTrEng" aria-label="Translation engine"><option value="g">Engine: Google web</option><option value="c">Engine: Chrome built-in</option></select>
     </span>
+    <span id="gTsCtl" style="display:none">
+      <span class="lbl" style="min-width:0">Week starts</span>
+      <select id="tsStart" aria-label="Week starts on"><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option></select>
+      <select id="tsWeeks" aria-label="Weeks"><option value="2">2 weeks</option><option value="4">4 weeks</option><option value="6">6 weeks</option><option value="8">8 weeks</option></select>
+    </span>
+    <span id="gGlCtl" style="display:none">
+      <select id="glTeam" aria-label="Team" style="max-width:150px"></select>
+      <select id="glPlayer" aria-label="Player" style="max-width:220px"></select>
+      <input id="glSearch" type="text" list="glDl" placeholder="Search any player" aria-label="Search any player" autocomplete="off">
+      <datalist id="glDl"></datalist>
+      <select id="glSeason" aria-label="Season"></select>
+    </span>
     <span id="gInjCtl" style="display:none">
       <select id="injScope" aria-label="Scope"><option value="mw">My Players + Watchlist</option><option value="mine">My Players</option><option value="watch">Watchlist</option><option value="league">League-wide</option></select>
       <select id="injStatus" aria-label="Status"><option value="all">All statuses</option><option value="out">Out only</option><option value="other">Day-to-day and others</option></select>
@@ -211,6 +254,8 @@
       <button id="watchModeBtn" type="button">Watchlist: Season</button>
       <button id="yhBtn" type="button">Paste from Yahoo</button>
       <button id="catBtn" type="button">Categories</button>
+      <button id="lgBtn" type="button">League Settings</button>
+      <button id="aiBtn" type="button">Export for AI</button>
       <button id="pickBtn" type="button">Pick players</button>
       <button id="exportBtn" type="button">Export</button>
       <button id="importBtn" type="button">Import</button>
@@ -239,8 +284,16 @@
 
 <script>
 (function () {
-  var VERSION = "V1.A1.38";
+  var VERSION = "V1.A1.46";
   var CHANGELOG = [
+    { v: "V1.A1.46", d: "2026-10-29", n: "Manual tab (after Changelog) with the user manual: what the tool is, how each tab works, League Settings and Export for AI, backup, and common questions." },
+    { v: "V1.A1.45", d: "2026-10-29", n: "Team Schedule is now one continuous table. Every team is a row and every day is a column showing the opponent (vs for home, @ for away; back-to-backs in orange). After the last day of each week there is a Wk total column. You choose the first day of your league week (Monday to Sunday, default Monday) and the number of weeks (2, 4, 6 or 8); both are remembered and included in Export and Import. The Left column shows the games from today to the end of this week, and Total at the end adds Left and the later weeks. The most games in a week are green and the fewest red; click any header to sort; days already played are grey; the last row shows how many teams play each day." },
+    { v: "V1.A1.44", d: "2026-10-29", n: "Team Schedule. New Team Schedule tab (after Schedule), one row per team. Weekly totals: games per Monday-to-Sunday week (US Eastern dates) for the next 2, 4, 6 or 8 weeks, plus Left (games from today to Sunday) and a total. The team with the most games in a week is green and the team with the fewest is red. Teams of your My Players and Watchlist players are in blue. Daily detail: choose a week and see the opponent of every team on each day (vs or @), back-to-back games in orange, a Games and a B2B column, and the number of teams playing each day. Click any header to sort. The schedule of all 30 teams comes from ESPN, is kept in the browser for 24 hours and is loaded again when it is older than 1 hour and you press Refresh All." },
+    { v: "V1.A1.43", d: "2026-10-27", n: "Game Log team filter. New Team drop-down in the Game Log tab. When you choose a team, the player drop-down gets a third group with all players of that team, and the search box suggests only that team. The My Players and Watchlist groups are always shown in full and are not affected by the team." },
+    { v: "V1.A1.42", d: "2026-10-27", n: "Game Log. New Game Log tab (after Injuries) shows one player at a time, one row per game played, newest first: date (US Eastern), opponent, result and score, minutes, your categories, and FG, FT, 3PT and +/-. Under the header there are Season average, Last 5 and Last 10 rows. Pick the player from the drop-down (My Players and Watchlist) or type any player name in the search box, and choose the season (this season and the two before). You can also open it from Player List (new Log column right after the star), and by double-clicking (or double-tapping) a player name in My Players or the Watchlist. Games where the player did not play are not listed." },
+    { v: "V1.A1.41", d: "2026-10-24", n: "Candidate Pool in Export for AI. The export can now also list free-agent candidates from all players, not only the Watchlist. League Settings has a switch (on by default) and three boxes you can change: Own% at or below (default 15), Minutes per game at least (default 10) and Number of players (default 50). Players on My Players or the Watchlist and players who are out for the season are left out. The candidates are ranked by a Fit score, the sum of z-scores over your categories (or points per game in points mode) taken from this season when a player has 5 or more games and otherwise from last season. Own% is the ESPN number, so the pool is a good guess of who is free, not a guarantee. Role and outlook is also written for the candidates." },
+    { v: "V1.A1.40", d: "2026-10-24", n: "Role and outlook in Export for AI. New switch in League Settings (on by default). The export now has Minutes per game (season and recent) and a new Role and outlook section with one block per player: age and years in the league, minutes this season and in the recent window, last season per game (games played, minutes and your categories), the minutes rank in the team, the same-position teammates with the most minutes (and whether they are injured), and injured teammates who normally play 15 minutes or more. The source has no starter flag, so the minutes rank is used instead. Minutes use last season when a player has fewer than 5 games this season. The player list is reloaded once to add age and experience." },
+    { v: "V1.A1.39", d: "2026-10-24", n: "League Settings and Export for AI. In My Players there are two new buttons. League Settings lets you choose the scoring method (head-to-head categories or points with a weight for each stat), the categories, the roster slots (for example PG, SG, G, SF, PF, F, C, C, UTIL, UTIL, BN, BN, BN), the weekly add limit, the recent window (last 7 days, 14 days, 5 games, 10 games) and a free note for the AI. Export for AI builds one text for My Players and the Watchlist (season and recent per-game numbers, shooting volume, injury, games this week, Own%, Chg%, latest news) with instructions to recommend who to drop and who to add. You can copy it or download it. The settings are remembered and included in Export and Import." },
     { v: "V1.A1.38", d: "2026-10-24", n: "Zoom. New A− and A+ buttons at the end of the toolbar make the table smaller or larger (60%, 70%, 80%, 100%, 120%, 150%) on both phone and desktop. The size is remembered and is included in Export and Import." },
     { v: "V1.A1.37", d: "2026-10-24", n: "Phone layout. On screens narrower than 700 px the fake menu bar is hidden, buttons, drop-downs and cells are bigger for fingers, input boxes no longer make the page zoom, only the player name column stays frozen (My and Player in Player List), and the page uses the real screen height. Because phones have no double-click, double-tap now does what double-click does (add or remove a player in Box Score, open an article in News or My Players). Rotating the phone redraws the sheet. On a computer nothing changes." },
     { v: "V1.A1.36", d: "2026-10-22", n: "Player List now has an Injury column after Chg% (same text as My Players, for example Out · Foot – Fracture (Left) · return 2026-11-20). Click the column title to sort: most serious first (Out for season, Out, then day-to-day), then a second click for the reverse. Out players are shown in bold." },
@@ -431,7 +484,7 @@
   }
   function isNarrow() { return window.innerWidth < 700; }
   function freezePanes(rows) {
-    var fc = { pick: 3, watch: 3, stats: 1, mine: 1, sched: 1, news: 2, inj: 1, list: 0 }[sheet];
+    var fc = { pick: 3, watch: 3, stats: 1, mine: 1, sched: 1, news: 2, inj: 1, glog: 1, tsch: 1, list: 0 }[sheet];
     if (fc === undefined || eventId) return;
     if (isNarrow()) fc = Math.min(fc, sheet === "pick" ? 2 : 1);
     var hi = -1, i, j;
@@ -461,6 +514,8 @@
       if (frozenRow) top += trs[i].offsetHeight;
     }
   }
+  var LG = { mode: "cat", slots: "PG, SG, G, SF, PF, F, C, C, UTIL, UTIL, BN, BN, BN", adds: "", notes: "", vol: true, news: true, role: true, pool: true, poolOwn: 15, poolMin: 10, poolN: 50, recent: "r7", w: {} };
+  var tsStart = 1, tsWeeks = 6, sortTs = { k: null, d: -1 }, tsCache = null, tsBusy = false;
   var ZOOMS = [60, 70, 80, 100, 120, 150], zoomPct = 100;
   function applyZoom() {
     var t = wrap.querySelector("table");
@@ -481,12 +536,14 @@
   /* ---------- Chrome (ribbon, tabs, status) ---------- */
   function renderChrome() {
     var detail = !!eventId;
-    document.getElementById("gListCtl").style.display = (detail || sheet === "pick" || sheet === "stats" || sheet === "sched" || sheet === "news" || sheet === "watch" || sheet === "inj") ? "none" : "contents";
+    document.getElementById("gListCtl").style.display = (detail || sheet === "pick" || sheet === "stats" || sheet === "sched" || sheet === "news" || sheet === "watch" || sheet === "inj" || sheet === "glog" || sheet === "tsch" || sheet === "manual") ? "none" : "contents";
     document.getElementById("gStatCtl").style.display = (!detail && sheet === "stats") ? "contents" : "none";
     document.getElementById("gPickCtl").style.display = (!detail && sheet === "pick") ? "contents" : "none";
     document.getElementById("gDetailCtl").style.display = detail ? "contents" : "none";
     document.getElementById("gNewsCtl").style.display = (!detail && sheet === "news") ? "contents" : "none";
     document.getElementById("gInjCtl").style.display = (!detail && sheet === "inj") ? "contents" : "none";
+    document.getElementById("gTsCtl").style.display = (!detail && sheet === "tsch") ? "contents" : "none";
+    document.getElementById("gGlCtl").style.display = (!detail && sheet === "glog") ? "contents" : "none";
     document.getElementById("toMineBtn").hidden = !detail;
     document.getElementById("toBoxBtn").hidden = !(detail && sheet === "pbp");
     document.getElementById("toPbpBtn").hidden = !(detail && sheet === "box");
@@ -497,7 +554,7 @@
     function tab(key, label) { return '<button type="button" data-sheet="' + key + '"' + (sheet === key ? ' class="on"' : "") + ">" + label + "</button>"; }
     var tabs = tab("list", "Sheet1");
     if (detail || heldGame) tabs += tab("box", "Box Score") + tab("pbp", "Play-by-Play");
-    tabs += tab("pick", "Player List") + tab("mine", "My Players") + tab("sched", "Schedule") + tab("news", "News") + tab("inj", "Injuries") + tab("stats", "Player Stats") + tab("log", "Changelog") + '<span class="plus">+</span>';
+    tabs += tab("pick", "Player List") + tab("mine", "My Players") + tab("sched", "Schedule") + tab("tsch", "Team Schedule") + tab("news", "News") + tab("inj", "Injuries") + tab("glog", "Game Log") + tab("stats", "Player Stats") + tab("log", "Changelog") + tab("manual", "Manual") + '<span class="plus">+</span>';
     document.getElementById("tabsbar").innerHTML = tabs;
   }
   function stamp() { statusLeft.textContent = "Ready"; statusRight.textContent = VERSION + "   |   Updated " + clock.format(new Date()) + " (UTC+8)   |   " + zoomPct + "%"; }
@@ -513,6 +570,8 @@
     else if (sheet === "sched") loadSched(true);
     else if (sheet === "news") loadNews(true);
     else if (sheet === "inj") ensureInj(true);
+    else if (sheet === "glog") glLoad(true);
+    else if (sheet === "tsch") loadTs(!tsCache || Date.now() - tsCache.t > 3600000);
     else loadList();
   }
 
@@ -807,12 +866,12 @@
     items.forEach(function (it) {
       if (it.m) {
         var mx = ex.get(roster[it.m.ei].id, it.m.name);
-        rows.push({ c: [{ t: it.m.name, cls: "name mine" }, { t: mx.team && mx.team !== "?" ? mx.team : "", cls: "num", gb: mx.teamId ? gidOfTeam(mx.teamId) : "" }, { t: mx.teamId ? todayGameText(mx.teamId) : "", cls: "stat", gid: mx.teamId ? gidOfTeam(mx.teamId) : "" },
+        rows.push({ c: [{ t: it.m.name, cls: "name mine", pid: roster[it.m.ei].id || mx.id || "", pn: it.m.name }, { t: mx.team && mx.team !== "?" ? mx.team : "", cls: "num", gb: mx.teamId ? gidOfTeam(mx.teamId) : "" }, { t: mx.teamId ? todayGameText(mx.teamId) : "", cls: "stat", gid: mx.teamId ? gidOfTeam(mx.teamId) : "" },
           { t: "No game data yet (not playing today, game not started, or name not matched).", span: Math.max(1, catList().length), cls: "dim" }].concat(exCols(roster[it.m.ei].id, it.m.name, it.m.ei)) });
         return;
       }
       var f = it.f, court = f.active ? " court" : "";
-      var nm = { t: f.name, cls: "name mine" + court };
+      var nm = { t: f.name, cls: "name mine" + court, pid: roster[f.ei].id || (ex.get(roster[f.ei].id, f.name) || {}).id || "", pn: f.name };
       if (!f.played) {
         rows.push({ c: [nm, { t: f.team, cls: "num" + court, gb: f.gid }, { t: f.game, cls: "stat" + court, gid: f.gid }, { t: f.reason || "Did not play", span: Math.max(1, catList().length), cls: "dim" }].concat(exCols(roster[f.ei].id, f.name, f.ei)) });
         return;
@@ -1043,7 +1102,7 @@
     if (!force) {
       try {
         var c = JSON.parse(localStorage.getItem(PLAYERS_KEY) || "null");
-        if (c && c.list && c.list.length && c.teams && Date.now() - c.t < 7 * 86400000) { playersAll = c.list; teamsAll = c.teams; return Promise.resolve(); }
+        if (c && c.v === 2 && c.list && c.list.length && c.teams && Date.now() - c.t < 7 * 86400000) { playersAll = c.list; teamsAll = c.teams; return Promise.resolve(); }
       } catch (e) {}
     }
     var failTeams = null, failRoster = null;
@@ -1075,7 +1134,7 @@
               var flat = [];
               (rd.athletes || []).forEach(function (a) { if (a && a.items) a.items.forEach(function (i) { flat.push(i); }); else flat.push(a); });
               return flat.filter(Boolean).map(function (a) {
-                return { id: String(a.id), name: a.displayName || a.fullName || "", team: t.abbr, teamId: t.id, pos: (a.position && a.position.abbreviation) || "", num: a.jersey || "" };
+                return { id: String(a.id), name: a.displayName || a.fullName || "", team: t.abbr, teamId: t.id, pos: (a.position && a.position.abbreviation) || "", num: a.jersey || "", age: a.age != null ? a.age : "", exp: a.experience && a.experience.years != null ? a.experience.years : "" };
               });
             })
             .catch(function () { return []; });
@@ -1086,7 +1145,7 @@
           var used = teams.filter(function (t) { return t.abbr; });
           used.sort(function (a, b) { return a.name.localeCompare(b.name); });
           playersAll = all; teamsAll = used;
-          try { localStorage.setItem(PLAYERS_KEY, JSON.stringify({ t: Date.now(), list: all, teams: used })); } catch (e) {}
+          try { localStorage.setItem(PLAYERS_KEY, JSON.stringify({ v: 2, t: Date.now(), list: all, teams: used })); } catch (e) {}
         });
       });
   }
@@ -1154,6 +1213,7 @@
       hdrCell("My", "hdr tick", "pick|SEL", k === "SEL", d),
       hdrCell("Player", "hdr name", "pick|NAME", k === "NAME", d),
       hdrCell("\u2605", "hdr tick", "pick|WATCH", k === "WATCH", d),
+      { t: "Log", cls: "hdr tick" },
       hdrCell("Team", "hdr num", "pick|TEAM", k === "TEAM", d),
       hdrCell("Pos", "hdr num", "pick|POS", k === "POS", d),
       hdrCell("#", "hdr num", "pick|NUM", k === "NUM", d),
@@ -1173,6 +1233,7 @@
         { t: on ? "\u2714" : "", cls: "tick" + on },
         { t: p.name, cls: "name" + on },
         { t: watchIndex(p.id) >= 0 ? "\u2605" : "", cls: "wcell" + on },
+        { t: "\u25A4", cls: "lgcell" + on },
         { t: p.team, cls: "num" + on },
         { t: p.pos, cls: "num" + on },
         { t: p.num, cls: "num" + on },
@@ -1286,7 +1347,7 @@
           var v = {};
           (e.stats || []).forEach(function (x, i) { v[labels[i]] = x; });
           var meta = ev[e.eventId] || {};
-          games.push({ id: e.eventId, t: Date.parse(meta.gameDate) || 0, v: v });
+          games.push({ id: e.eventId, t: Date.parse(meta.gameDate) || 0, v: v, opp: (meta.opponent && (meta.opponent.abbreviation || meta.opponent.displayName)) || "", at: meta.atVs || "", res: meta.gameResult || "", score: meta.score || "" });
         });
       });
     });
@@ -1575,6 +1636,17 @@
   }
 
   /* ---------- Changelog sheet ---------- */
+  var MANUAL = [["h1", "使用手冊"], ["h2", "一、這個工具是什麼"], ["li", "• 這是一個只在你自己瀏覽器裡執行的籃球即時比分與奇幻籃球（Fantasy，就是組自己的球員陣容比賽）輔助工具。"], ["li", "• 資料來自 ESPN 的公開資料，不需要登入，也沒有把任何東西上傳到伺服器。"], ["li", "• 你的球員名單、設定和新聞存檔都保存在這個瀏覽器裡。換一台電腦或手機，資料是分開的，要搬家請用 Export / Import。"], ["li", "• 所有分頁都在畫面最下方，按一下就切換。"], ["h2", "二、分頁說明"], ["h3", "Sheet1（比分）"], ["li", "• 顯示今天的所有比賽，按 Prev / Next 換日期，按 Today 回到今天。"], ["li", "• 日期會自動跟著 ESPN 的比賽日換日，你按了 Prev / Next 之後才會固定在那一天。"], ["li", "• 點任何一場比賽，會進入該場的 Box Score（每位球員的數據）和 Play-by-Play（逐筆比賽過程）。"], ["li", "• 看比賽時，按 Back 回到 Sheet1，按 My Players 回到你的球員頁。"], ["h3", "Player List（球員清單）"], ["li", "• 列出所有球員，可用球隊、位置、搜尋框篩選，也可以切換賽季與「每場平均／總計」。"], ["li", "• 點球員名字：加入或移出你的 My Players。"], ["li", "• 點星號：加入或移出 Watchlist（觀察名單，就是你想撿的候選人）。"], ["li", "• 點最右邊的 ▤（Log 欄）：直接打開該球員的 Game Log。"], ["li", "• Own% 是這位球員在 ESPN 聯盟被擁有的比例，Chg% 是和前一天相比的變化。"], ["h3", "My Players（我的球員）"], ["li", "• 上半部是你的球員，今天有比賽的會顯示即時數據，綠色列代表正在場上。"], ["li", "• 下半部是 Watchlist，按 Watchlist: Season／Today 可以切換賽季平均與今天數據。"], ["li", "• 「No game」代表他的球隊今天沒有比賽；「Waiting for data」代表比賽已開打，但數據還沒抓到，請按 Refresh All。"], ["li", "• 雙擊（手機是連點兩下）球員名字，會打開他的 Game Log；雙擊其他格子，會打開該列的新聞連結。"], ["li", "• 按 Categories 勾選要顯示的比項；按 Paste from Yahoo 可以貼上陣容文字；按 Pick players 到球員清單挑人。"], ["h3", "Schedule 與 Team Schedule（賽程）"], ["li", "• Schedule 依「球員」排列，只看你的球員未來 7 天的對手。"], ["li", "• Team Schedule 依「球隊」排列，每天一欄顯示對手，主場是 vs、客場是 @，每週後面有一欄週合計。"], ["li", "• 你可以選一週從星期幾開始，也可以選看 2、4、6 或 8 週，設定會被記住。"], ["li", "• 橘色代表背靠背（前一天也有比賽），最多場次的週標綠色，最少標紅色，灰字代表已經打過。"], ["h3", "News（新聞）"], ["li", "• 顯示球員新聞，可以切換「只看我的球員」或「全聯盟」。"], ["li", "• 按 Translate 可以把標題翻成中文，新聞會自動存檔 30 天，最多 3,000 筆，Export 時也會一併備份。"], ["h3", "Injuries（傷兵）"], ["li", "• 顯示傷勢、部位、預計回歸日期，可以選看「我的球員＋Watchlist」「我的球員」「Watchlist」或「全聯盟」。"], ["h3", "Game Log（逐場紀錄）"], ["li", "• 一次看一位球員，每場一行，由新到舊，包含日期（美東時間）、對手、比分與你設定的比項。"], ["li", "• 表頭下面有賽季平均、近 5 場、近 10 場。"], ["li", "• 可以用 Team 篩選球隊，也可以用搜尋框輸入任何球員名字。"], ["h3", "Player Stats（球員數據）"], ["li", "• 可以看你的球員在不同區間的數據：近 7 天、14 天、30 天、近 5 場、10 場、整季與生涯。"], ["h3", "Changelog（版本紀錄）"], ["li", "• 記錄每個版本新增了什麼，最新的在最上面。"], ["h2", "三、League Settings 與 Export for AI"], ["li", "• League Settings 可以設定比法（比項制或積分制）、比項、陣容位置、每週異動上限、近期區間，以及給 AI 的備註。"], ["li", "• 候選池（Candidate pool）會從全聯盟挑出 Own% 在你設定值以下的球員，預設 15%、場均至少 10 分鐘、最多 50 人。"], ["li", "• 按 Export for AI 會產生一份文字，按 Copy 複製後貼給 AI，請它建議該丟誰、撿誰。"], ["li", "• 文字越長，AI 讀起來越花額度；想縮短，可以減少候選池人數或關掉新聞。"], ["h2", "四、共用功能"], ["li", "• 排序：點欄位標題，再點一次會反向排序。"], ["li", "• 縮放：工具列的 A− 和 A+ 可以把表格縮小或放大，從 60% 到 150%。"], ["li", "• Refresh All：重新抓取所有資料。"], ["h2", "五、備份與搬家"], ["li", "• Export 會下載 my_players.json，裡面有你的球員、Watchlist、新聞存檔與所有設定。"], ["li", "• Import 可以把這個檔案讀回來，合併進現有資料。"], ["li", "• 清除瀏覽器資料、換電腦或換手機之前，請先 Export。"], ["h2", "六、常見問題"], ["li", "• 為什麼沒有數據？ 先確認該球員今天有沒有比賽；有比賽仍空白，按 Refresh All。"], ["li", "• 手機打不開？ 必須用手機瀏覽器開啟網頁版，用檔案預覽程式開會無法執行。"], ["li", "• Own% 為什麼和 Yahoo 不一樣？ 這是 ESPN 聯盟的數字，只能當作熱度參考。"], ["li", "• 某一欄是空白或問號？ 通常是 ESPN 暫時沒回應，按 Refresh All 重試。"]];
+  function manualRows() {
+    var rows = [];
+    MANUAL.forEach(function (m) {
+      if (m[0] === "h1") rows.push({ c: [{ t: m[1], cls: "bold manc" }] });
+      else if (m[0] === "h2") { rows.push({ c: [] }); rows.push({ c: [{ t: m[1], cls: "hdr stat manc" }] }); }
+      else if (m[0] === "h3") rows.push({ c: [{ t: m[1], cls: "bold hl manc" }] });
+      else rows.push({ c: [{ t: m[1], cls: "manc" }] });
+    });
+    return rows;
+  }
   function logRows() {
     var rows = [{ c: [{ t: "Version", cls: "hdr stat" }, { t: "Date", cls: "hdr stat" }, { t: "Changes", cls: "hdr wrap" }] }];
     CHANGELOG.forEach(function (e, i) {
@@ -2185,6 +2257,10 @@
       if (sortWatch.k === wk) sortWatch.d = -sortWatch.d;
       else { sortWatch.k = wk; sortWatch.d = (wk === "NAME" || wk === "TEAM") ? 1 : -1; }
       if (sheet === "mine") paint(mineRows());
+    } else if (p[0] === "ts") {
+      var tk = p[1];
+      if (sortTs.k === tk) sortTs.d = -sortTs.d; else { sortTs.k = tk; sortTs.d = (tk === "TEAM" || tk === "NAME") ? 1 : -1; }
+      paint(tsRows());
     } else if (p[0] === "sch") {
       var ck = p[1];
       if (sortSch.k === ck) sortSch.d = -sortSch.d;
@@ -2213,7 +2289,7 @@
       pickView: pickView, pickSeason: pickSeasonChosen ? pickSeason : null, pickFilters: pickFilters.slice(), pickSelOnly: pickSelOnly, pickWatchOnly: pickWatchOnly, sortWatch: sortWatch, watchMode: watchMode,
       sortList: sortList, sortPick: sortPick, sortMine: sortMine, sortStat: sortStat, sortSch: sortSch, sortNews: sortNews,
       statMode: statModeChosen ? statMode : null, statView: statView,
-      injScope: injScope, injStatus: injStatus, newsType: document.getElementById("newsType").value, newsScope: newsScope === "league" ? "league" : "mine", newsWrap: newsWrap, trEng: trEng, trOn: trOn, zoom: zoomPct
+      injScope: injScope, injStatus: injStatus, newsType: document.getElementById("newsType").value, newsScope: newsScope === "league" ? "league" : "mine", newsWrap: newsWrap, trEng: trEng, trOn: trOn, zoom: zoomPct, lg: LG, ts: { start: tsStart, weeks: tsWeeks }
     };
   }
   function saveSettings() {
@@ -2245,6 +2321,26 @@
     if (o.trEng === "g" || o.trEng === "c") trEng = o.trEng;
     if (typeof o.trOn === "boolean") trOn = o.trOn;
     if (ZOOMS.indexOf(Number(o.zoom)) >= 0) zoomPct = Number(o.zoom);
+    if (o.ts && typeof o.ts === "object") {
+      if ([0, 1, 2, 3, 4, 5, 6].indexOf(Number(o.ts.start)) >= 0) tsStart = Number(o.ts.start);
+      if ([2, 4, 6, 8].indexOf(Number(o.ts.weeks)) >= 0) tsWeeks = Number(o.ts.weeks);
+    }
+    if (o.lg && typeof o.lg === "object") {
+      var g = o.lg;
+      if (g.mode === "cat" || g.mode === "pts") LG.mode = g.mode;
+      if (typeof g.slots === "string") LG.slots = g.slots.slice(0, 300);
+      if (typeof g.adds === "string") LG.adds = g.adds.slice(0, 10);
+      if (typeof g.notes === "string") LG.notes = g.notes.slice(0, 2000);
+      if (typeof g.vol === "boolean") LG.vol = g.vol;
+      if (typeof g.news === "boolean") LG.news = g.news;
+      if (typeof g.role === "boolean") LG.role = g.role;
+      if (typeof g.pool === "boolean") LG.pool = g.pool;
+      if (!isNaN(Number(g.poolOwn)) && Number(g.poolOwn) >= 0 && Number(g.poolOwn) <= 100) LG.poolOwn = Number(g.poolOwn);
+      if (!isNaN(Number(g.poolMin)) && Number(g.poolMin) >= 0 && Number(g.poolMin) <= 48) LG.poolMin = Number(g.poolMin);
+      if (!isNaN(Number(g.poolN)) && Number(g.poolN) >= 1 && Number(g.poolN) <= 200) LG.poolN = Math.round(Number(g.poolN));
+      if (["off", "r7", "r14", "g5", "g10"].indexOf(g.recent) >= 0) LG.recent = g.recent;
+      if (g.w && typeof g.w === "object") { LG.w = {}; Object.keys(g.w).forEach(function (k) { if (catDef(k) && !isNaN(Number(g.w[k]))) LG.w[k] = Number(g.w[k]); }); }
+    }
     if (MAIN_SHEETS[o.sheet]) lastMainSheet = o.sheet === "watch" ? "mine" : o.sheet;
   }
   function syncControls() {
@@ -2268,6 +2364,9 @@
     else if (sheet === "sched") paint(schedRows());
     else if (sheet === "news") { paint(newsRows()); startTranslate(); }
     else if (sheet === "log") paint(logRows());
+    else if (sheet === "manual") paint(manualRows());
+    else if (sheet === "glog") paint(glRows());
+    else if (sheet === "tsch") paint(tsRows());
     else if (lastList) paint(listRows(lastList));
   }
 
@@ -2411,7 +2510,7 @@
       var inMine = rosterIndex(x.name, x.id) >= 0;
       var court = today && x.t && x.t.active ? " court" : "";
       var gameTxt = today ? (x.t ? x.t.game : todayGameText(x.teamId)) : x.next;
-      var r = [{ t: x.name, cls: "name" + court }, { t: x.team, cls: "num" + court, gb: today ? (x.t ? x.t.gid : gidOfTeam(x.teamId)) : "" }, { t: gameTxt, cls: "stat" + court, gid: today ? (x.t ? x.t.gid : gidOfTeam(x.teamId)) : "" }];
+      var r = [{ t: x.name, cls: "name" + court, pid: x.id || "", pn: x.name }, { t: x.team, cls: "num" + court, gb: today ? (x.t ? x.t.gid : gidOfTeam(x.teamId)) : "" }, { t: gameTxt, cls: "stat" + court, gid: today ? (x.t ? x.t.gid : gidOfTeam(x.teamId)) : "" }];
       if (today && x.t && !x.t.played) r.push({ t: x.t.reason || "Did not play", span: Math.max(1, catList().length), cls: "dim" + court });
       else catList().forEach(function (c) { r.push({ t: x.comp ? catText(x.comp, c.k) : "", cls: "num" + (c.k === "PTS" ? " bold" : "") + court }); });
       r.push({ t: isNaN(x.gp) ? "" : String(x.gp), cls: "num" }, { t: String(x.n7), cls: "num bold" }, { t: String(x.wk), cls: "num bold" }, { t: pctText(x.own), cls: "num" }, { t: pctText(x.chg, true), cls: "num" }, { t: x.inj ? x.inj.txt : "", cls: "stat" + (x.inj && (/^out$/i.test(x.inj.status) || x.inj.ofs) ? " bold" : "") },
@@ -2567,6 +2666,7 @@
     if (gb && !eventId && sheet === "mine") { openGame(gb); return; }
     var gid = td.getAttribute("data-gid");
     if (gid && !eventId && sheet === "mine") { openGamePbp(gid); return; }
+    if (sheet === "pick" && tr.getAttribute("data-pk") && td.classList.contains("lgcell")) { openGameLog(tr.getAttribute("data-pk")); return; }
     if (sheet === "pick" && tr.getAttribute("data-pk")) {
       if (td.classList.contains("wcell")) toggleWatch(tr.getAttribute("data-pk"));
       else if (td.classList.contains("tick") || td.classList.contains("name")) togglePick(tr.getAttribute("data-pk"));
@@ -2598,6 +2698,7 @@
     onDouble(e.target.closest ? e.target.closest("td") : null);
   });
   function onDouble(td) {
+    if (td && sheet === "mine" && !eventId && td.classList.contains("name") && td.getAttribute("data-pn")) { openGameLog(td.getAttribute("data-pid"), td.getAttribute("data-pn")); return; }
     var lk = td && td.parentNode.querySelector("td[data-lk]");
     if (lk && (sheet === "news" || sheet === "mine")) { window.open(lk.getAttribute("data-lk"), "_blank", "noopener"); return; }
     if (!td || !eventId || sheet !== "box") return;
@@ -2614,11 +2715,14 @@
     if (s === "sched") { openSched(); return; }
     if (s === "news") { openNews(); return; }
     if (s === "inj") { openInj(); return; }
+    if (s === "glog") { openGameLog(); return; }
+    if (s === "tsch") { openTs(); return; }
     if (s === "list") {
       holdGame();
       sheet = "list"; renderChrome(); paint(listRows(lastList || [])); loadList(); return;
     }
     if (s === "log") { holdGame(); sheet = "log"; renderChrome(); paint(logRows()); return; }
+    if (s === "manual") { holdGame(); sheet = "manual"; renderChrome(); paint(manualRows()); return; }
     if (!eventId && heldGame) {
       eventId = heldGame; sheet = s; selR = 1; selC = 0;
       renderChrome();
@@ -2747,6 +2851,627 @@
   }
   document.getElementById("zoomOut").addEventListener("click", function () { stepZoom(-1); });
   document.getElementById("zoomIn").addEventListener("click", function () { stepZoom(1); });
+
+  /* ---------- League settings and Export for AI ---------- */
+  var LG_COUNT = ["3PTM", "PTS", "REB", "AST", "ST", "BLK", "TO", "DD", "TD", "FGM", "FGA", "FTM", "FTA", "3PA", "OREB", "DREB", "PF"];
+  function lgWeight(k) { return LG.w[k] != null ? LG.w[k] : (k === "TO" ? -1 : 1); }
+  function lgCatList() {
+    var l = catList();
+    return LG.mode === "pts" ? l.filter(function (c) { return LG_COUNT.indexOf(c.k) >= 0; }) : l;
+  }
+  function lgPoints(comp) {
+    if (!comp) return NaN;
+    var t = 0, any = false;
+    lgCatList().forEach(function (c) {
+      var v = c.f(comp).v;
+      if (isNaN(v) || !isFinite(v)) return;
+      if ((c.k === "DD" || c.k === "TD") && comp.GP) v = v / comp.GP;
+      t += lgWeight(c.k) * v; any = true;
+    });
+    return any ? t : NaN;
+  }
+  function lgSlotCount() {
+    var l = LG.slots.split(/[,;\s]+/).filter(Boolean), bn = l.filter(function (x) { return /^(BN|BENCH)$/i.test(x); }).length, il = l.filter(function (x) { return /^IL/i.test(x); }).length;
+    return { all: l.length, bench: bn, il: il, start: l.length - bn - il };
+  }
+  function lgRecentLabel() { return LG.recent === "off" ? "" : (RECENT[LG.recent] ? RECENT[LG.recent][0] : ""); }
+  function lgRenderPanel(resultText) {
+    var el = document.getElementById("lgPanel");
+    function opt(v, t, cur) { return '<option value="' + v + '"' + (cur === v ? " selected" : "") + ">" + t + "</option>"; }
+    function cgroup(g, title) {
+      return '<div class="grp">' + title + '</div><div class="cats">' + CATS.filter(function (c) { return c.g === g; }).map(function (c) {
+        return '<label><input type="checkbox" data-lgcat="' + esc(c.k) + '"' + (catSel.indexOf(c.k) !== -1 ? " checked" : "") + "> " + esc(c.k) + "</label>";
+      }).join("") + "</div>";
+    }
+    var h = '<div class="ph">League Settings &amp; Export for AI</div><div class="pb">';
+    h += '<div class="row"><span class="k">Scoring method</span><select data-lg="mode">' + opt("cat", "Head-to-head categories", LG.mode) + opt("pts", "Points (weight per stat)", LG.mode) + "</select></div>";
+    h += cgroup(1, LG.mode === "pts" ? "Stats (only counting stats are scored in points mode)" : "League categories") + cgroup(2, "Other stats");
+    if (LG.mode === "pts") {
+      h += '<div class="grp">Points per stat</div><div class="cats">' + lgCatList().map(function (c) {
+        return '<label class="w">' + esc(c.k) + ' <input type="number" step="0.1" data-lgw="' + esc(c.k) + '" value="' + lgWeight(c.k) + '"></label>';
+      }).join("") + "</div>";
+    }
+    h += '<div class="grp">Roster</div>';
+    h += '<div class="row"><span class="k">Roster slots</span><input type="text" data-lg="slots" value="' + esc(LG.slots) + '" placeholder="PG, SG, G, SF, PF, F, C, C, UTIL, UTIL, BN, BN, BN"></div>';
+    h += '<div class="row"><span class="k">Adds per week</span><input type="number" min="0" data-lg="adds" value="' + esc(LG.adds) + '" style="width:80px" placeholder="none"></div>';
+    h += '<div class="grp">Data in the export</div>';
+    h += '<div class="row"><span class="k">Recent window</span><select data-lg="recent">' + opt("r7", "Last 7 days", LG.recent) + opt("r14", "Last 14 days", LG.recent) + opt("g5", "Last 5 games", LG.recent) + opt("g10", "Last 10 games", LG.recent) + opt("off", "Off", LG.recent) + "</select></div>";
+    h += '<div class="row"><label><input type="checkbox" data-lgb="vol"' + (LG.vol ? " checked" : "") + '> Shooting volume (FGA, FTA, 3PA per game)</label></div>';
+    h += '<div class="grp">Candidate pool (free agents from all players)</div>';
+    h += '<div class="row"><label><input type="checkbox" data-lgb="pool"' + (LG.pool ? " checked" : "") + '> Include a candidate pool from all players</label></div>';
+    h += '<div class="row"><span class="k">Own% at or below</span><input type="number" min="0" max="100" step="1" data-lgn="poolOwn" value="' + LG.poolOwn + '" style="width:80px"></div>';
+    h += '<div class="row"><span class="k">Minutes per game at least</span><input type="number" min="0" max="48" step="1" data-lgn="poolMin" value="' + LG.poolMin + '" style="width:80px"></div>';
+    h += '<div class="row"><span class="k">Number of players</span><input type="number" min="1" max="200" step="1" data-lgn="poolN" value="' + LG.poolN + '" style="width:80px"></div>';
+    h += '<div class="row"><label><input type="checkbox" data-lgb="role"' + (LG.role ? " checked" : "") + '> Role and outlook (minutes, team depth, last season, age)</label></div>';
+    h += '<div class="row"><label><input type="checkbox" data-lgb="news"' + (LG.news ? " checked" : "") + '> Latest news headline per player</label></div>';
+    h += '<div class="grp">Note for the AI</div><textarea data-lg="notes" rows="3" placeholder="For example: I care about potential more than current numbers. I can punt TO.">' + esc(LG.notes) + "</textarea>";
+    h += '<div class="row" style="margin-top:10px"><button type="button" class="go" data-lgact="gen">Export for AI</button><button type="button" data-lgact="close">Close</button></div>';
+    if (resultText != null) {
+      h += '<div class="grp">Result</div><div class="row"><button type="button" class="go" data-lgact="copy">Copy</button><button type="button" data-lgact="dl">Download .md</button><span id="lgMsg" style="color:#217346"></span></div>';
+      h += '<textarea id="lgOut" rows="16" readonly style="font-family:Consolas,monospace;font-size:12px"></textarea>';
+    }
+    el.innerHTML = h + "</div>";
+    if (resultText != null) document.getElementById("lgOut").value = resultText;
+  }
+  function lgFetchLogs(list, force) {
+    if (LG.recent === "off") return Promise.resolve();
+    var y = seasonNow();
+    return Promise.all(list.filter(function (p) { return p.id; }).map(function (p) {
+      var key = p.id + "|" + y, c = glCache[key];
+      if (!force && c && !c.err && Date.now() - c.t < 300000) return Promise.resolve();
+      return fetch(STAT_BASE + encodeURIComponent(p.id) + "/gamelog?season=" + y)
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (d) { glCache[key] = { t: Date.now(), games: parseLog(d) }; })
+        .catch(function (e) { glCache[key] = { t: Date.now(), err: e.message, games: [] }; });
+    }));
+  }
+  function lgRecentComp(id) {
+    if (LG.recent === "off") return null;
+    var c = glCache[id + "|" + seasonNow()];
+    if (!c || !c.games) return null;
+    var r = RECENT[LG.recent], games;
+    if (LG.recent.charAt(0) === "g") games = c.games.slice(0, r[1]);
+    else { var cut = Date.now() - r[1] * 86400000; games = c.games.filter(function (g) { return g.t >= cut; }); }
+    var list = games.map(function (g) { return comps(g.v); }).filter(function (x) { return x.MIN > 0; });
+    if (!list.length) return null;
+    var sum = sumComps(list), n = list.length, o = { GP: n };
+    Object.keys(sum).forEach(function (k) { o[k] = (k === "DD" || k === "TD") ? sum[k] : Math.round(sum[k] / n * 100) / 100; });
+    return o;
+  }
+  function lgRoleText(list, pmap) {
+    var Y = seasonNow(), cur = (seasonData[Y] && seasonData[Y].map) || {}, prev = (seasonData[Y - 1] && seasonData[Y - 1].map) || {};
+    var cats = lgCatList(), ex = exCtx();
+    function grp(pos) { return /^(PG|SG|G)$/.test(pos) ? "G" : (/^(SF|PF|F)$/.test(pos) ? "F" : (pos || "?")); }
+    function refMin(id) {
+      var c = seasonComp(cur[id]), p = seasonComp(prev[id]);
+      if (c && c.GP >= 5 && c.MIN > 0) return c.MIN;
+      if (p && p.GP >= 10 && p.MIN > 0) return p.MIN;
+      return c && c.MIN > 0 ? c.MIN : NaN;
+    }
+    var byTeam = {};
+    (playersAll || []).forEach(function (p) {
+      var m = refMin(p.id);
+      if (isNaN(m) || !p.teamId) return;
+      (byTeam[p.teamId] = byTeam[p.teamId] || []).push({ p: p, m: m });
+    });
+    Object.keys(byTeam).forEach(function (t) { byTeam[t].sort(function (a, b) { return b.m - a.m; }); });
+    function tag(id, name) { var i = injOf(id, name); return i ? " (" + injText(i) + ")" : ""; }
+    var o = "## Role and outlook\n\n";
+    o += "- Minutes rank = rank of minutes per game inside the team. It uses this season when the player has 5 or more games, otherwise last season (10 or more games). It is a proxy, because the data source has no confirmed starter flag.\n\n";
+    list.forEach(function (p) {
+      var x = ex.get(p.id, p.name), pi = pmap[x.id] || {}, id = x.id, tm = byTeam[pi.teamId] || [];
+      var c = seasonComp(cur[id]), pc = seasonComp(prev[id]), rc = lgRecentComp(id);
+      var bits = [];
+      if (pi.age !== "" && pi.age != null) bits.push("age " + pi.age);
+      if (pi.exp !== "" && pi.exp != null) bits.push(pi.exp === 0 ? "rookie" : pi.exp + " yr in the league");
+      var o1 = "- " + p.name + " (" + (x.team && x.team !== "?" ? x.team : "?") + ", " + (pi.pos || "?") + (bits.length ? ", " + bits.join(", ") : "") + ")\n";
+      var mins = [];
+      mins.push("this season " + (c && c.MIN != null ? c.MIN + " min in " + c.GP + " games" : "no games yet"));
+      if (LG.recent !== "off") mins.push(lgRecentLabel().toLowerCase() + " " + (rc ? rc.MIN + " min in " + rc.GP + " games" : "no games"));
+      o1 += "  - Minutes: " + mins.join("; ") + "\n";
+      if (pc && pc.GP) o1 += "  - Last season: " + pc.GP + " games, " + pc.MIN + " min, " + cats.map(function (k) { return k.k + " " + catText(pc, k.k); }).join(", ") + "\n";
+      else o1 += "  - Last season: no data (rookie or new to the league)\n";
+      var idx = -1;
+      for (var i = 0; i < tm.length; i++) if (tm[i].p.id === id) { idx = i; break; }
+      if (idx >= 0) o1 += "  - Minutes rank in " + pi.team + ": " + (idx + 1) + " of " + tm.length + " (reference " + Math.round(tm[idx].m * 10) / 10 + " min)\n";
+      var g = grp(pi.pos), peers = tm.filter(function (t) { return t.p.id !== id && grp(t.p.pos) === g; }).slice(0, 3);
+      if (peers.length) o1 += "  - Same-position teammates with the most minutes: " + peers.map(function (t) { return t.p.name + " " + Math.round(t.m * 10) / 10 + tag(t.p.id, t.p.name); }).join("; ") + "\n";
+      var hurt = tm.filter(function (t) { return t.p.id !== id && t.m >= 15 && injOf(t.p.id, t.p.name); }).slice(0, 4);
+      if (hurt.length) o1 += "  - Injured teammates who play 15+ min: " + hurt.map(function (t) { return t.p.name + " " + Math.round(t.m * 10) / 10 + tag(t.p.id, t.p.name); }).join("; ") + "\n";
+      o += o1;
+    });
+    return o + "\n";
+  }
+  function lgPoolBuild(pmap) {
+    var Y = seasonNow(), cur = (seasonData[Y] && seasonData[Y].map) || {}, prev = (seasonData[Y - 1] && seasonData[Y - 1].map) || {};
+    var mine = {};
+    roster.concat(watch).forEach(function (p) { if (p.id) mine[String(p.id)] = 1; });
+    function refComp(id) {
+      var c = seasonComp(cur[id]), p = seasonComp(prev[id]);
+      if (c && c.GP >= 5 && c.MIN > 0) return c;
+      if (p && p.GP >= 10 && p.MIN > 0) return p;
+      return c && c.GP >= 1 && c.MIN > 0 ? c : null;
+    }
+    var seen = {}, ids = Object.keys(cur).concat(Object.keys(prev)).filter(function (id) { if (seen[id]) return false; seen[id] = 1; return true; });
+    var all = [];
+    ids.forEach(function (id) { var c = refComp(id); if (c) all.push({ id: id, c: c }); });
+    var pop = all.filter(function (a) { return a.c.MIN >= 15; });
+    var cats = lgCatList(), pts = LG.mode === "pts";
+    var sFGM = 0, sFGA = 0, sFTM = 0, sFTA = 0, sTPM = 0, sTPA = 0;
+    pop.forEach(function (a) { sFGM += a.c.FGM || 0; sFGA += a.c.FGA || 0; sFTM += a.c.FTM || 0; sFTA += a.c.FTA || 0; sTPM += a.c.TPM || 0; sTPA += a.c.TPA || 0; });
+    var avg = { fg: sFGA ? sFGM / sFGA : 0, ft: sFTA ? sFTM / sFTA : 0, tp: sTPA ? sTPM / sTPA : 0 };
+    function val(c, k) {
+      if (k === "FG%") return c.FGA ? c.FGM - avg.fg * c.FGA : NaN;
+      if (k === "FT%") return c.FTA ? c.FTM - avg.ft * c.FTA : NaN;
+      if (k === "3PT%") return c.TPA ? c.TPM - avg.tp * c.TPA : NaN;
+      if (k === "TO") return c.TO != null ? -c.TO : NaN;
+      if (k === "A/T") return c.TO ? Math.min(c.AST / c.TO, 10) : NaN;
+      if (k === "DD" || k === "TD") return c.GP && c[k] != null ? c[k] / c.GP : NaN;
+      var d = catDef(k); return d ? d.f(c).v : NaN;
+    }
+    var st = {};
+    if (!pts) cats.forEach(function (cd) {
+      var v = pop.map(function (a) { return val(a.c, cd.k); }).filter(function (x) { return !isNaN(x) && isFinite(x); });
+      var m = v.reduce(function (a, b) { return a + b; }, 0) / (v.length || 1);
+      var sd = Math.sqrt(v.reduce(function (a, b) { return a + (b - m) * (b - m); }, 0) / (v.length || 1)) || 1;
+      st[cd.k] = { m: m, sd: sd };
+    });
+    var haveOwn = Object.keys(ownMap).length > 0, out = [];
+    all.forEach(function (a) {
+      var p = pmap[a.id];
+      if (!p || mine[a.id] || a.c.MIN < LG.poolMin) return;
+      var ow = ownOf(a.id), own = ow && !isNaN(ow.own) ? ow.own : 0;
+      if (haveOwn && own > LG.poolOwn) return;
+      var inj = injOf(a.id, p.name);
+      if (inj && inj.ofs) return;
+      var sc = 0;
+      if (pts) sc = lgPoints(a.c);
+      else cats.forEach(function (cd) { var v = val(a.c, cd.k); if (!isNaN(v) && isFinite(v)) sc += (v - st[cd.k].m) / st[cd.k].sd; });
+      if (isNaN(sc)) return;
+      out.push({ name: p.name, id: a.id, score: sc });
+    });
+    out.sort(function (x, y) { return y.score - x.score; });
+    return { list: out.slice(0, LG.poolN), found: out.length, haveOwn: haveOwn };
+  }
+  function lgBuild(pool) {
+    var ex = exCtx(), pmap = {};
+    (playersAll || []).forEach(function (p) { pmap[p.id] = p; });
+    var cats = lgCatList(), pts = LG.mode === "pts", sc = lgSlotCount(), rl = lgRecentLabel();
+    function line(p, fit) {
+      var x = ex.get(p.id, p.name), pi = pmap[x.id] || {}, rc = lgRecentComp(x.id), inj = injOf(x.id, p.name);
+      var f = [p.name, x.team && x.team !== "?" ? x.team : "", pi.pos || "", inj ? injText(inj) : "Healthy", isNaN(x.gp) ? "" : x.gp, x.comp && x.comp.MIN != null ? x.comp.MIN : ""];
+      cats.forEach(function (c) { f.push(x.comp ? catText(x.comp, c.k) : ""); });
+      if (pts) f.push(x.comp ? lgPoints(x.comp).toFixed(1) : "");
+      if (LG.vol) f.push(x.comp && x.comp.FGA != null ? x.comp.FGA : "", x.comp && x.comp.FTA != null ? x.comp.FTA : "", x.comp && x.comp.TPA != null ? x.comp.TPA : "");
+      if (LG.recent !== "off") {
+        f.push(rc ? rc.GP : "", rc ? rc.MIN : "");
+        cats.forEach(function (c) { f.push(rc ? catText(rc, c.k) : ""); });
+        if (pts) f.push(rc ? lgPoints(rc).toFixed(1) : "");
+      }
+      if (fit !== undefined) f.splice(6, 0, fit.toFixed(1));
+      f.push(x.n7, x.wk, pctText(x.own), pctText(x.chg, true));
+      if (LG.news) f.push(x.news ? String(x.news.head || "").replace(/\|/g, "/") : "");
+      return "| " + f.map(function (v) { return String(v).replace(/\|/g, "/"); }).join(" | ") + " |";
+    }
+    var head = ["Player", "Team", "Pos", "Injury", "GP", "S MIN"];
+    cats.forEach(function (c) { head.push("S " + c.k); });
+    if (pts) head.push("S FP/g");
+    if (LG.vol) head.push("S FGA", "S FTA", "S 3PA");
+    if (LG.recent !== "off") { head.push("R GP", "R MIN"); cats.forEach(function (c) { head.push("R " + c.k); }); if (pts) head.push("R FP/g"); }
+    head.push("Games next 7 days", "Games left this week", "Own%", "Chg%");
+    if (LG.news) head.push("Latest news");
+    function table(list, withFit) {
+      if (!list.length) return "(empty)\n";
+      var hd = head.slice();
+      if (withFit) hd.splice(6, 0, "Fit");
+      return "| " + hd.join(" | ") + " |\n|" + hd.map(function () { return "---"; }).join("|") + "|\n" + list.map(function (p) { return line(p, withFit ? p.score : undefined); }).join("\n") + "\n";
+    }
+    var seasonTxt = watchSeason ? seasonLabel(watchSeason) : "?";
+    var o = "# Fantasy basketball lineup analysis\n\n";
+    o += "Generated: " + new Date().toLocaleString("sv-SE", { timeZone: "Asia/Taipei" }) + " (UTC+8). Source: ESPN public data.\n\n";
+    o += "## League setup\n";
+    o += "- Format: " + (pts ? "points league. Points per stat: " + cats.map(function (c) { return c.k + " " + lgWeight(c.k); }).join(", ") : "head-to-head categories (weekly matchup). Categories (" + cats.length + "): " + cats.map(function (c) { return c.k; }).join(", ")) + "\n";
+    o += "- Roster slots (" + sc.all + "): " + LG.slots + (sc.bench ? " (starters " + sc.start + ", bench " + sc.bench + (sc.il ? ", IL " + sc.il : "") + ")" : "") + "\n";
+    if (LG.adds) o += "- Adds per week: " + LG.adds + "\n";
+    if (LG.notes.trim()) o += "- My notes: " + LG.notes.trim().replace(/\n+/g, " ") + "\n";
+    o += "\n## Column guide\n";
+    o += "- S = season per game (" + seasonTxt + (watchSeason && watchSeason !== seasonNow() ? ", the previous season, because the new season has too few games yet" : "") + "); DD and TD are season totals.\n";
+    if (LG.recent !== "off") o += "- R = " + rl.toLowerCase() + " per game (blank means no games in that window); DD and TD are totals in that window.\n";
+    o += "- S MIN and R MIN are minutes per game.\n";
+    o += "- Games next 7 days and Games left this week come from the schedule. Own% is the ESPN fantasy roster rate and Chg% its change since the previous day (ESPN leagues, not Yahoo).\n\n";
+    o += "## My Players (" + roster.length + ")\n\n" + table(roster) + "\n";
+    o += "## Watchlist (free-agent candidates, " + watch.length + ")\n\n" + table(watch) + "\n";
+    if (LG.pool && pool) {
+      o += "## Candidate Pool (" + pool.list.length + " of " + pool.found + " matching players from the whole league)\n\n";
+      o += "- Filters: Own% at or below " + LG.poolOwn + ", at least " + LG.poolMin + " minutes per game, not on my lists, not out for the season. Ranked by Fit.\n";
+      o += "- Fit = " + (LG.mode === "pts" ? "points per game with my weights" : "sum of z-scores over my categories (higher is better; percentage categories are weighted by shooting volume; not adjusted for position)") + ", from this season when the player has 5 or more games, otherwise from last season.\n";
+      o += "- Own% comes from ESPN, not Yahoo, so this list is a good guess of who is free, not a guarantee." + (pool.haveOwn ? "" : " Own% could not be loaded, so no Own% filter was applied.") + "\n\n";
+      o += table(pool.list, true) + "\n";
+    }
+    if (LG.role) {
+      o += "## Role and outlook: My Players\n\n" + lgRoleText(roster, pmap).replace("## Role and outlook\n\n", "");
+      o += "## Role and outlook: Watchlist\n\n" + lgRoleText(watch, pmap).replace(/^## Role and outlook\n\n- Minutes rank[^\n]*\n\n/, "");
+      if (LG.pool && pool && pool.list.length) o += "## Role and outlook: Candidate Pool\n\n" + lgRoleText(pool.list, pmap).replace(/^## Role and outlook\n\n- Minutes rank[^\n]*\n\n/, "");
+    }
+    o += "## Task\n";
+    o += "- Compare my roster with my watchlist" + (LG.pool ? " and the Candidate Pool" : "") + ". Ignore opponents.\n";
+    o += "- Recommend which players to drop and which players to add (from my watchlist" + (LG.pool ? " or the Candidate Pool" : "") + "), ranked from the most valuable swap down. Respect the roster slots" + (LG.adds ? " and the limit of " + LG.adds + " adds per week" : "") + ".\n";
+    o += pts ? "- Judge by points per game multiplied by games this week, then by trend and potential.\n" : "- For each swap say which categories get stronger or weaker. Judge percentage categories (FG%, FT%, 3PT%) with the shooting volume, not the percentage alone.\n";
+    o += "- Consider injuries, games this week, recent trend against the season, and potential (rising role or minutes), not only current numbers.\n";
+    if (LG.role) o += "- Use the Role and outlook sections to judge who can get a lot of minutes and who has a future (age, years in the league, last season, same-position competition, injured teammates). Say clearly when a judgment is only a guess.\n";
+    o += "- Also name the players on my roster that are safe to keep and the weakest spot of my team.\n";
+    o += "- Reply in Traditional Chinese (Taiwan wording), concise bullet points, exact numbers, no disclaimers.\n";
+    return o;
+  }
+  var lgBusy = false;
+  function lgGenerate() {
+    if (lgBusy) return;
+    if (!roster.length && !watch.length) { lgRenderPanel("Both My Players and the Watchlist are empty."); return; }
+    lgBusy = true;
+    statusLeft.textContent = "Preparing the export…";
+    var all = roster.concat(watch);
+    var pool = null;
+    loadWatch(false).then(function () {
+      return (LG.role || LG.pool) ? Promise.all([loadSeasonData(seasonNow(), false).catch(function () {}), loadSeasonData(seasonNow() - 1, false).catch(function () {})]) : null;
+    }).then(function () {
+      var pm = {};
+      (playersAll || []).forEach(function (p) { pm[p.id] = p; });
+      pool = LG.pool ? lgPoolBuild(pm) : null;
+      var extra = pool ? pool.list : [];
+      return Promise.all([lgFetchLogs(all.concat(extra), false)].concat(extra.map(function (p) { return fetchPlayerNews(p, false); })));
+    }).then(function () {
+      lgBusy = false;
+      lgRenderPanel(lgBuild(pool));
+      statusLeft.textContent = "Export text is ready. Use Copy.";
+    }).catch(function (e) {
+      lgBusy = false;
+      lgRenderPanel("Could not build the export: " + (e && e.message || e));
+    });
+  }
+  (function () {
+    var panel = document.createElement("div");
+    panel.id = "lgPanel"; panel.hidden = true;
+    document.body.appendChild(panel);
+    function changed() { saveSettings(); }
+    panel.addEventListener("change", function (e) {
+      var t = e.target, k = t.getAttribute("data-lg"), c = t.getAttribute("data-lgcat"), b = t.getAttribute("data-lgb"), w = t.getAttribute("data-lgw");
+      if (c) {
+        var next = catSel.filter(function (x) { return x !== c; });
+        if (t.checked) next.push(c);
+        catSel = next; saveCats(); changed();
+        if (LG.mode === "pts") lgRenderPanel(); 
+        if (sheet === "mine" && !eventId) paint(mineRows());
+        return;
+      }
+      if (w) { var n = Number(t.value); if (!isNaN(n)) { LG.w[w] = n; changed(); } return; }
+      if (b) { LG[b] = t.checked; changed(); return; }
+      var nk = t.getAttribute("data-lgn");
+      if (nk) { var nv = Number(t.value); if (!isNaN(nv) && nv >= 0) { LG[nk] = nk === "poolN" ? Math.max(1, Math.round(nv)) : nv; changed(); } return; }
+      if (k) {
+        LG[k] = t.value; changed();
+        if (k === "mode") lgRenderPanel();
+      }
+    });
+    panel.addEventListener("input", function (e) {
+      var k = e.target.getAttribute("data-lg");
+      if (k === "slots" || k === "notes" || k === "adds") { LG[k] = e.target.value; changed(); }
+    });
+    panel.addEventListener("click", function (e) {
+      var a = e.target.getAttribute && e.target.getAttribute("data-lgact");
+      if (!a) return;
+      if (a === "close") { panel.hidden = true; return; }
+      if (a === "gen") { lgGenerate(); return; }
+      var out = document.getElementById("lgOut"), msg = document.getElementById("lgMsg");
+      if (!out) return;
+      if (a === "copy") {
+        function ok() { if (msg) msg.textContent = "Copied."; }
+        function fallback() { out.focus(); out.select(); try { if (document.execCommand("copy")) ok(); else if (msg) msg.textContent = "Press and hold the text to copy."; } catch (er) { if (msg) msg.textContent = "Press and hold the text to copy."; } }
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(out.value).then(ok, fallback); else fallback();
+      } else if (a === "dl") {
+        var blob = new Blob([out.value], { type: "text/markdown" }), el = document.createElement("a");
+        el.href = URL.createObjectURL(blob); el.download = "lineup_for_ai.md";
+        document.body.appendChild(el); el.click(); el.remove();
+        setTimeout(function () { URL.revokeObjectURL(el.href); }, 2000);
+      }
+    });
+    document.getElementById("lgBtn").addEventListener("click", function () { if (panel.hidden) { lgRenderPanel(); panel.hidden = false; } else panel.hidden = true; });
+    document.getElementById("aiBtn").addEventListener("click", function () { lgRenderPanel(); panel.hidden = false; lgGenerate(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") panel.hidden = true; });
+  })();
+
+  /* ---------- Game Log (one player) ---------- */
+  var glPlayer = null, glYear = 0, glBusy = false, glTeam = "all";
+  var glDate = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", month: "2-digit", day: "2-digit", weekday: "short" });
+  function glDateText(t) {
+    var p = {};
+    glDate.formatToParts(new Date(t)).forEach(function (x) { p[x.type] = x.value; });
+    return p.month + "/" + p.day + " " + p.weekday;
+  }
+  function glFillControls() {
+    var sel = document.getElementById("glPlayer"), seen = {}, h = "", used = false;
+    function opt(p, dup) {
+      if (!p.id || (!dup && seen[p.id])) return "";
+      seen[p.id] = 1;
+      var on = !used && glPlayer && glPlayer.id === String(p.id);
+      if (on) used = true;
+      return '<option value="' + esc(p.id) + '"' + (on ? " selected" : "") + ">" + esc(p.name) + "</option>";
+    }
+    var a = roster.map(function (p) { return opt(p); }).join(""), b = watch.map(function (p) { return opt(p); }).join("");
+    var tmList = glTeam === "all" ? [] : (playersAll || []).filter(function (p) { return p.teamId === glTeam; }).sort(function (x, y) { return x.name.localeCompare(y.name); });
+    var tg = tmList.map(function (p) { return opt(p, true); }).join("");
+    if (glPlayer && !used) h += '<option value="' + esc(glPlayer.id) + '" selected>' + esc(glPlayer.name) + "</option>";
+    if (a) h += '<optgroup label="My Players">' + a + "</optgroup>";
+    if (b) h += '<optgroup label="Watchlist">' + b + "</optgroup>";
+    if (tg) { var tt = (teamsAll || []).filter(function (t) { return t.id === glTeam; })[0]; h += '<optgroup label="' + esc(tt ? tt.abbr + " players" : "Team players") + '">' + tg + "</optgroup>"; }
+    sel.innerHTML = h || '<option value="">(no players)</option>';
+    var ts = document.getElementById("glTeam"), th = '<option value="all">All teams</option>';
+    (teamsAll || []).forEach(function (t) { th += '<option value="' + esc(t.id) + '"' + (glTeam === t.id ? " selected" : "") + ">" + esc(t.abbr + " \u2013 " + t.name) + "</option>"; });
+    ts.innerHTML = th;
+    var dl = document.getElementById("glDl");
+    var dlist = glTeam === "all" ? (playersAll || []) : tmList;
+    dl.innerHTML = dlist.map(function (p) { return '<option value="' + esc(p.name) + '"></option>'; }).join("");
+    var ys = document.getElementById("glSeason"), y0 = seasonNow(), yh = "";
+    for (var i = 0; i < 3; i++) yh += '<option value="' + (y0 - i) + '"' + ((glYear || y0) === y0 - i ? " selected" : "") + ">" + seasonLabel(y0 - i) + "</option>";
+    ys.innerHTML = yh;
+  }
+  function openGameLog(id, name) {
+    holdGame();
+    sheet = "glog";
+    selR = 1; selC = 0;
+    clearTimeout(timer);
+    if (!glYear) glYear = seasonNow();
+    if (id || name) {
+      var p = (id && (playersAll || []).filter(function (x) { return x.id === String(id); })[0]) || (name && (playersAll || []).filter(function (x) { return norm(x.name) === norm(name); })[0]);
+      glPlayer = p ? { id: p.id, name: p.name } : (id ? { id: String(id), name: name || String(id) } : null);
+    }
+    if (!glPlayer) { var first = roster.filter(function (r) { return r.id; })[0] || watch.filter(function (r) { return r.id; })[0]; if (first) glPlayer = { id: String(first.id), name: first.name }; }
+    renderChrome();
+    glFillControls();
+    var pl = playersAll ? Promise.resolve() : loadPlayers(false).catch(function () {});
+    pl.then(function () { glFillControls(); });
+    paint(glRows());
+    glLoad(false);
+  }
+  function glLoad(force) {
+    if (!glPlayer || !glPlayer.id) { stamp(); return Promise.resolve(); }
+    var key = glPlayer.id + "|" + glYear, c = glCache[key];
+    if (!force && c && !c.err && Date.now() - c.t < 300000) { paint(glRows()); stamp(); return Promise.resolve(); }
+    glBusy = true;
+    statusLeft.textContent = "Calculating…";
+    paint(glRows());
+    return fetch(STAT_BASE + encodeURIComponent(glPlayer.id) + "/gamelog?season=" + glYear)
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (d) { glCache[key] = { t: Date.now(), games: parseLog(d) }; })
+      .catch(function (e) { glCache[key] = { t: Date.now(), err: e.message, games: [] }; })
+      .then(function () { glBusy = false; if (sheet === "glog" && !eventId) paint(glRows()); stamp(); });
+  }
+  function glAgg(games) {
+    var list = games.map(function (g) { return comps(g.v); }).filter(function (x) { return x.MIN > 0; });
+    if (!list.length) return null;
+    var sum = sumComps(list), n = list.length, o = { GP: n };
+    Object.keys(sum).forEach(function (k) { o[k] = (k === "DD" || k === "TD") ? sum[k] : Math.round(sum[k] / n * 100) / 100; });
+    return o;
+  }
+  function glRows() {
+    var cats = catList(), nc = cats.length;
+    if (!glPlayer) return [{ c: [{ t: "Game Log", cls: "bold" }] }, { c: [] }, { c: [{ t: "Choose a player in the box above, or double-click a player name in My Players or the Watchlist, or click the Log cell in Player List.", span: 8, cls: "dim" }] }];
+    var key = glPlayer.id + "|" + glYear, c = glCache[key];
+    var pi = (playersAll || []).filter(function (x) { return x.id === glPlayer.id; })[0] || {};
+    var rows = [{ c: [{ t: "Game Log   |   " + glPlayer.name + (pi.team ? " (" + pi.team + (pi.pos ? ", " + pi.pos : "") + ")" : "") + "   |   Season " + seasonLabel(glYear) + "   |   Regular season, games played, newest first   |   Dates are US Eastern", span: 12, cls: "bold" }] }, { c: [] }];
+    if (!c) { rows.push({ c: [{ t: glBusy ? "Loading…" : "No data loaded yet.", span: 8, cls: "dim" }] }); return rows; }
+    if (c.err) { rows.push({ c: [{ t: "Could not load the game log (" + c.err + "). Click Refresh All to retry.", span: 8, cls: "dim" }] }); return rows; }
+    var games = c.games.filter(function (g) { return parseFloat(g.v.MIN) > 0; });
+    var head = [{ t: "Date", cls: "hdr stat" }, { t: "Opp", cls: "hdr num" }, { t: "Result", cls: "hdr stat" }, { t: "MIN", cls: "hdr num" }];
+    cats.forEach(function (ct) { head.push({ t: ct.k, cls: "hdr num" }); });
+    head.push({ t: "FG", cls: "hdr num" }, { t: "FT", cls: "hdr num" }, { t: "3PT", cls: "hdr num" }, { t: "+/-", cls: "hdr num" });
+    rows.push({ c: head });
+    if (!games.length) { rows.push({ c: [{ t: "No games played in this season.", span: 8, cls: "dim" }] }); return rows; }
+    function r1(v) { return v == null || isNaN(v) ? "" : String(Math.round(v * 10) / 10); }
+    function avgRow(label, list) {
+      var a = glAgg(list);
+      if (!a) return null;
+      var r = [{ t: label, cls: "stat bold" }, { t: "", cls: "num" }, { t: "", cls: "stat" }, { t: r1(a.MIN), cls: "num bold" }];
+      cats.forEach(function (ct) { r.push({ t: catText(a, ct.k), cls: "num bold" }); });
+      r.push({ t: r1(a.FGM) + "-" + r1(a.FGA), cls: "num bold" }, { t: r1(a.FTM) + "-" + r1(a.FTA), cls: "num bold" }, { t: r1(a.TPM) + "-" + r1(a.TPA), cls: "num bold" }, { t: r1(a.PM), cls: "num bold" });
+      return { c: r };
+    }
+    [["Season average (" + games.length + " games)", games], ["Last 5 games", games.slice(0, 5)], ["Last 10 games", games.slice(0, 10)]].forEach(function (x) {
+      var ar = avgRow(x[0], x[1]);
+      if (ar) rows.push(ar);
+    });
+    rows.push({ c: [{ t: "DD and TD in the average rows are totals. Percentages come from the summed shots.", span: 12, cls: "dim" }] });
+    games.forEach(function (g) {
+      var cp = comps(g.v);
+      var res = g.res ? g.res + (g.score ? " " + g.score : "") : "";
+      var r = [{ t: g.t ? glDateText(g.t) : "", cls: "stat" }, { t: g.opp ? (g.at === "@" ? "@ " : "vs ") + g.opp : "", cls: "num" }, { t: res, cls: "stat " + (g.res === "W" ? "wlw" : (g.res === "L" ? "wll" : "")) }, { t: g.v.MIN != null ? String(g.v.MIN) : "", cls: "num" }];
+      cats.forEach(function (ct) { r.push({ t: catText(cp, ct.k), cls: "num" + (ct.k === "PTS" ? " bold" : "") }); });
+      r.push({ t: g.v.FG || "", cls: "num" }, { t: g.v.FT || "", cls: "num" }, { t: g.v["3PT"] || "", cls: "num" }, { t: g.v["+/-"] != null ? String(g.v["+/-"]) : "", cls: "num" });
+      rows.push({ c: r });
+    });
+    return rows;
+  }
+  (function () {
+    document.getElementById("glPlayer").addEventListener("change", function (e) {
+      var id = e.target.value;
+      if (!id) return;
+      var p = (playersAll || []).filter(function (x) { return x.id === id; })[0] || roster.concat(watch).filter(function (x) { return String(x.id) === id; })[0];
+      glPlayer = { id: id, name: p ? p.name : id };
+      glLoad(false);
+    });
+    document.getElementById("glTeam").addEventListener("change", function (e) { glTeam = e.target.value || "all"; glFillControls(); });
+    document.getElementById("glSeason").addEventListener("change", function (e) { glYear = Number(e.target.value) || seasonNow(); glLoad(false); });
+    document.getElementById("glSearch").addEventListener("change", function (e) {
+      var q = norm(e.target.value);
+      if (!q) return;
+      var pool = (playersAll || []).filter(function (x) { return glTeam === "all" || x.teamId === glTeam; });
+      var p = pool.filter(function (x) { return norm(x.name) === q; })[0];
+      if (!p) { var m = pool.filter(function (x) { return norm(x.name).indexOf(q) >= 0; }); if (m.length === 1) p = m[0]; }
+      if (!p) { statusLeft.textContent = "No single player matches \"" + e.target.value + "\". Pick a name from the suggestions."; return; }
+      e.target.value = "";
+      glPlayer = { id: p.id, name: p.name };
+      glFillControls();
+      glLoad(false);
+    });
+  })();
+
+  /* ---------- Team Schedule (all teams, by week) ---------- */
+  var TS_KEY = "ps_tsched_v1";
+  try { var tsc = JSON.parse(localStorage.getItem(TS_KEY) || "null"); if (tsc && tsc.map && Date.now() - tsc.t < 86400000) tsCache = { t: tsc.t, map: tsc.map, bad: tsc.bad || [] }; } catch (e) {}
+  function etDay(iso) {
+    try { return new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(iso)); }
+    catch (e) { return String(iso).slice(0, 10); }
+  }
+  function tsParse(d, tid) {
+    var out = [];
+    ((d && d.events) || []).forEach(function (e) {
+      var st = e.seasonType && (e.seasonType.id != null ? e.seasonType.id : e.seasonType.type);
+      if (st != null && String(st) === "1") return;
+      var comp = (e.competitions || [])[0] || {}, cs = comp.competitors || [], me = null, op = null;
+      cs.forEach(function (c) { if (c.team && String(c.team.id) === String(tid)) me = c; else op = c; });
+      var dt = e.date || comp.date;
+      if (!dt || !me) return;
+      out.push({ d: etDay(dt), h: me.homeAway === "home" ? 1 : 0, o: (op && op.team && (op.team.abbreviation || op.team.displayName)) || "?" });
+    });
+    out.sort(function (a, b) { return a.d < b.d ? -1 : (a.d > b.d ? 1 : 0); });
+    return out;
+  }
+  function loadTs(force) {
+    if (tsBusy) return tsBusy;
+    if (!force && tsCache && Date.now() - tsCache.t < 86400000) { if (sheet === "tsch" && !eventId) paint(tsRows()); stamp(); return Promise.resolve(); }
+    statusLeft.textContent = "Calculating…";
+    var pl = playersAll ? Promise.resolve() : loadPlayers(false).catch(function () {});
+    tsBusy = pl.then(function () {
+      var teams = (teamsAll || []).filter(function (t) { return t.abbr; }), map = {}, bad = [];
+      if (!teams.length) throw new Error("no team list");
+      return Promise.all(teams.map(function (t) {
+        return fetch(BASE + "teams/" + encodeURIComponent(t.id) + "/schedule?seasontype=2", { cache: "no-store" })
+          .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+          .then(function (d) { map[t.id] = tsParse(d, t.id); })
+          .catch(function () { bad.push(t.id); });
+      })).then(function () {
+        if (Object.keys(map).length) {
+          tsCache = { t: Date.now(), map: map, bad: bad };
+          try { localStorage.setItem(TS_KEY, JSON.stringify(tsCache)); } catch (e) {}
+        } else throw new Error("could not load any team schedule");
+      });
+    }).catch(function (e) {
+      if (!tsCache) tsCache = { t: Date.now(), map: {}, bad: [], err: e.message };
+      else tsCache.err = e.message;
+    }).then(function () { tsBusy = false; if (sheet === "tsch" && !eventId) paint(tsRows()); stamp(); });
+    return tsBusy;
+  }
+  function openTs() {
+    holdGame();
+    sheet = "tsch";
+    selR = 1; selC = 0;
+    clearTimeout(timer);
+    renderChrome();
+    tsFillControls();
+    paint(tsCache && !tsCache.err ? tsRows() : loadingRows());
+    loadTs(!tsCache || tsCache.err || Date.now() - tsCache.t > 86400000);
+  }
+  function tsWeekList() {
+    var today = etToday(), st = shiftDate(today, -((dowOf(today) - tsStart + 7) % 7)), w = [];
+    for (var i = 0; i < tsWeeks; i++) w.push({ s: shiftDate(st, 7 * i), e: shiftDate(st, 7 * i + 6) });
+    return { today: today, weeks: w };
+  }
+  function tsLabel(w) { return w.s.slice(5).replace("-", "/") + "–" + w.e.slice(5).replace("-", "/"); }
+  function tsFillControls() {
+    document.getElementById("tsStart").value = String(tsStart);
+    document.getElementById("tsWeeks").value = String(tsWeeks);
+  }
+  function tsRows() {
+    var rows = [];
+    var teams = (teamsAll || []).filter(function (t) { return t.abbr; });
+    var c = tsCache;
+    var wk = tsWeekList(), today = wk.today, weeks = wk.weeks;
+    var upd = c && c.t ? clock.format(new Date(c.t)) : "…";
+    rows.push({ c: [{ t: "Team Schedule   |   Opponent for every day, a total after each week   |   Weeks start on " + ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][tsStart] + ", dates are US Eastern   |   Left = games from today (" + today.slice(5).replace("-", "/") + ") to the end of this week   |   Loaded " + upd + " (UTC+8)", span: 12, cls: "bold" }] });
+    if (c && c.err) rows.push({ c: [{ t: "Could not load the team schedules (" + c.err + "). Click Refresh All to retry.", span: 10, cls: "dim" }] });
+    else if (c && c.bad && c.bad.length) rows.push({ c: [{ t: c.bad.length + " team(s) could not be loaded and show ?. Click Refresh All to retry.", span: 10, cls: "dim" }] });
+    else rows.push({ c: [] });
+    if (!c || !teams.length) { rows.push({ c: [{ t: "Loading…", span: 6, cls: "dim" }] }); return rows; }
+    var mine = {}, tmOf = {};
+    (playersAll || []).forEach(function (p) { tmOf[p.id] = p.teamId; });
+    roster.concat(watch).forEach(function (p) { var t = p.id && tmOf[p.id]; if (t) mine[t] = 1; });
+    var colDays = [];
+    weeks.forEach(function (w, wi) { for (var i = 0; i < 7; i++) colDays.push({ d: shiftDate(w.s, i), wi: wi }); });
+    var data = teams.map(function (t) {
+      var list = c.map[t.id], ok = !!list;
+      list = list || [];
+      var byDay = {};
+      list.forEach(function (g) { byDay[g.d] = g; });
+      var o = { t: t, ok: ok, mine: !!mine[t.id], days: [], w: weeks.map(function () { return ok ? 0 : NaN; }) };
+      colDays.forEach(function (cd) {
+        var g = byDay[cd.d] || null, prev = byDay[shiftDate(cd.d, -1)];
+        o.days.push({ d: cd.d, g: g, b2b: !!(g && prev) });
+        if (g && ok) o.w[cd.wi]++;
+      });
+      o.left = ok ? list.filter(function (g) { return g.d >= today && g.d <= weeks[0].e; }).length : NaN;
+      o.sum = ok ? o.left + o.w.slice(1).reduce(function (a, b) { return a + b; }, 0) : NaN;
+      return o;
+    });
+    var k = sortTs.k, dir = sortTs.d;
+    function keyVal(o) {
+      if (k === "LEFT") return o.left;
+      if (k === "SUM") return o.sum;
+      if (k && k.charAt(0) === "W") return o.w[Number(k.slice(1))];
+      if (k && k.charAt(0) === "D") { var x = o.days[Number(k.slice(1))]; return x && x.g ? 1 : 0; }
+      return NaN;
+    }
+    if (k === "TEAM" || k === "NAME") data.sort(function (a, b) { return cmp(k === "TEAM" ? a.t.abbr : a.t.name, k === "TEAM" ? b.t.abbr : b.t.name, dir, false); });
+    else if (k) data.sort(function (a, b) { return cmp(keyVal(a), keyVal(b), dir, true) || a.t.abbr.localeCompare(b.t.abbr); });
+    else data.sort(function (a, b) { return a.t.abbr.localeCompare(b.t.abbr); });
+    function hl(vals) {
+      var v = vals.filter(function (x) { return !isNaN(x); }), mx = Math.max.apply(null, v), mn = Math.min.apply(null, v);
+      return function (x) { return mx === mn || isNaN(x) ? "" : (x === mx ? " tsmax" : (x === mn ? " tsmin" : "")); };
+    }
+    var head = [hdrCell("Team", "hdr num", "ts|TEAM", k === "TEAM", dir), hdrCell("Name", "hdr stat", "ts|NAME", k === "NAME", dir), hdrCell("Left", "hdr num", "ts|LEFT", k === "LEFT", dir)];
+    var colIdx = 0;
+    weeks.forEach(function (w, wi) {
+      for (var i = 0; i < 7; i++) {
+        var dd = shiftDate(w.s, i);
+        head.push(hdrCell(wdName[dowOf(dd)] + " " + dd.slice(5).replace("-", "/"), "hdr num", "ts|D" + colIdx, k === "D" + colIdx, dir));
+        colIdx++;
+      }
+      head.push(hdrCell("Wk " + tsLabel(w), "hdr num wtot", "ts|W" + wi, k === "W" + wi, dir));
+    });
+    head.push(hdrCell("Total", "hdr num", "ts|SUM", k === "SUM", dir));
+    rows.push({ c: head });
+    var hLeft = hl(data.map(function (o) { return o.left; })), hSum = hl(data.map(function (o) { return o.sum; }));
+    var hW = weeks.map(function (w, i) { return hl(data.map(function (o) { return o.w[i]; })); });
+    var perDay = colDays.map(function () { return 0; });
+    function num(v, cls) { return { t: isNaN(v) ? "?" : String(v), cls: "num" + (cls || "") }; }
+    data.forEach(function (o) {
+      var r = [{ t: o.t.abbr, cls: "num bold" + (o.mine ? " mine" : "") }, { t: o.t.name, cls: "stat" + (o.mine ? " mine" : "") }, num(o.left, hLeft(o.left) + " bold")];
+      var di = 0;
+      weeks.forEach(function (w, wi) {
+        for (var i = 0; i < 7; i++, di++) {
+          var x = o.days[di];
+          if (x.g) perDay[di]++;
+          r.push({ t: !o.ok ? "?" : (x.g ? (x.g.h ? "vs " : "@ ") + x.g.o : ""), cls: "num" + (x.b2b ? " b2b" : "") + (x.d < today ? " past" : "") });
+        }
+        r.push(num(o.w[wi], " wtot" + hW[wi](o.w[wi])));
+      });
+      r.push(num(o.sum, hSum(o.sum) + " bold"));
+      rows.push({ c: r });
+    });
+    var fr = [{ t: "", cls: "num" }, { t: "Teams playing", cls: "stat bold" }, { t: "", cls: "num" }];
+    var di2 = 0;
+    weeks.forEach(function () {
+      var tot = 0;
+      for (var i = 0; i < 7; i++, di2++) { fr.push({ t: String(perDay[di2]), cls: "num bold" }); tot += perDay[di2]; }
+      fr.push({ t: String(tot), cls: "num wtot" });
+    });
+    fr.push({ t: "", cls: "num" });
+    rows.push({ c: fr });
+    rows.push({ c: [{ t: "Orange = back-to-back (the team also played the day before). Grey = day already played. Green and red in the Wk columns = most and fewest games that week.", span: 10, cls: "dim" }] });
+    return rows;
+  }
+  (function () {
+    document.getElementById("tsStart").addEventListener("change", function (e) { var v = Number(e.target.value); tsStart = isNaN(v) ? 1 : v; sortTs = { k: null, d: -1 }; paint(tsRows()); });
+    document.getElementById("tsWeeks").addEventListener("change", function (e) { tsWeeks = Number(e.target.value) || 6; sortTs = { k: null, d: -1 }; paint(tsRows()); });
+  })();
   var wasNarrow = isNarrow(), resizeTimer = null;
   window.addEventListener("resize", function () {
     clearTimeout(resizeTimer);
