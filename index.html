@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Production_Schedule_2026_V1.A1.46.xlsx</title>
+<title>Production_Schedule_2026_V1.A1.47.xlsx</title>
 <style>
   /* Spreadsheet-style shell: title bar, menu tabs, ribbon, formula bar, cell grid, sheet tabs, status bar. */
   * { box-sizing: border-box; }
@@ -191,7 +191,7 @@
 </head>
 <body>
 <div class="app">
-  <div class="titlebar"><span class="fname" id="fname">Production_Schedule_2026_V1.A1.46.xlsx</span><span class="saved">Saved</span></div>
+  <div class="titlebar"><span class="fname" id="fname">Production_Schedule_2026_V1.A1.47.xlsx</span><span class="saved">Saved</span></div>
   <div class="menu"><span>File</span><span class="on">Home</span><span>Insert</span><span>Page Layout</span><span>Formulas</span><span>Data</span><span>Review</span><span>View</span></div>
 
   <div class="ribbon">
@@ -262,6 +262,7 @@
     </span>
     <span class="sep"></span>
     <button id="refreshBtn" type="button">Refresh All</button>
+    <span id="gNavCtl" style="display:none"><button id="navPick" type="button">Player List</button><button id="navMine" type="button">My Players</button></span>
     <button id="toMineBtn" type="button" hidden>My Players</button>
     <button id="toBoxBtn" type="button" hidden>Box Score</button>
     <button id="toPbpBtn" type="button" hidden>Play-by-Play</button>
@@ -284,8 +285,9 @@
 
 <script>
 (function () {
-  var VERSION = "V1.A1.46";
+  var VERSION = "V1.A1.47";
   var CHANGELOG = [
+    { v: "V1.A1.47", d: "2026-10-30", n: "Game Log and Player Stats now have Player List and My Players buttons right after Refresh All, so you can go back without using the tabs at the bottom." },
     { v: "V1.A1.46", d: "2026-10-29", n: "Manual tab (after Changelog) with the user manual: what the tool is, how each tab works, League Settings and Export for AI, backup, and common questions." },
     { v: "V1.A1.45", d: "2026-10-29", n: "Team Schedule is now one continuous table. Every team is a row and every day is a column showing the opponent (vs for home, @ for away; back-to-backs in orange). After the last day of each week there is a Wk total column. You choose the first day of your league week (Monday to Sunday, default Monday) and the number of weeks (2, 4, 6 or 8); both are remembered and included in Export and Import. The Left column shows the games from today to the end of this week, and Total at the end adds Left and the later weeks. The most games in a week are green and the fewest red; click any header to sort; days already played are grey; the last row shows how many teams play each day." },
     { v: "V1.A1.44", d: "2026-10-29", n: "Team Schedule. New Team Schedule tab (after Schedule), one row per team. Weekly totals: games per Monday-to-Sunday week (US Eastern dates) for the next 2, 4, 6 or 8 weeks, plus Left (games from today to Sunday) and a total. The team with the most games in a week is green and the team with the fewest is red. Teams of your My Players and Watchlist players are in blue. Daily detail: choose a week and see the opponent of every team on each day (vs or @), back-to-back games in orange, a Games and a B2B column, and the number of teams playing each day. Click any header to sort. The schedule of all 30 teams comes from ESPN, is kept in the browser for 24 hours and is loaded again when it is older than 1 hour and you press Refresh All." },
@@ -544,6 +546,7 @@
     document.getElementById("gInjCtl").style.display = (!detail && sheet === "inj") ? "contents" : "none";
     document.getElementById("gTsCtl").style.display = (!detail && sheet === "tsch") ? "contents" : "none";
     document.getElementById("gGlCtl").style.display = (!detail && sheet === "glog") ? "contents" : "none";
+    document.getElementById("gNavCtl").style.display = (!detail && (sheet === "glog" || sheet === "stats")) ? "contents" : "none";
     document.getElementById("toMineBtn").hidden = !detail;
     document.getElementById("toBoxBtn").hidden = !(detail && sheet === "pbp");
     document.getElementById("toPbpBtn").hidden = !(detail && sheet === "box");
@@ -3472,6 +3475,8 @@
     document.getElementById("tsStart").addEventListener("change", function (e) { var v = Number(e.target.value); tsStart = isNaN(v) ? 1 : v; sortTs = { k: null, d: -1 }; paint(tsRows()); });
     document.getElementById("tsWeeks").addEventListener("change", function (e) { tsWeeks = Number(e.target.value) || 6; sortTs = { k: null, d: -1 }; paint(tsRows()); });
   })();
+  document.getElementById("navPick").addEventListener("click", function () { selR = 1; selC = 0; openPick(); });
+  document.getElementById("navMine").addEventListener("click", function () { selR = 1; selC = 0; openMine(); });
   var wasNarrow = isNarrow(), resizeTimer = null;
   window.addEventListener("resize", function () {
     clearTimeout(resizeTimer);
