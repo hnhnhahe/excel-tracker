@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Production_Schedule_2026_V1.A1.47.xlsx</title>
+<title>Production_Schedule_2026_V1.A1.48.xlsx</title>
 <style>
   /* Spreadsheet-style shell: title bar, menu tabs, ribbon, formula bar, cell grid, sheet tabs, status bar. */
   * { box-sizing: border-box; }
@@ -148,6 +148,11 @@
   td.lgcell { text-align: center; cursor: pointer; color: #1a5fb4; user-select: none; }
   td.lgcell:hover { background: #e8f0fe; }
   #glSearch { width: 170px; }
+  #glSug { position: fixed; z-index: 80; background: #fff; color: #222; border: 1px solid #9bbfa9; box-shadow: 0 6px 20px rgba(0,0,0,.25); min-width: 230px; max-height: 320px; overflow: auto; font-size: 13px; }
+  #glSug div { padding: 7px 10px; cursor: pointer; }
+  #glSug div:hover { background: #e8f0fe; }
+  #glSug div.none { color: #888; cursor: default; }
+  #glSug small { color: #777; }
   #lgPanel { position: fixed; top: 60px; left: 50%; transform: translateX(-50%); z-index: 70; width: min(680px, 94vw); max-height: 86vh; overflow: auto; background: #fff; color: #222; border: 1px solid #9bbfa9; box-shadow: 0 6px 24px rgba(0,0,0,.35); font-size: 13px; }
   #lgPanel .ph { background: #217346; color: #fff; padding: 8px 12px; font-weight: 700; position: sticky; top: 0; }
   #lgPanel .pb { padding: 8px 12px; }
@@ -191,7 +196,7 @@
 </head>
 <body>
 <div class="app">
-  <div class="titlebar"><span class="fname" id="fname">Production_Schedule_2026_V1.A1.47.xlsx</span><span class="saved">Saved</span></div>
+  <div class="titlebar"><span class="fname" id="fname">Production_Schedule_2026_V1.A1.48.xlsx</span><span class="saved">Saved</span></div>
   <div class="menu"><span>File</span><span class="on">Home</span><span>Insert</span><span>Page Layout</span><span>Formulas</span><span>Data</span><span>Review</span><span>View</span></div>
 
   <div class="ribbon">
@@ -237,7 +242,7 @@
     <span id="gGlCtl" style="display:none">
       <select id="glTeam" aria-label="Team" style="max-width:150px"></select>
       <select id="glPlayer" aria-label="Player" style="max-width:220px"></select>
-      <input id="glSearch" type="text" list="glDl" placeholder="Search any player" aria-label="Search any player" autocomplete="off">
+      <input id="glSearch" type="text" placeholder="Search any player" aria-label="Search any player" autocomplete="off">
       <datalist id="glDl"></datalist>
       <select id="glSeason" aria-label="Season"></select>
     </span>
@@ -285,8 +290,9 @@
 
 <script>
 (function () {
-  var VERSION = "V1.A1.47";
+  var VERSION = "V1.A1.48";
   var CHANGELOG = [
+    { v: "V1.A1.48", d: "2026-11-02", n: "Smarter player search in the three search boxes (Player List, News and Game Log). Wildcards: * stands for any letters and ? for exactly one letter (lebr*james, j?kic). Words can be in any order (james le) and you can type only the first letters of the words (sc finds Stephen Curry). With 3 or more letters you can also skip letters (lbj finds LeBron James). Best matches come first. In Game Log the search box now shows a list of the 10 best matches to click, and Enter picks the first one. News still searches when you press Enter." },
     { v: "V1.A1.47", d: "2026-10-30", n: "Game Log and Player Stats now have Player List and My Players buttons right after Refresh All, so you can go back without using the tabs at the bottom." },
     { v: "V1.A1.46", d: "2026-10-29", n: "Manual tab (after Changelog) with the user manual: what the tool is, how each tab works, League Settings and Export for AI, backup, and common questions." },
     { v: "V1.A1.45", d: "2026-10-29", n: "Team Schedule is now one continuous table. Every team is a row and every day is a column showing the opponent (vs for home, @ for away; back-to-backs in orange). After the last day of each week there is a Wk total column. You choose the first day of your league week (Monday to Sunday, default Monday) and the number of weeks (2, 4, 6 or 8); both are remembered and included in Export and Import. The Left column shows the games from today to the end of this week, and Total at the end adds Left and the later weeks. The most games in a week are green and the fewest red; click any header to sort; days already played are grey; the last row shows how many teams play each day." },
@@ -407,6 +413,34 @@
     var t = String(s || "").toLowerCase();
     try { t = t.normalize("NFD").replace(/[̀-ͯ]/g, ""); } catch (e) {}
     return t.replace(/[.'’,\-]/g, " ").replace(/\b(jr|sr|ii|iii|iv)\b/g, "").replace(/\s+/g, " ").trim();
+  }
+  function nameScore(name, query) {
+    var q = norm(query).replace(/\s+/g, " ").trim();
+    if (!q) return 1;
+    var n = norm(name);
+    if (/[*?]/.test(q)) {
+      var re;
+      try { re = new RegExp(q.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*").replace(/\?/g, ".")); } catch (e) { return 0; }
+      return re.test(n) ? 100 : 0;
+    }
+    var at = n.indexOf(q);
+    if (at >= 0) return 100 + (at === 0 ? 10 : 0);
+    function subseq(str, t) { var j = 0; for (var i = 0; i < str.length && j < t.length; i++) if (str.charAt(i) === t.charAt(j)) j++; return j === t.length; }
+    var words = n.split(" "), toks = q.split(" "), total = 0, ok = true;
+    toks.forEach(function (t) {
+      if (!ok) return;
+      var best = 0;
+      words.forEach(function (w) { var p = w.indexOf(t); if (p === 0) best = Math.max(best, 6); else if (p > 0) best = Math.max(best, 4); });
+      if (!best && t.length >= 3) { if (words.some(function (w) { return subseq(w, t); })) best = 3; else if (subseq(n.replace(/ /g, ""), t)) best = 2; }
+      if (!best) ok = false; else total += best;
+    });
+    if (ok) return total;
+    if (toks.length === 1 && words.length >= 2 && q.length >= 2 && q.length <= words.length) {
+      var init = true;
+      for (var i = 0; i < q.length; i++) if (words[i].charAt(0) !== q.charAt(i)) { init = false; break; }
+      if (init) return 8;
+    }
+    return 0;
   }
   function loadRoster() {
     try {
@@ -1177,16 +1211,18 @@
         return f.op === ">" ? x > f.v : f.op === ">=" ? x >= f.v : f.op === "<" ? x < f.v : f.op === "<=" ? x <= f.v : x === f.v;
       });
     }
+    var scoreMap = {};
     var list = all.filter(function (p) {
       if (pickFilters.length && !passF(p)) return false;
       if (pickTeam !== "all" && p.teamId !== pickTeam) return false;
-      if (q && norm(p.name).indexOf(q) === -1) return false;
+      if (q) { var sc = nameScore(p.name, pickQuery); if (!sc) return false; scoreMap[p.id] = sc; }
       if (pickSelOnly && rosterIndex(p.name, p.id) < 0) return false;
       if (pickWatchOnly && watchIndex(p.id) < 0) return false;
       return true;
     });
     var k = sortPick.k, d = sortPick.d;
     list.sort(function (a, b) {
+      if (q && !k) { var sa = scoreMap[a.id] || 0, sb = scoreMap[b.id] || 0; if (sa !== sb) return sb - sa; }
       if (k && k.indexOf("S:") === 0) {
         var si = PICK_STAT_COLS.indexOf(k.slice(2));
         return cmp(numOf(sv(a, si)), numOf(sv(b, si)), d, true) || a.name.localeCompare(b.name);
@@ -1639,7 +1675,7 @@
   }
 
   /* ---------- Changelog sheet ---------- */
-  var MANUAL = [["h1", "使用手冊"], ["h2", "一、這個工具是什麼"], ["li", "• 這是一個只在你自己瀏覽器裡執行的籃球即時比分與奇幻籃球（Fantasy，就是組自己的球員陣容比賽）輔助工具。"], ["li", "• 資料來自 ESPN 的公開資料，不需要登入，也沒有把任何東西上傳到伺服器。"], ["li", "• 你的球員名單、設定和新聞存檔都保存在這個瀏覽器裡。換一台電腦或手機，資料是分開的，要搬家請用 Export / Import。"], ["li", "• 所有分頁都在畫面最下方，按一下就切換。"], ["h2", "二、分頁說明"], ["h3", "Sheet1（比分）"], ["li", "• 顯示今天的所有比賽，按 Prev / Next 換日期，按 Today 回到今天。"], ["li", "• 日期會自動跟著 ESPN 的比賽日換日，你按了 Prev / Next 之後才會固定在那一天。"], ["li", "• 點任何一場比賽，會進入該場的 Box Score（每位球員的數據）和 Play-by-Play（逐筆比賽過程）。"], ["li", "• 看比賽時，按 Back 回到 Sheet1，按 My Players 回到你的球員頁。"], ["h3", "Player List（球員清單）"], ["li", "• 列出所有球員，可用球隊、位置、搜尋框篩選，也可以切換賽季與「每場平均／總計」。"], ["li", "• 點球員名字：加入或移出你的 My Players。"], ["li", "• 點星號：加入或移出 Watchlist（觀察名單，就是你想撿的候選人）。"], ["li", "• 點最右邊的 ▤（Log 欄）：直接打開該球員的 Game Log。"], ["li", "• Own% 是這位球員在 ESPN 聯盟被擁有的比例，Chg% 是和前一天相比的變化。"], ["h3", "My Players（我的球員）"], ["li", "• 上半部是你的球員，今天有比賽的會顯示即時數據，綠色列代表正在場上。"], ["li", "• 下半部是 Watchlist，按 Watchlist: Season／Today 可以切換賽季平均與今天數據。"], ["li", "• 「No game」代表他的球隊今天沒有比賽；「Waiting for data」代表比賽已開打，但數據還沒抓到，請按 Refresh All。"], ["li", "• 雙擊（手機是連點兩下）球員名字，會打開他的 Game Log；雙擊其他格子，會打開該列的新聞連結。"], ["li", "• 按 Categories 勾選要顯示的比項；按 Paste from Yahoo 可以貼上陣容文字；按 Pick players 到球員清單挑人。"], ["h3", "Schedule 與 Team Schedule（賽程）"], ["li", "• Schedule 依「球員」排列，只看你的球員未來 7 天的對手。"], ["li", "• Team Schedule 依「球隊」排列，每天一欄顯示對手，主場是 vs、客場是 @，每週後面有一欄週合計。"], ["li", "• 你可以選一週從星期幾開始，也可以選看 2、4、6 或 8 週，設定會被記住。"], ["li", "• 橘色代表背靠背（前一天也有比賽），最多場次的週標綠色，最少標紅色，灰字代表已經打過。"], ["h3", "News（新聞）"], ["li", "• 顯示球員新聞，可以切換「只看我的球員」或「全聯盟」。"], ["li", "• 按 Translate 可以把標題翻成中文，新聞會自動存檔 30 天，最多 3,000 筆，Export 時也會一併備份。"], ["h3", "Injuries（傷兵）"], ["li", "• 顯示傷勢、部位、預計回歸日期，可以選看「我的球員＋Watchlist」「我的球員」「Watchlist」或「全聯盟」。"], ["h3", "Game Log（逐場紀錄）"], ["li", "• 一次看一位球員，每場一行，由新到舊，包含日期（美東時間）、對手、比分與你設定的比項。"], ["li", "• 表頭下面有賽季平均、近 5 場、近 10 場。"], ["li", "• 可以用 Team 篩選球隊，也可以用搜尋框輸入任何球員名字。"], ["h3", "Player Stats（球員數據）"], ["li", "• 可以看你的球員在不同區間的數據：近 7 天、14 天、30 天、近 5 場、10 場、整季與生涯。"], ["h3", "Changelog（版本紀錄）"], ["li", "• 記錄每個版本新增了什麼，最新的在最上面。"], ["h2", "三、League Settings 與 Export for AI"], ["li", "• League Settings 可以設定比法（比項制或積分制）、比項、陣容位置、每週異動上限、近期區間，以及給 AI 的備註。"], ["li", "• 候選池（Candidate pool）會從全聯盟挑出 Own% 在你設定值以下的球員，預設 15%、場均至少 10 分鐘、最多 50 人。"], ["li", "• 按 Export for AI 會產生一份文字，按 Copy 複製後貼給 AI，請它建議該丟誰、撿誰。"], ["li", "• 文字越長，AI 讀起來越花額度；想縮短，可以減少候選池人數或關掉新聞。"], ["h2", "四、共用功能"], ["li", "• 排序：點欄位標題，再點一次會反向排序。"], ["li", "• 縮放：工具列的 A− 和 A+ 可以把表格縮小或放大，從 60% 到 150%。"], ["li", "• Refresh All：重新抓取所有資料。"], ["h2", "五、備份與搬家"], ["li", "• Export 會下載 my_players.json，裡面有你的球員、Watchlist、新聞存檔與所有設定。"], ["li", "• Import 可以把這個檔案讀回來，合併進現有資料。"], ["li", "• 清除瀏覽器資料、換電腦或換手機之前，請先 Export。"], ["h2", "六、常見問題"], ["li", "• 為什麼沒有數據？ 先確認該球員今天有沒有比賽；有比賽仍空白，按 Refresh All。"], ["li", "• 手機打不開？ 必須用手機瀏覽器開啟網頁版，用檔案預覽程式開會無法執行。"], ["li", "• Own% 為什麼和 Yahoo 不一樣？ 這是 ESPN 聯盟的數字，只能當作熱度參考。"], ["li", "• 某一欄是空白或問號？ 通常是 ESPN 暫時沒回應，按 Refresh All 重試。"]];
+  var MANUAL = [["h1", "使用手冊"], ["h2", "一、這個工具是什麼"], ["li", "• 這是一個只在你自己瀏覽器裡執行的籃球即時比分與奇幻籃球（Fantasy，就是組自己的球員陣容比賽）輔助工具。"], ["li", "• 資料來自 ESPN 的公開資料，不需要登入，也沒有把任何東西上傳到伺服器。"], ["li", "• 你的球員名單、設定和新聞存檔都保存在這個瀏覽器裡。換一台電腦或手機，資料是分開的，要搬家請用 Export / Import。"], ["li", "• 所有分頁都在畫面最下方，按一下就切換。"], ["h2", "二、分頁說明"], ["h3", "Sheet1（比分）"], ["li", "• 顯示今天的所有比賽，按 Prev / Next 換日期，按 Today 回到今天。"], ["li", "• 日期會自動跟著 ESPN 的比賽日換日，你按了 Prev / Next 之後才會固定在那一天。"], ["li", "• 點任何一場比賽，會進入該場的 Box Score（每位球員的數據）和 Play-by-Play（逐筆比賽過程）。"], ["li", "• 看比賽時，按 Back 回到 Sheet1，按 My Players 回到你的球員頁。"], ["h3", "Player List（球員清單）"], ["li", "• 列出所有球員，可用球隊、位置、搜尋框篩選，也可以切換賽季與「每場平均／總計」。"], ["li", "• 點球員名字：加入或移出你的 My Players。"], ["li", "• 點星號：加入或移出 Watchlist（觀察名單，就是你想撿的候選人）。"], ["li", "• 點最右邊的 ▤（Log 欄）：直接打開該球員的 Game Log。"], ["li", "• Own% 是這位球員在 ESPN 聯盟被擁有的比例，Chg% 是和前一天相比的變化。"], ["h3", "My Players（我的球員）"], ["li", "• 上半部是你的球員，今天有比賽的會顯示即時數據，綠色列代表正在場上。"], ["li", "• 下半部是 Watchlist，按 Watchlist: Season／Today 可以切換賽季平均與今天數據。"], ["li", "• 「No game」代表他的球隊今天沒有比賽；「Waiting for data」代表比賽已開打，但數據還沒抓到，請按 Refresh All。"], ["li", "• 雙擊（手機是連點兩下）球員名字，會打開他的 Game Log；雙擊其他格子，會打開該列的新聞連結。"], ["li", "• 按 Categories 勾選要顯示的比項；按 Paste from Yahoo 可以貼上陣容文字；按 Pick players 到球員清單挑人。"], ["h3", "Schedule 與 Team Schedule（賽程）"], ["li", "• Schedule 依「球員」排列，只看你的球員未來 7 天的對手。"], ["li", "• Team Schedule 依「球隊」排列，每天一欄顯示對手，主場是 vs、客場是 @，每週後面有一欄週合計。"], ["li", "• 你可以選一週從星期幾開始，也可以選看 2、4、6 或 8 週，設定會被記住。"], ["li", "• 橘色代表背靠背（前一天也有比賽），最多場次的週標綠色，最少標紅色，灰字代表已經打過。"], ["h3", "News（新聞）"], ["li", "• 顯示球員新聞，可以切換「只看我的球員」或「全聯盟」。"], ["li", "• 按 Translate 可以把標題翻成中文，新聞會自動存檔 30 天，最多 3,000 筆，Export 時也會一併備份。"], ["h3", "Injuries（傷兵）"], ["li", "• 顯示傷勢、部位、預計回歸日期，可以選看「我的球員＋Watchlist」「我的球員」「Watchlist」或「全聯盟」。"], ["h3", "Game Log（逐場紀錄）"], ["li", "• 一次看一位球員，每場一行，由新到舊，包含日期（美東時間）、對手、比分與你設定的比項。"], ["li", "• 表頭下面有賽季平均、近 5 場、近 10 場。"], ["li", "• 可以用 Team 篩選球隊，也可以用搜尋框輸入任何球員名字。"], ["h3", "Player Stats（球員數據）"], ["li", "• 可以看你的球員在不同區間的數據：近 7 天、14 天、30 天、近 5 場、10 場、整季與生涯。"], ["h3", "Changelog（版本紀錄）"], ["li", "• 記錄每個版本新增了什麼，最新的在最上面。"], ["h2", "三、League Settings 與 Export for AI"], ["li", "• League Settings 可以設定比法（比項制或積分制）、比項、陣容位置、每週異動上限、近期區間，以及給 AI 的備註。"], ["li", "• 候選池（Candidate pool）會從全聯盟挑出 Own% 在你設定值以下的球員，預設 15%、場均至少 10 分鐘、最多 50 人。"], ["li", "• 按 Export for AI 會產生一份文字，按 Copy 複製後貼給 AI，請它建議該丟誰、撿誰。"], ["li", "• 文字越長，AI 讀起來越花額度；想縮短，可以減少候選池人數或關掉新聞。"], ["h2", "四、共用功能"], ["li", "• 排序：點欄位標題，再點一次會反向排序。"], ["li", "• 搜尋：三個搜尋框都支援萬用字元（* 代表任意長度的字，? 代表一個字）、順序顛倒（james le）、只打字首（sc 找得到 Stephen Curry）和少打幾個字（lbj 找得到 LeBron James，至少 3 個字母）。"], ["li", "• 縮放：工具列的 A− 和 A+ 可以把表格縮小或放大，從 60% 到 150%。"], ["li", "• Refresh All：重新抓取所有資料。"], ["h2", "五、備份與搬家"], ["li", "• Export 會下載 my_players.json，裡面有你的球員、Watchlist、新聞存檔與所有設定。"], ["li", "• Import 可以把這個檔案讀回來，合併進現有資料。"], ["li", "• 清除瀏覽器資料、換電腦或換手機之前，請先 Export。"], ["h2", "六、常見問題"], ["li", "• 為什麼沒有數據？ 先確認該球員今天有沒有比賽；有比賽仍空白，按 Refresh All。"], ["li", "• 手機打不開？ 必須用手機瀏覽器開啟網頁版，用檔案預覽程式開會無法執行。"], ["li", "• Own% 為什麼和 Yahoo 不一樣？ 這是 ESPN 聯盟的數字，只能當作熱度參考。"], ["li", "• 某一欄是空白或問號？ 通常是 ESPN 暫時沒回應，按 Refresh All 重試。"]];
   function manualRows() {
     var rows = [];
     MANUAL.forEach(function (m) {
@@ -2157,7 +2193,8 @@
     var go = playersAll ? Promise.resolve() : loadPlayers(false).catch(function () {});
     go.then(function () {
       newsSearchText = document.getElementById("newsSearch").value.trim();
-      newsSearchPlayers = (playersAll || []).filter(function (p) { return norm(p.name).indexOf(q) !== -1; }).slice(0, 8);
+      var nsc = {};
+      newsSearchPlayers = (playersAll || []).filter(function (p) { var sc = nameScore(p.name, document.getElementById("newsSearch").value); if (sc) nsc[p.id] = sc; return !!sc; }).sort(function (a, b) { return (nsc[b.id] || 0) - (nsc[a.id] || 0) || a.name.localeCompare(b.name); }).slice(0, 8);
       setNewsScope("search");
     });
   }
@@ -3210,9 +3247,6 @@
     var ts = document.getElementById("glTeam"), th = '<option value="all">All teams</option>';
     (teamsAll || []).forEach(function (t) { th += '<option value="' + esc(t.id) + '"' + (glTeam === t.id ? " selected" : "") + ">" + esc(t.abbr + " \u2013 " + t.name) + "</option>"; });
     ts.innerHTML = th;
-    var dl = document.getElementById("glDl");
-    var dlist = glTeam === "all" ? (playersAll || []) : tmList;
-    dl.innerHTML = dlist.map(function (p) { return '<option value="' + esc(p.name) + '"></option>'; }).join("");
     var ys = document.getElementById("glSeason"), y0 = seasonNow(), yh = "";
     for (var i = 0; i < 3; i++) yh += '<option value="' + (y0 - i) + '"' + ((glYear || y0) === y0 - i ? " selected" : "") + ">" + seasonLabel(y0 - i) + "</option>";
     ys.innerHTML = yh;
@@ -3303,18 +3337,43 @@
     });
     document.getElementById("glTeam").addEventListener("change", function (e) { glTeam = e.target.value || "all"; glFillControls(); });
     document.getElementById("glSeason").addEventListener("change", function (e) { glYear = Number(e.target.value) || seasonNow(); glLoad(false); });
-    document.getElementById("glSearch").addEventListener("change", function (e) {
-      var q = norm(e.target.value);
-      if (!q) return;
-      var pool = (playersAll || []).filter(function (x) { return glTeam === "all" || x.teamId === glTeam; });
-      var p = pool.filter(function (x) { return norm(x.name) === q; })[0];
-      if (!p) { var m = pool.filter(function (x) { return norm(x.name).indexOf(q) >= 0; }); if (m.length === 1) p = m[0]; }
-      if (!p) { statusLeft.textContent = "No single player matches \"" + e.target.value + "\". Pick a name from the suggestions."; return; }
-      e.target.value = "";
+    var inp = document.getElementById("glSearch"), sug = document.createElement("div");
+    sug.id = "glSug"; sug.hidden = true;
+    document.body.appendChild(sug);
+    var cur = [];
+    function hide() { sug.hidden = true; }
+    function choose(p) {
+      inp.value = "";
+      hide();
       glPlayer = { id: p.id, name: p.name };
       glFillControls();
       glLoad(false);
+    }
+    function suggest() {
+      var v = inp.value;
+      if (!v.trim()) { hide(); return; }
+      var sc = {};
+      cur = (playersAll || []).filter(function (x) { return glTeam === "all" || x.teamId === glTeam; }).filter(function (x) { var k = nameScore(x.name, v); if (k) sc[x.id] = k; return !!k; })
+        .sort(function (a, b) { return sc[b.id] - sc[a.id] || a.name.localeCompare(b.name); }).slice(0, 10);
+      if (!cur.length) { sug.innerHTML = '<div class="none">No player matches.</div>'; }
+      else sug.innerHTML = cur.map(function (x, i) { return '<div data-i="' + i + '">' + esc(x.name) + ' <small>' + esc(x.team + (x.pos ? " \u00B7 " + x.pos : "")) + "</small></div>"; }).join("");
+      var r = inp.getBoundingClientRect();
+      sug.style.left = Math.max(4, Math.min(r.left, window.innerWidth - 240)) + "px";
+      sug.style.top = (r.bottom + 2) + "px";
+      sug.hidden = false;
+    }
+    inp.addEventListener("input", suggest);
+    inp.addEventListener("focus", suggest);
+    inp.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { suggest(); if (cur.length) choose(cur[0]); else statusLeft.textContent = "No player matches \"" + inp.value + "\"."; }
+      else if (e.key === "Escape") hide();
     });
+    sug.addEventListener("mousedown", function (e) { e.preventDefault(); });
+    sug.addEventListener("click", function (e) {
+      var it = e.target.closest ? e.target.closest("div[data-i]") : null;
+      if (it && cur[Number(it.getAttribute("data-i"))]) choose(cur[Number(it.getAttribute("data-i"))]);
+    });
+    document.addEventListener("click", function (e) { if (e.target !== inp && !sug.contains(e.target)) hide(); });
   })();
 
   /* ---------- Team Schedule (all teams, by week) ---------- */
