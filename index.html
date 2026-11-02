@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Production_Schedule_2026_V1.A1.48.xlsx</title>
+<title>Production_Schedule_2026_V1.A1.49.xlsx</title>
 <style>
   /* Spreadsheet-style shell: title bar, menu tabs, ribbon, formula bar, cell grid, sheet tabs, status bar. */
   * { box-sizing: border-box; }
@@ -148,11 +148,11 @@
   td.lgcell { text-align: center; cursor: pointer; color: #1a5fb4; user-select: none; }
   td.lgcell:hover { background: #e8f0fe; }
   #glSearch { width: 170px; }
-  #glSug { position: fixed; z-index: 80; background: #fff; color: #222; border: 1px solid #9bbfa9; box-shadow: 0 6px 20px rgba(0,0,0,.25); min-width: 230px; max-height: 320px; overflow: auto; font-size: 13px; }
-  #glSug div { padding: 7px 10px; cursor: pointer; }
-  #glSug div:hover { background: #e8f0fe; }
-  #glSug div.none { color: #888; cursor: default; }
-  #glSug small { color: #777; }
+  #nwSug, #glSug { position: fixed; z-index: 80; background: #fff; color: #222; border: 1px solid #9bbfa9; box-shadow: 0 6px 20px rgba(0,0,0,.25); min-width: 230px; max-height: 320px; overflow: auto; font-size: 13px; }
+  #nwSug div, #glSug div { padding: 7px 10px; cursor: pointer; }
+  #nwSug div:hover, #glSug div:hover { background: #e8f0fe; }
+  #nwSug div.none, #glSug div.none { color: #888; cursor: default; }
+  #nwSug small, #glSug small { color: #777; }
   #lgPanel { position: fixed; top: 60px; left: 50%; transform: translateX(-50%); z-index: 70; width: min(680px, 94vw); max-height: 86vh; overflow: auto; background: #fff; color: #222; border: 1px solid #9bbfa9; box-shadow: 0 6px 24px rgba(0,0,0,.35); font-size: 13px; }
   #lgPanel .ph { background: #217346; color: #fff; padding: 8px 12px; font-weight: 700; position: sticky; top: 0; }
   #lgPanel .pb { padding: 8px 12px; }
@@ -196,7 +196,7 @@
 </head>
 <body>
 <div class="app">
-  <div class="titlebar"><span class="fname" id="fname">Production_Schedule_2026_V1.A1.48.xlsx</span><span class="saved">Saved</span></div>
+  <div class="titlebar"><span class="fname" id="fname">Production_Schedule_2026_V1.A1.49.xlsx</span><span class="saved">Saved</span></div>
   <div class="menu"><span>File</span><span class="on">Home</span><span>Insert</span><span>Page Layout</span><span>Formulas</span><span>Data</span><span>Review</span><span>View</span></div>
 
   <div class="ribbon">
@@ -229,7 +229,7 @@
       <select id="newsType" aria-label="News type"><option value="ns">Notes + stories</option><option value="n">Player notes only</option><option value="all">All incl. video</option></select>
       <select id="newsScope" aria-label="Scope"><option value="mine">My players</option><option value="league">League-wide</option><option value="search">Search result</option></select>
       <select id="newsPlayer" aria-label="Player"></select>
-      <input id="newsSearch" type="text" placeholder="Search any player, press Enter" autocomplete="off" aria-label="Search any player" style="width:210px">
+      <input id="newsSearch" type="text" placeholder="Search any player" autocomplete="off" aria-label="Search any player" style="width:210px">
       <button id="newsWrapBtn" type="button">Wrap text: On</button>
       <button id="newsTrBtn" type="button">Translate: Off</button>
       <select id="newsTrEng" aria-label="Translation engine"><option value="g">Engine: Google web</option><option value="c">Engine: Chrome built-in</option></select>
@@ -290,8 +290,9 @@
 
 <script>
 (function () {
-  var VERSION = "V1.A1.48";
+  var VERSION = "V1.A1.49";
   var CHANGELOG = [
+    { v: "V1.A1.49", d: "2026-11-02", n: "News search now shows a list of the 10 best matches while you type, like Game Log. Click one to see only that player's news. Enter still searches the 8 closest players." },
     { v: "V1.A1.48", d: "2026-11-02", n: "Smarter player search in the three search boxes (Player List, News and Game Log). Wildcards: * stands for any letters and ? for exactly one letter (lebr*james, j?kic). Words can be in any order (james le) and you can type only the first letters of the words (sc finds Stephen Curry). With 3 or more letters you can also skip letters (lbj finds LeBron James). Best matches come first. In Game Log the search box now shows a list of the 10 best matches to click, and Enter picks the first one. News still searches when you press Enter." },
     { v: "V1.A1.47", d: "2026-10-30", n: "Game Log and Player Stats now have Player List and My Players buttons right after Refresh All, so you can go back without using the tabs at the bottom." },
     { v: "V1.A1.46", d: "2026-10-29", n: "Manual tab (after Changelog) with the user manual: what the tool is, how each tab works, League Settings and Export for AI, backup, and common questions." },
@@ -2838,7 +2839,40 @@
   document.getElementById("injScope").addEventListener("change", function (e) { injScope = e.target.value; if (sheet === "inj") paint(injRows()); });
   document.getElementById("injStatus").addEventListener("change", function (e) { injStatus = e.target.value; if (sheet === "inj") paint(injRows()); });
   document.getElementById("newsScope").addEventListener("change", function (e) { setNewsScope(e.target.value); });
-  document.getElementById("newsSearch").addEventListener("keydown", function (e) { if (e.key === "Enter") runNewsSearch(); });
+  (function () {
+    var inp = document.getElementById("newsSearch"), sug = document.createElement("div"), cur = [];
+    sug.id = "nwSug"; sug.hidden = true; document.body.appendChild(sug);
+    function hide() { sug.hidden = true; }
+    function suggest() {
+      var v = inp.value;
+      if (!v.trim()) { hide(); return; }
+      if (!playersAll) { loadPlayers(false).then(suggest).catch(function () {}); return; }
+      var sc = {};
+      cur = playersAll.filter(function (x) { var k = nameScore(x.name, v); if (k) sc[x.id] = k; return !!k; })
+        .sort(function (a, b) { return sc[b.id] - sc[a.id] || a.name.localeCompare(b.name); }).slice(0, 10);
+      sug.innerHTML = cur.length ? cur.map(function (x, i) { return '<div data-i="' + i + '">' + esc(x.name) + ' <small>' + esc(x.team + (x.pos ? " \u00B7 " + x.pos : "")) + "</small></div>"; }).join("") : '<div class="none">No player matches.</div>';
+      var r = inp.getBoundingClientRect();
+      sug.style.left = Math.max(4, Math.min(r.left, window.innerWidth - 240)) + "px";
+      sug.style.top = (r.bottom + 2) + "px";
+      sug.hidden = false;
+    }
+    inp.addEventListener("input", suggest);
+    inp.addEventListener("focus", suggest);
+    inp.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { hide(); runNewsSearch(); }
+      else if (e.key === "Escape") hide();
+    });
+    sug.addEventListener("mousedown", function (e) { e.preventDefault(); });
+    sug.addEventListener("click", function (e) {
+      var it = e.target.closest ? e.target.closest("div[data-i]") : null;
+      var p = it && cur[Number(it.getAttribute("data-i"))];
+      if (!p) return;
+      hide();
+      newsSearchText = p.name; newsSearchPlayers = [p];
+      setNewsScope("search");
+    });
+    document.addEventListener("click", function (e) { if (e.target !== inp && !sug.contains(e.target)) hide(); });
+  })();
   document.getElementById("newsWrapBtn").addEventListener("click", function () {
     newsWrap = !newsWrap;
     this.textContent = "Wrap text: " + (newsWrap ? "On" : "Off");
