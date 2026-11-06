@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Production_Schedule_2026_V1.A1.52.xlsx</title>
+<title>Production_Schedule_2026_V1.A1.53.xlsx</title>
 <style>
   /* Spreadsheet-style shell: title bar, menu tabs, ribbon, formula bar, cell grid, sheet tabs, status bar. */
   * { box-sizing: border-box; }
@@ -203,7 +203,7 @@
 </head>
 <body>
 <div class="app">
-  <div class="titlebar"><span class="fname" id="fname">Production_Schedule_2026_V1.A1.52.xlsx</span><span class="saved">Saved</span></div>
+  <div class="titlebar"><span class="fname" id="fname">Production_Schedule_2026_V1.A1.53.xlsx</span><span class="saved">Saved</span></div>
   <div class="menu"><span>File</span><span class="on">Home</span><span>Insert</span><span>Page Layout</span><span>Formulas</span><span>Data</span><span>Review</span><span>View</span></div>
 
   <div class="ribbon">
@@ -221,6 +221,7 @@
     <span id="gPickCtl" style="display:none">
       <select id="pickSeason" aria-label="Season"></select>
       <select id="pickView" aria-label="View"><option value="avg">Per game</option><option value="tot">Total</option></select>
+      <select id="pickPeriod" aria-label="Period"><option value="season">Season</option><option value="r7">Last 7 days</option><option value="r10">Last 10 days</option><option value="r14">Last 14 days</option><option value="r30">Last 30 days</option><option value="g5">Last 5 games</option><option value="g10">Last 10 games</option></select>
       <select id="teamSel" aria-label="Filter by team"><option value="all">All teams</option></select>
       <input id="playerSearch" type="text" placeholder="Search player" autocomplete="off" aria-label="Search player">
       <select id="fCol" aria-label="Filter column"></select>
@@ -297,8 +298,9 @@
 
 <script>
 (function () {
-  var VERSION = "V1.A1.52";
+  var VERSION = "V1.A1.53";
   var CHANGELOG = [
+    { v: "V1.A1.53", d: "2026-11-06", n: "Recent performance in Player List. A new Period box next to Per game / Total lets you switch the stat columns to Last 7 days, 10 days, 14 days, 30 days, Last 5 games or Last 10 games (GP becomes the games played in that window). Recent numbers need each player's game log, so they load only for the players currently shown, up to 60. If more match, narrow the list first (team, search, filter or Watching only). Stat filters still use the season numbers. Sorting uses the recent numbers." },
     { v: "V1.A1.52", d: "2026-11-05", n: "Clear button for the search boxes. The three search boxes (Player List, News and Game Log) now show an x on the right when they contain text. Click it, or press Esc, to clear the box. In Player List the full list comes back. In News the suggestion list closes, and if News was showing a search result it returns to My players. In Game Log the suggestion list closes and the chosen player stays." },
     { v: "V1.A1.51", d: "2026-11-03", n: "My Players order. Without a column sort, Active players with a game come first, earliest start time on top, then Active players without a game, then BN, then IL. Clicking the Game column header now sorts by the real start time (click again to reverse). BN and IL players always stay at the bottom, whichever column you sort by. Players you add later are Active and follow this order automatically." },
     { v: "V1.A1.50", d: "2026-11-03", n: "Slot setting for My Players: each player now has a Slot choice (Active, BN for bench, IL for injured list). The Total row in My Players now adds up only Active players (BN and IL rows are shown in grey and are not counted). Slots are saved, included in Export and Import, shown as a Slot column in Export for AI, and League Settings shows how many players you have in each slot." },
@@ -380,6 +382,8 @@
   var roster = loadRoster();
   var playersAll = null, teamsAll = null;   // full player list (cached in this browser for 7 days)
   var pickTeam = "all", pickQuery = "", pickSelOnly = false;
+  var pickPeriod = "season", pickLogInflight = {}, pickLogStale = 0, PICK_MAX = 60;
+  var PERIODS = { r7: ["Last 7 days", 7, "d"], r10: ["Last 10 days", 10, "d"], r14: ["Last 14 days", 14, "d"], r30: ["Last 30 days", 30, "d"], g5: ["Last 5 games", 5, "g"], g10: ["Last 10 games", 10, "g"] };
   var sortPick = { k: null, d: 1 };
   var PLAYERS_KEY = "ps_players_v1";
   var statCache = {};          // player id -> { t, rows, career, err }
@@ -1251,10 +1255,11 @@
     var all = playersAll || [];
     var q = norm(pickQuery);
     var sm = (seasonData[pickSeason] && seasonData[pickSeason].map) || {};
-    function sv(p, i) { var r = sm[p.id]; return r ? r[i + (pickView === "tot" ? 12 : 0)] : ""; }
+    function svS(p, i) { var r = sm[p.id]; return r ? r[i + (pickView === "tot" ? 12 : 0)] : ""; }
+    var sv = svS;
     function passF(p) {
       return pickFilters.every(function (f) {
-        var x = parseFloat(sv(p, PICK_STAT_COLS.indexOf(f.l)));
+        var x = parseFloat(svS(p, PICK_STAT_COLS.indexOf(f.l)));
         if (isNaN(x)) return false;
         return f.op === ">" ? x > f.v : f.op === ">=" ? x >= f.v : f.op === "<" ? x < f.v : f.op === "<=" ? x <= f.v : x === f.v;
       });
@@ -1268,6 +1273,22 @@
       if (pickWatchOnly && watchIndex(p.id) < 0) return false;
       return true;
     });
+    var per = PERIODS[pickPeriod], perNote = "", perVals = {};
+    if (per) {
+      if (list.length > PICK_MAX) perNote = "Last-period stats need a game log for each player. " + list.length + " players match; narrow the list to " + PICK_MAX + " or fewer (team, search, filter, Selected only or Watching only).";
+      else {
+        var Yp = seasonNow(), miss = 0, bad = 0;
+        list.forEach(function (p) {
+          var c = glCache[p.id + "|" + Yp];
+          if (!c || c.t <= pickLogStale) { miss++; return; }
+          if (c.err) { bad++; return; }
+          perVals[p.id] = periodVals(c.games);
+        });
+        if (miss) { perNote = "Loading game logs…"; pickNeedLogs(list); }
+        else if (bad) perNote = bad + " player(s) could not be loaded (ESPN did not answer). Click Reload list to retry.";
+      }
+      sv = function (p, i) { var a = perVals[p.id]; return a ? a[i] : ""; };
+    }
     var k = sortPick.k, d = sortPick.d;
     list.sort(function (a, b) {
       if (q && !k) { var sa = scoreMap[a.id] || 0, sb = scoreMap[b.id] || 0; if (sa !== sb) return sb - sa; }
@@ -1285,13 +1306,15 @@
       if (k === "SEL") return cmp(rosterIndex(a.name, a.id) >= 0 ? 1 : 0, rosterIndex(b.name, b.id) >= 0 ? 1 : 0, d, true) || a.name.localeCompare(b.name);
       return a.team.localeCompare(b.team) || a.name.localeCompare(b.name);
     });
-    var rows = [{ c: [{ t: "Player List   |   " + list.length + " shown   |   " + roster.length + " selected   |   Season " + seasonLabel(pickSeason || seasonNow()) + (pickView === "tot" ? " totals" : " per game") + "   |   " + watch.length + " watching   |   My column or name = My Players, star = Watchlist", span: 10, cls: "bold" }] }];
+    var rows = [{ c: [{ t: "Player List   |   " + list.length + " shown   |   " + roster.length + " selected   |   " + (per ? per[0] + " (" + seasonLabel(seasonNow()) + ")" : "Season " + seasonLabel(pickSeason || seasonNow())) + (pickView === "tot" ? " totals" : " per game") + "   |   " + watch.length + " watching   |   My column or name = My Players, star = Watchlist", span: 10, cls: "bold" }] }];
     var note = null;
     if (pickSeasonErr) note = "Season stats could not be loaded (" + pickSeasonErr + "). Click Reload list to retry.";
     else if (pickLoading) note = "Loading season stats…";
     else if (!Object.keys(sm).length) note = "No stats for this season yet.";
     else if (ownErr && !ownT) note = "Own% and Chg% could not be loaded (" + ownErr + "). Click Reload list to retry.";
     var r2 = [];
+    if (per && perNote) r2.push({ t: perNote, span: 8, cls: "dim" });
+    else if (per && pickFilters.length) r2.push({ t: "Stat filters use the season numbers.", span: 5, cls: "dim" });
     if (note) r2.push({ t: note, span: 5, cls: "dim" });
     if (pickFilters.length) r2.push({ t: "Filters (click to remove):", cls: "dim" });
     pickFilters.forEach(function (f, fi) { r2.push({ t: f.l + " " + f.op + " " + f.v + "  \u2715", cls: "filt", fi: fi }); });
@@ -1333,11 +1356,39 @@
     });
     return rows;
   }
+  function periodVals(games) {
+    var per = PERIODS[pickPeriod], gs;
+    if (per[2] === "g") gs = games.slice(0, per[1]);
+    else { var cut = Date.now() - per[1] * 86400000; gs = games.filter(function (g) { return g.t >= cut; }); }
+    var list = gs.map(function (g) { return comps(g.v); }).filter(function (x) { return x.MIN > 0; });
+    var n = list.length;
+    if (!n) return ["0", "", "", "", "", "", "", "", "", "", "", ""];
+    var t = sumComps(list), tot = pickView === "tot";
+    function f(k) { var v = tot ? t[k] : t[k] / n; return tot ? String(Math.round(v)) : (Math.round(v * 10) / 10).toFixed(1); }
+    function pct(m, a) { return a ? (Math.round(m / a * 1000) / 10).toFixed(1) : ""; }
+    return [String(n), f("MIN"), f("PTS"), f("REB"), f("AST"), f("STL"), f("BLK"), f("TO"), f("PF"), pct(t.FGM, t.FGA), pct(t.TPM, t.TPA), pct(t.FTM, t.FTA)];
+  }
+  function pickNeedLogs(list) {
+    var Y = seasonNow();
+    var missing = list.filter(function (p) { var c = glCache[p.id + "|" + Y]; return (!c || c.t <= pickLogStale) && !pickLogInflight[p.id]; });
+    if (!missing.length) return;
+    missing.forEach(function (p) { pickLogInflight[p.id] = 1; });
+    statusLeft.textContent = "Loading game logs for " + missing.length + " players…";
+    Promise.all(missing.map(function (p) {
+      var key = p.id + "|" + Y;
+      return fetch(STAT_BASE + encodeURIComponent(p.id) + "/gamelog?season=" + Y)
+        .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+        .then(function (d) { glCache[key] = { t: Date.now(), games: parseLog(d) }; })
+        .catch(function (e) { glCache[key] = { t: Date.now(), err: e.message, games: [] }; })
+        .then(function () { delete pickLogInflight[p.id]; });
+    })).then(function () { stamp(); if (sheet === "pick") paint(pickRows()); });
+  }
   function togglePick(pk) {
     var p = (playersAll || []).filter(function (x) { return x.id === pk; })[0];
     if (p) toggleMine(p.id, p.name);
   }
   function pickLoadSeason(force) {
+    if (force) pickLogStale = Date.now();
     ensureOwn(force); ensureInj(force);
     var y = pickSeason || seasonNow();
     pickSeason = y;
@@ -1723,7 +1774,7 @@
   }
 
   /* ---------- Changelog sheet ---------- */
-  var MANUAL = [["h1", "使用手冊"], ["h2", "一、這個工具是什麼"], ["li", "• 這是一個只在你自己瀏覽器裡執行的籃球即時比分與奇幻籃球（Fantasy，就是組自己的球員陣容比賽）輔助工具。"], ["li", "• 資料來自 ESPN 的公開資料，不需要登入，也沒有把任何東西上傳到伺服器。"], ["li", "• 你的球員名單、設定和新聞存檔都保存在這個瀏覽器裡。換一台電腦或手機，資料是分開的，要搬家請用 Export / Import。"], ["li", "• 所有分頁都在畫面最下方，按一下就切換。"], ["h2", "二、分頁說明"], ["h3", "Sheet1（比分）"], ["li", "• 顯示今天的所有比賽，按 Prev / Next 換日期，按 Today 回到今天。"], ["li", "• 日期會自動跟著 ESPN 的比賽日換日，你按了 Prev / Next 之後才會固定在那一天。"], ["li", "• 點任何一場比賽，會進入該場的 Box Score（每位球員的數據）和 Play-by-Play（逐筆比賽過程）。"], ["li", "• 看比賽時，按 Back 回到 Sheet1，按 My Players 回到你的球員頁。"], ["h3", "Player List（球員清單）"], ["li", "• 列出所有球員，可用球隊、位置、搜尋框篩選，也可以切換賽季與「每場平均／總計」。"], ["li", "• 點球員名字：加入或移出你的 My Players。"], ["li", "• 點星號：加入或移出 Watchlist（觀察名單，就是你想撿的候選人）。"], ["li", "• 點最右邊的 ▤（Log 欄）：直接打開該球員的 Game Log。"], ["li", "• Own% 是這位球員在 ESPN 聯盟被擁有的比例，Chg% 是和前一天相比的變化。"], ["h3", "My Players（我的球員）"], ["li", "• 上半部是你的球員，今天有比賽的會顯示即時數據，綠色列代表正在場上。"], ["li", "• 下半部是 Watchlist，按 Watchlist: Season／Today 可以切換賽季平均與今天數據。"], ["li", "• 「No game」代表他的球隊今天沒有比賽；「Waiting for data」代表比賽已開打，但數據還沒抓到，請按 Refresh All。"], ["li", "• 雙擊（手機是連點兩下）球員名字，會打開他的 Game Log；雙擊其他格子，會打開該列的新聞連結。"], ["li", "• 按 Categories 勾選要顯示的比項；按 Paste from Yahoo 可以貼上陣容文字；按 Pick players 到球員清單挑人。"], ["li", "• Slot 欄：每位球員可選 Active（上場）、BN（板凳）、IL（傷兵名單）。合計列只加總 Active 球員，BN 和 IL 會顯示成灰色，不計入合計。"], ["li", "• 排序：沒點欄位排序時，有比賽的 Active 球員依開賽時間排（最早在最上面），接著是沒比賽的 Active，再來是 BN，最後是 IL。點 Game 欄標題會依實際開賽時間排序。無論依哪一欄排序，BN 和 IL 都固定在最下面。"], ["h3", "Schedule 與 Team Schedule（賽程）"], ["li", "• Schedule 依「球員」排列，只看你的球員未來 7 天的對手。"], ["li", "• Team Schedule 依「球隊」排列，每天一欄顯示對手，主場是 vs、客場是 @，每週後面有一欄週合計。"], ["li", "• 你可以選一週從星期幾開始，也可以選看 2、4、6 或 8 週，設定會被記住。"], ["li", "• 橘色代表背靠背（前一天也有比賽），最多場次的週標綠色，最少標紅色，灰字代表已經打過。"], ["h3", "News（新聞）"], ["li", "• 顯示球員新聞，可以切換「只看我的球員」或「全聯盟」。"], ["li", "• 按 Translate 可以把標題翻成中文，新聞會自動存檔 30 天，最多 3,000 筆，Export 時也會一併備份。"], ["h3", "Injuries（傷兵）"], ["li", "• 顯示傷勢、部位、預計回歸日期，可以選看「我的球員＋Watchlist」「我的球員」「Watchlist」或「全聯盟」。"], ["h3", "Game Log（逐場紀錄）"], ["li", "• 一次看一位球員，每場一行，由新到舊，包含日期（美東時間）、對手、比分與你設定的比項。"], ["li", "• 表頭下面有賽季平均、近 5 場、近 10 場。"], ["li", "• 可以用 Team 篩選球隊，也可以用搜尋框輸入任何球員名字。"], ["h3", "Player Stats（球員數據）"], ["li", "• 可以看你的球員在不同區間的數據：近 7 天、14 天、30 天、近 5 場、10 場、整季與生涯。"], ["h3", "Changelog（版本紀錄）"], ["li", "• 記錄每個版本新增了什麼，最新的在最上面。"], ["h2", "三、League Settings 與 Export for AI"], ["li", "• League Settings 可以設定比法（比項制或積分制）、比項、陣容位置、每週異動上限、近期區間，以及給 AI 的備註。"], ["li", "• 候選池（Candidate pool）會從全聯盟挑出 Own% 在你設定值以下的球員，預設 15%、場均至少 10 分鐘、最多 50 人。"], ["li", "• 按 Export for AI 會產生一份文字，按 Copy 複製後貼給 AI，請它建議該丟誰、撿誰。"], ["li", "• 文字越長，AI 讀起來越花額度；想縮短，可以減少候選池人數或關掉新聞。"], ["h2", "四、共用功能"], ["li", "• 排序：點欄位標題，再點一次會反向排序。"], ["li", "• 搜尋：三個搜尋框都支援萬用字元（* 代表任意長度的字，? 代表一個字）、順序顛倒（james le）、只打字首（sc 找得到 Stephen Curry）和少打幾個字（lbj 找得到 LeBron James，至少 3 個字母）。搜尋框有文字時右邊會出現 ×，點一下或按 Esc 就清除。"], ["li", "• 縮放：工具列的 A− 和 A+ 可以把表格縮小或放大，從 60% 到 150%。"], ["li", "• Refresh All：重新抓取所有資料。"], ["h2", "五、備份與搬家"], ["li", "• Export 會下載 my_players.json，裡面有你的球員、Watchlist、新聞存檔與所有設定。"], ["li", "• Import 可以把這個檔案讀回來，合併進現有資料。"], ["li", "• 清除瀏覽器資料、換電腦或換手機之前，請先 Export。"], ["h2", "六、常見問題"], ["li", "• 為什麼沒有數據？ 先確認該球員今天有沒有比賽；有比賽仍空白，按 Refresh All。"], ["li", "• 手機打不開？ 必須用手機瀏覽器開啟網頁版，用檔案預覽程式開會無法執行。"], ["li", "• Own% 為什麼和 Yahoo 不一樣？ 這是 ESPN 聯盟的數字，只能當作熱度參考。"], ["li", "• 某一欄是空白或問號？ 通常是 ESPN 暫時沒回應，按 Refresh All 重試。"]];
+  var MANUAL = [["h1", "使用手冊"], ["h2", "一、這個工具是什麼"], ["li", "• 這是一個只在你自己瀏覽器裡執行的籃球即時比分與奇幻籃球（Fantasy，就是組自己的球員陣容比賽）輔助工具。"], ["li", "• 資料來自 ESPN 的公開資料，不需要登入，也沒有把任何東西上傳到伺服器。"], ["li", "• 你的球員名單、設定和新聞存檔都保存在這個瀏覽器裡。換一台電腦或手機，資料是分開的，要搬家請用 Export / Import。"], ["li", "• 所有分頁都在畫面最下方，按一下就切換。"], ["h2", "二、分頁說明"], ["h3", "Sheet1（比分）"], ["li", "• 顯示今天的所有比賽，按 Prev / Next 換日期，按 Today 回到今天。"], ["li", "• 日期會自動跟著 ESPN 的比賽日換日，你按了 Prev / Next 之後才會固定在那一天。"], ["li", "• 點任何一場比賽，會進入該場的 Box Score（每位球員的數據）和 Play-by-Play（逐筆比賽過程）。"], ["li", "• 看比賽時，按 Back 回到 Sheet1，按 My Players 回到你的球員頁。"], ["h3", "Player List（球員清單）"], ["li", "• 列出所有球員，可用球隊、位置、搜尋框篩選，也可以切換賽季與「每場平均／總計」。"], ["li", "• 點球員名字：加入或移出你的 My Players。"], ["li", "• 點星號：加入或移出 Watchlist（觀察名單，就是你想撿的候選人）。"], ["li", "• 點最右邊的 ▤（Log 欄）：直接打開該球員的 Game Log。"] ["li", "• Period 下拉選單可以把數據改成近 7 天、10 天、14 天、30 天、近 5 場或近 10 場。近期數據要逐一讀取球員的逐場紀錄，所以最多只對目前顯示的 60 位球員計算，超過請先用球隊、搜尋或篩選縮小範圍。數值篩選仍然使用整季數據。"], ["li", "• Own% 是這位球員在 ESPN 聯盟被擁有的比例，Chg% 是和前一天相比的變化。"], ["h3", "My Players（我的球員）"], ["li", "• 上半部是你的球員，今天有比賽的會顯示即時數據，綠色列代表正在場上。"], ["li", "• 下半部是 Watchlist，按 Watchlist: Season／Today 可以切換賽季平均與今天數據。"], ["li", "• 「No game」代表他的球隊今天沒有比賽；「Waiting for data」代表比賽已開打，但數據還沒抓到，請按 Refresh All。"], ["li", "• 雙擊（手機是連點兩下）球員名字，會打開他的 Game Log；雙擊其他格子，會打開該列的新聞連結。"], ["li", "• 按 Categories 勾選要顯示的比項；按 Paste from Yahoo 可以貼上陣容文字；按 Pick players 到球員清單挑人。"], ["li", "• Slot 欄：每位球員可選 Active（上場）、BN（板凳）、IL（傷兵名單）。合計列只加總 Active 球員，BN 和 IL 會顯示成灰色，不計入合計。"], ["li", "• 排序：沒點欄位排序時，有比賽的 Active 球員依開賽時間排（最早在最上面），接著是沒比賽的 Active，再來是 BN，最後是 IL。點 Game 欄標題會依實際開賽時間排序。無論依哪一欄排序，BN 和 IL 都固定在最下面。"], ["h3", "Schedule 與 Team Schedule（賽程）"], ["li", "• Schedule 依「球員」排列，只看你的球員未來 7 天的對手。"], ["li", "• Team Schedule 依「球隊」排列，每天一欄顯示對手，主場是 vs、客場是 @，每週後面有一欄週合計。"], ["li", "• 你可以選一週從星期幾開始，也可以選看 2、4、6 或 8 週，設定會被記住。"], ["li", "• 橘色代表背靠背（前一天也有比賽），最多場次的週標綠色，最少標紅色，灰字代表已經打過。"], ["h3", "News（新聞）"], ["li", "• 顯示球員新聞，可以切換「只看我的球員」或「全聯盟」。"], ["li", "• 按 Translate 可以把標題翻成中文，新聞會自動存檔 30 天，最多 3,000 筆，Export 時也會一併備份。"], ["h3", "Injuries（傷兵）"], ["li", "• 顯示傷勢、部位、預計回歸日期，可以選看「我的球員＋Watchlist」「我的球員」「Watchlist」或「全聯盟」。"], ["h3", "Game Log（逐場紀錄）"], ["li", "• 一次看一位球員，每場一行，由新到舊，包含日期（美東時間）、對手、比分與你設定的比項。"], ["li", "• 表頭下面有賽季平均、近 5 場、近 10 場。"], ["li", "• 可以用 Team 篩選球隊，也可以用搜尋框輸入任何球員名字。"], ["h3", "Player Stats（球員數據）"], ["li", "• 可以看你的球員在不同區間的數據：近 7 天、14 天、30 天、近 5 場、10 場、整季與生涯。"], ["h3", "Changelog（版本紀錄）"], ["li", "• 記錄每個版本新增了什麼，最新的在最上面。"], ["h2", "三、League Settings 與 Export for AI"], ["li", "• League Settings 可以設定比法（比項制或積分制）、比項、陣容位置、每週異動上限、近期區間，以及給 AI 的備註。"], ["li", "• 候選池（Candidate pool）會從全聯盟挑出 Own% 在你設定值以下的球員，預設 15%、場均至少 10 分鐘、最多 50 人。"], ["li", "• 按 Export for AI 會產生一份文字，按 Copy 複製後貼給 AI，請它建議該丟誰、撿誰。"], ["li", "• 文字越長，AI 讀起來越花額度；想縮短，可以減少候選池人數或關掉新聞。"], ["h2", "四、共用功能"], ["li", "• 排序：點欄位標題，再點一次會反向排序。"], ["li", "• 搜尋：三個搜尋框都支援萬用字元（* 代表任意長度的字，? 代表一個字）、順序顛倒（james le）、只打字首（sc 找得到 Stephen Curry）和少打幾個字（lbj 找得到 LeBron James，至少 3 個字母）。搜尋框有文字時右邊會出現 ×，點一下或按 Esc 就清除。"], ["li", "• 縮放：工具列的 A− 和 A+ 可以把表格縮小或放大，從 60% 到 150%。"], ["li", "• Refresh All：重新抓取所有資料。"], ["h2", "五、備份與搬家"], ["li", "• Export 會下載 my_players.json，裡面有你的球員、Watchlist、新聞存檔與所有設定。"], ["li", "• Import 可以把這個檔案讀回來，合併進現有資料。"], ["li", "• 清除瀏覽器資料、換電腦或換手機之前，請先 Export。"], ["h2", "六、常見問題"], ["li", "• 為什麼沒有數據？ 先確認該球員今天有沒有比賽；有比賽仍空白，按 Refresh All。"], ["li", "• 手機打不開？ 必須用手機瀏覽器開啟網頁版，用檔案預覽程式開會無法執行。"], ["li", "• Own% 為什麼和 Yahoo 不一樣？ 這是 ESPN 聯盟的數字，只能當作熱度參考。"], ["li", "• 某一欄是空白或問號？ 通常是 ESPN 暫時沒回應，按 Refresh All 重試。"]];
   function manualRows() {
     var rows = [];
     MANUAL.forEach(function (m) {
@@ -2964,6 +3015,7 @@
     this.textContent = "Wrap text: " + (newsWrap ? "On" : "Off");
     if (sheet === "news") paint(newsRows());
   });
+  document.getElementById("pickPeriod").addEventListener("change", function (e) { pickPeriod = e.target.value; if (sheet === "pick") paint(pickRows()); });
   document.getElementById("pickView").addEventListener("change", function (e) { pickView = e.target.value; if (sheet === "pick") paint(pickRows()); });
   document.getElementById("pickSeason").addEventListener("change", function (e) { pickSeason = Number(e.target.value); pickSeasonChosen = true; pickLoadSeason(false); });
   document.getElementById("teamSel").addEventListener("change", function (e) { pickTeam = e.target.value; if (sheet === "pick") paint(pickRows()); });
